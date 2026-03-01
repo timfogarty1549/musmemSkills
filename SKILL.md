@@ -15,6 +15,7 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 | 2 — Results | Scrape individual contest pages → write flat file |
 | 3 — Format | Run flat files through format.php → write `.out` files |
 | 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files |
+| 5 — Append | Verify new athlete names against master, then append to master files |
 
 ---
 
@@ -261,6 +262,71 @@ python3 ~/workspace/skills/musmemContests/python/review_flags.py 2025_olympia-if
 - **Done for now (`0`):** writes resolved decisions for this file, leaves remaining `<<<<` intact, continues to next file
 - **Exit all (`x`):** writes resolved decisions for this file, stops processing all remaining files
 - Gender inferred from filename (`-male` / `-female`)
+
+---
+
+## Phase 5: Append
+
+Verify new athlete names against the master files, resolve conflicts interactively, then append to the master.
+
+### Run the script
+
+```bash
+# Process all pending .out files
+~/workspace/skills/musmemContests/python/append_and_verify.sh
+
+# Process a specific file (with or without .out extension)
+~/workspace/skills/musmemContests/python/append_and_verify.sh 2025_arnold_classic-ifbb-male
+```
+
+Input: `~/workspace/musmem/formatted/*.out`
+Master files: `~/workspace/musmem/bb_male.dat`, `~/workspace/musmem/bb_female.dat`
+After append: file moved to `~/workspace/musmem/appended/`
+
+Gender inferred from filename (`-male` / `-female`).
+
+### Per-file workflow
+
+1. Read master as read-only reference
+2. Extract new athlete names (not already in master)
+3. Find similar names in master using soundex, edit distance, anagram, and word-order checks
+4. Iterate conflicts interactively — corrections held in memory
+5. On approval: apply corrections to `.out` data → append to master → sort master → move `.out` to `appended/`
+
+If no conflicts, file is appended automatically with no interaction.
+
+### Keys (single keypress — no RETURN)
+
+| Key | Action |
+|-----|--------|
+| `1`–`N` | Match to candidate N (corrects spelling in `.out` to master spelling) |
+| `N` | New athlete — assign next `[n]` suffix |
+| `D` | Details — prompts for a number, then lists all master records for that candidate |
+| `S` | Skip — leave name as-is, move to next conflict |
+| `9` | Back to previous conflict |
+| `0` | Done for now — append resolved file, stop this file |
+| `X` | Exit all — append resolved file, stop all remaining files |
+
+### Candidate summary format
+
+```
+NEW: Smithe, John  (Arnold Classic - IFBB 2025, OP-3)
+
+Candidates in master:
+  1. Smith, John       — 18 contests, 2008–2019, OP/CL
+  2. Smith, John [2]   — 4 contests, 2021–2024, PH
+  3. Smith, John [3]   — 1 contest, 2023, M4
+  N  New athlete → Smith, John [4]
+  D  Details (then enter number)
+  S  Skip (leave as-is for now)
+  9  Back to previous
+  0  Done for now
+  X  Exit all
+```
+
+### Name disambiguation (`[n]` notation)
+
+Incoming `.out` files use plain names (no `[n]`). The master may have multiple athletes with the same base name: `Smith, John`, `Smith, John [2]`, `Smith, John [3]`, etc. All variants are presented as candidates. Selecting `N` assigns the next available number to every occurrence in the `.out` file.
 
 ---
 
