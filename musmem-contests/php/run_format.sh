@@ -9,7 +9,7 @@
 
 INCOMING=~/workspace/musmem/incoming
 FORMATTED=~/workspace/musmem/formatted
-FORMAT_PHP=~/workspace/skills/musmemContests/php/format.php
+FORMAT_PHP=~/workspace/skills/musmemSkills/musmem-contests/php/format.php
 
 mkdir -p "$FORMATTED"
 

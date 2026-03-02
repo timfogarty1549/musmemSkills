@@ -2,7 +2,7 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Create `append_and_verify.py` (+ shell wrapper) that verifies new athlete names against master files, resolves conflicts interactively, then appends to the master.
+**Goal:** Create `verify_and_append.py` (+ shell wrapper) that verifies new athlete names against master files, resolves conflicts interactively, then appends to the master.
 
 **Architecture:** Single Python script modeled on `review_flags.py`. Reads master as read-only reference, parses `.out` file, runs similarity checks on new athlete names, collects conflicts, iterates interactively (single-keypress), holds all corrections in memory, then appends corrected content to master and sorts — touching the master only once at the end.
 
@@ -30,17 +30,17 @@ Smith, John; 2025; Arnold Classic - IFBB; OP-3;
 ## Task 1: Shell wrapper
 
 **Files:**
-- Create: `.claude/skills/musmem-contests/python/append_and_verify.sh`
+- Create: `musmem-contests/python/verify_and_append.sh`
 
 **Step 1: Write the shell wrapper**
 
 ```bash
 #!/bin/bash
-# Launch append_and_verify.py in a new Terminal window.
-# Usage: append_and_verify.sh [filename]   # with or without .out extension
-#        append_and_verify.sh              # all pending .out files
+# Launch verify_and_append.py in a new Terminal window.
+# Usage: verify_and_append.sh [filename]   # with or without .out extension
+#        verify_and_append.sh              # all pending .out files
 
-SCRIPT=~/workspace/skills/musmemContests/python/append_and_verify.py
+SCRIPT=~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.py
 
 if [ -n "$1" ]; then
     CMD="python3 $SCRIPT '$1'"
@@ -54,14 +54,14 @@ osascript -e "tell application \"Terminal\" to do script \"$CMD\""
 **Step 2: Make it executable**
 
 ```bash
-chmod +x ~/.../append_and_verify.sh
+chmod +x ~/.../verify_and_append.sh
 ```
 
 **Step 3: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.sh
-git commit -m "feat: add append_and_verify shell wrapper"
+git add musmem-contests/python/verify_and_append.sh
+git commit -m "feat: add verify_and_append shell wrapper"
 ```
 
 ---
@@ -69,8 +69,8 @@ git commit -m "feat: add append_and_verify shell wrapper"
 ## Task 2: Core data structures and parsing
 
 **Files:**
-- Create: `.claude/skills/musmem-contests/python/append_and_verify.py`
-- Create: `.claude/skills/musmem-contests/python/test_append_and_verify.py`
+- Create: `musmem-contests/python/verify_and_append.py`
+- Create: `musmem-contests/python/test_verify_and_append.py`
 
 The script needs these constants at the top:
 
@@ -89,8 +89,8 @@ RESET = "\033[0m"
 **Step 1: Write failing tests for name parsing utilities**
 
 ```python
-# test_append_and_verify.py
-from append_and_verify import strip_disambig, base_name_of, get_next_disambig
+# test_verify_and_append.py
+from verify_and_append import strip_disambig, base_name_of, get_next_disambig
 
 def test_strip_disambig_plain():
     assert strip_disambig("Smith, John") == "Smith, John"
@@ -120,7 +120,7 @@ def test_get_next_disambig_gap():
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd ~/.../python && python3 -m pytest test_append_and_verify.py::test_strip_disambig_plain -v
+cd ~/.../python && python3 -m pytest test_verify_and_append.py::test_strip_disambig_plain -v
 ```
 
 Expected: ImportError or NameError — function not defined yet.
@@ -150,7 +150,7 @@ def get_next_disambig(base: str, all_master_names: set) -> str:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "disambig or base_name" -v
+python3 -m pytest test_verify_and_append.py -k "disambig or base_name" -v
 ```
 
 Expected: all PASS.
@@ -158,8 +158,8 @@ Expected: all PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py \
-        .claude/skills/musmem-contests/python/test_append_and_verify.py
+git add musmem-contests/python/verify_and_append.py \
+        musmem-contests/python/test_verify_and_append.py
 git commit -m "feat: name disambiguation utilities with tests"
 ```
 
@@ -170,8 +170,8 @@ git commit -m "feat: name disambiguation utilities with tests"
 **Step 1: Write failing tests**
 
 ```python
-# add to test_append_and_verify.py
-from append_and_verify import build_athlete_index, AthleteEntry
+# add to test_verify_and_append.py
+from verify_and_append import build_athlete_index, AthleteEntry
 
 SAMPLE_MASTER = [
     "Smith, John; 2015; Arnold Classic - IFBB; OP-1;\n",
@@ -209,7 +209,7 @@ def test_build_athlete_index_all_names():
 **Step 2: Run to verify they fail**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "athlete_index" -v
+python3 -m pytest test_verify_and_append.py -k "athlete_index" -v
 ```
 
 **Step 3: Implement**
@@ -275,7 +275,7 @@ def all_master_names(index: dict) -> set:
 **Step 4: Run tests**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "athlete_index" -v
+python3 -m pytest test_verify_and_append.py -k "athlete_index" -v
 ```
 
 Expected: all PASS.
@@ -283,8 +283,8 @@ Expected: all PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py \
-        .claude/skills/musmem-contests/python/test_append_and_verify.py
+git add musmem-contests/python/verify_and_append.py \
+        musmem-contests/python/test_verify_and_append.py
 git commit -m "feat: athlete index builder with tests"
 ```
 
@@ -295,8 +295,8 @@ git commit -m "feat: athlete index builder with tests"
 **Step 1: Write failing tests**
 
 ```python
-# add to test_append_and_verify.py
-from append_and_verify import soundex, find_candidates
+# add to test_verify_and_append.py
+from verify_and_append import soundex, find_candidates
 
 def test_soundex_basic():
     assert soundex("Smith") == soundex("Smithe")
@@ -339,7 +339,7 @@ def test_find_candidates_no_false_positives():
 **Step 2: Run to verify they fail**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "soundex or find_candidates" -v
+python3 -m pytest test_verify_and_append.py -k "soundex or find_candidates" -v
 ```
 
 **Step 3: Implement**
@@ -441,7 +441,7 @@ def find_candidates(new_name: str, index: dict) -> list:
 **Step 4: Run tests**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "soundex or find_candidates" -v
+python3 -m pytest test_verify_and_append.py -k "soundex or find_candidates" -v
 ```
 
 Expected: all PASS.
@@ -449,8 +449,8 @@ Expected: all PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py \
-        .claude/skills/musmem-contests/python/test_append_and_verify.py
+git add musmem-contests/python/verify_and_append.py \
+        musmem-contests/python/test_verify_and_append.py
 git commit -m "feat: similarity detection (soundex, edit distance, word order) with tests"
 ```
 
@@ -461,8 +461,8 @@ git commit -m "feat: similarity detection (soundex, edit distance, word order) w
 **Step 1: Write failing tests**
 
 ```python
-# add to test_append_and_verify.py
-from append_and_verify import parse_out_new_athletes, apply_name_corrections
+# add to test_verify_and_append.py
+from verify_and_append import parse_out_new_athletes, apply_name_corrections
 
 SAMPLE_OUT = [
     "Smithe, John; 2025; Arnold Classic - IFBB; OP-3;\n",
@@ -497,7 +497,7 @@ def test_apply_name_corrections_no_change():
 **Step 2: Run to verify they fail**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "parse_out or apply_name" -v
+python3 -m pytest test_verify_and_append.py -k "parse_out or apply_name" -v
 ```
 
 **Step 3: Implement**
@@ -538,7 +538,7 @@ def apply_name_corrections(out_lines: list[str], corrections: dict) -> list[str]
 **Step 4: Run tests**
 
 ```bash
-python3 -m pytest test_append_and_verify.py -k "parse_out or apply_name" -v
+python3 -m pytest test_verify_and_append.py -k "parse_out or apply_name" -v
 ```
 
 Expected: all PASS.
@@ -546,8 +546,8 @@ Expected: all PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py \
-        .claude/skills/musmem-contests/python/test_append_and_verify.py
+git add musmem-contests/python/verify_and_append.py \
+        musmem-contests/python/test_verify_and_append.py
 git commit -m "feat: .out parsing and correction application with tests"
 ```
 
@@ -558,10 +558,10 @@ git commit -m "feat: .out parsing and correction application with tests"
 **Step 1: Write failing tests**
 
 ```python
-# add to test_append_and_verify.py
+# add to test_verify_and_append.py
 import tempfile, os
 from pathlib import Path
-from append_and_verify import append_sort_master
+from verify_and_append import append_sort_master
 
 def test_append_sort_master():
     with tempfile.NamedTemporaryFile(mode='w', suffix='.dat', delete=False) as mf:
@@ -583,7 +583,7 @@ def test_append_sort_master():
 **Step 2: Run to verify it fails**
 
 ```bash
-python3 -m pytest test_append_and_verify.py::test_append_sort_master -v
+python3 -m pytest test_verify_and_append.py::test_append_sort_master -v
 ```
 
 **Step 3: Implement**
@@ -600,7 +600,7 @@ def append_sort_master(master_path: Path, new_lines: list[str]) -> None:
 **Step 4: Run tests**
 
 ```bash
-python3 -m pytest test_append_and_verify.py::test_append_sort_master -v
+python3 -m pytest test_verify_and_append.py::test_append_sort_master -v
 ```
 
 Expected: PASS.
@@ -608,8 +608,8 @@ Expected: PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py \
-        .claude/skills/musmem-contests/python/test_append_and_verify.py
+git add musmem-contests/python/verify_and_append.py \
+        musmem-contests/python/test_verify_and_append.py
 git commit -m "feat: append and sort master with tests"
 ```
 
@@ -841,7 +841,7 @@ if __name__ == "__main__":
 **Step 4: Run all tests to confirm nothing broken**
 
 ```bash
-python3 -m pytest .claude/skills/musmem-contests/python/test_append_and_verify.py -v
+python3 -m pytest musmem-contests/python/test_verify_and_append.py -v
 ```
 
 Expected: all PASS.
@@ -849,40 +849,40 @@ Expected: all PASS.
 **Step 5: Commit**
 
 ```bash
-git add .claude/skills/musmem-contests/python/append_and_verify.py
-git commit -m "feat: interactive UI and main entry point for append_and_verify"
+git add musmem-contests/python/verify_and_append.py
+git commit -m "feat: interactive UI and main entry point for verify_and_append"
 ```
 
 ---
 
-## Task 8: Add append_and_verify.sh to SKILL.md run_format section and update settings
+## Task 8: Add verify_and_append.sh to SKILL.md run_format section and update settings
 
 **Step 1: Add to settings.local.json**
 
 Add to the `allow` array in `.claude/settings.local.json`:
 
 ```json
-"Bash(~/workspace/skills/musmemContests/python/append_and_verify.sh*)"
+"Bash(~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh*)"
 ```
 
 **Step 2: Run the full test suite one final time**
 
 ```bash
-python3 -m pytest .claude/skills/musmem-contests/python/test_append_and_verify.py -v
+python3 -m pytest musmem-contests/python/test_verify_and_append.py -v
 ```
 
 **Step 3: Commit settings**
 
 ```bash
 git add .claude/settings.local.json
-git commit -m "chore: allow append_and_verify.sh in settings"
+git commit -m "chore: allow verify_and_append.sh in settings"
 ```
 
 ---
 
 ## Notes for implementer
 
-- The `.sh` script path uses `musmemContests` (the symlink path), not `musmemSkills/.claude/skills/musmem-contests` — follow the same pattern as `review_flags.sh`.
+- The `.sh` script path uses `musmemSkills` (the symlink path), not `musmemSkills/.claude/skills/musmem-contests` — follow the same pattern as `review_flags.sh`.
 - Master files may not exist yet (first run) — `append_sort_master` handles this gracefully.
 - `APPENDED_DIR` must be created with `mkdir -p` before moving files.
 - The `[n]` suffix uses square brackets literally: `Smith, John [2]` — space before bracket.

@@ -62,7 +62,7 @@ curl -s --compressed \
 Then parse with the saved script (npcnewsonline.com only — depends on site-specific HTML patterns):
 
 ```bash
-python3 ~/workspace/skills/musmemContests/python/parse_npcnewsonline_contest.py /tmp/contest.html
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/parse_npcnewsonline_contest.py /tmp/contest.html
 ```
 
 The script (`parse_npcnewsonline_contest.py` in this skill's directory):

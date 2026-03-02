@@ -2,13 +2,29 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:musclememory.net)",
-      "WebFetch(domain:contests.npcnewsonline.com)",
-      "Bash(python3 << 'EOF'\nfrom html.parser import HTMLParser\nimport re\n\nclass ResultParser\\(HTMLParser\\):\n    def __init__\\(self\\):\n        super\\(\\).__init__\\(\\)\n        self.in_td = False\n        self.current_section = None\n        self.current_class = None\n        self.results = {}\n        self.depth = 0\n        self.collecting = False\n        self.text_buffer = []\n        \n    def handle_starttag\\(self, tag, attrs\\):\n        attrs_dict = dict\\(attrs\\)\n        if tag == 'h2':\n            self.collecting_h2 = True\n        if tag == 'h3':\n            self.collecting_h3 = True\n            \n    def handle_data\\(self, data\\):\n        data = data.strip\\(\\)\n        if data:\n            self.text_buffer.append\\(data\\)\n\nwith open\\('/tmp/npc_nationals.html', 'r', encoding='utf-8', errors='replace'\\) as f:\n    content = f.read\\(\\)\n\n# Find Classic Physique section\ncp_match = re.search\\(r'CLASSIC PHYSIQUE', content, re.IGNORECASE\\)\nif cp_match:\n    print\\(f\"Found CLASSIC PHYSIQUE at position {cp_match.start\\(\\)}\"\\)\n\n# Find Women's sections\nwb_match = re.search\\(r\"WOMEN'?S BODYBUILDING\", content, re.IGNORECASE\\)\nif wb_match:\n    print\\(f\"Found WOMEN'S BODYBUILDING at position {wb_match.start\\(\\)}\"\\)\n\nwp_match = re.search\\(r\"WOMEN'?S PHYSIQUE\", content, re.IGNORECASE\\)\nif wp_match:\n    print\\(f\"Found WOMEN'S PHYSIQUE at position {wp_match.start\\(\\)}\"\\)\n    \nprint\\(f\"\\\\nTotal HTML length: {len\\(content\\)}\"\\)\nEOF)",
-      "Bash(python3 << 'EOF'\nimport re\n\nwith open\\('/tmp/npc_nationals.html', 'r', encoding='utf-8', errors='replace'\\) as f:\n    content = f.read\\(\\)\n\n# Find all data-slug occurrences\nslugs = re.findall\\(r'data-slug=\"\\([^\"]+\\)\"', content\\)\nprint\\(\"All data-slugs found:\"\\)\nfor s in slugs:\n    print\\(f\"  {s}\"\\)\nEOF)",
-      "Bash(~/workspace/skills/musmemContests/php/run_format.sh)",
-      "Bash(~/workspace/skills/musmemContests/php/run_format.sh --force 2025_national_championships-npc-male)",
       "WebFetch(domain:musclememory.org)",
-      "Bash(~/workspace/skills/musmemContests/python/review_flags.sh 2025_olympia-ifbb-female)"
+      "WebFetch(domain:musclememory.com)",
+      "WebFetch(domain:contests.npcnewsonline.com)",
+      "Bash(curl *)",
+      "Bash(python3 *)",
+      "Bash(mkdir *)",
+      "Bash(wc *)",
+      "Bash(sort *)",
+      "Bash(mv *)",
+      "Bash(ls *)",
+      "Bash(~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh*)",
+      "Bash(~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.sh*)",
+      "Bash(~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh*)",
+      "Read(~/workspace/musmem/*)",
+      "Write(~/workspace/musmem/*)",
+      "Edit(~/workspace/musmem/*)",
+      "Read(/tmp/*)",
+      "Write(/tmp/*)",
+      "Edit(/tmp/*)",
+      "Read(~/workspace/angular/musmem-ui/src/assets/i18n/en.json)",
+      "WebFetch(domain:www.npcnewsonline.com)",
+      "WebSearch",
+      "WebFetch(*)"
     ]
   }
 }

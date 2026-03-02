@@ -9,13 +9,13 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 
 ## Quick Reference
 
-| Phase | What Claude does |
-|-------|-----------------|
-| 1 — Discovery | Fetch DB + scrape org site → report missing contests |
-| 2 — Results | Scrape individual contest pages → write flat file |
-| 3 — Format | Run flat files through format.php → write `.out` files |
-| 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files |
-| 5 — Append | Verify new athlete names against master, then append to master files |
+| Phase | What Claude does | Alias |
+|-------|------------------|-------|
+| 1 — Discovery | Fetch DB + scrape org site → report missing contests | |
+| 2 — Results | Scrape individual contest pages → write flat file | |
+| 3 — Format | Run flat files through format.php → write `.out` files | musmemFormat |
+| 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files | musmemReview |
+| 5 — Append | Verify new athlete names against master, then append to master files | musmemAppend |
 
 ---
 
@@ -30,6 +30,11 @@ GET https://musclememory.net/api/contests/{year}
 Returns `data.contests` — an array of strings in `"Contest Name - ORG"` format.
 
 If checking multiple years, call once per year.
+
+**User-Agent for musclememory.net API calls:** The server blocks bot user agents and returns fake HTML. Use a browser UA:
+```
+Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+```
 
 ### 2. Scrape listing pages
 
@@ -179,16 +184,16 @@ Run the flat files through `format.php` to produce import-ready `.out` files.
 
 ```bash
 # Format all unprocessed files (no .out yet in formatted/)
-~/workspace/skills/musmemContests/php/run_format.sh
+~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh
 
 # Format a specific file (with or without .txt extension)
-~/workspace/skills/musmemContests/php/run_format.sh 2025_olympia-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh 2025_olympia-ifbb-male
 
 # Reprocess all files, overwriting existing .out files
-~/workspace/skills/musmemContests/php/run_format.sh --force
+~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh --force
 
 # Reprocess a specific file, overwriting its .out
-~/workspace/skills/musmemContests/php/run_format.sh --force 2025_olympia-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh --force 2025_olympia-ifbb-male
 ```
 
 Input: `~/workspace/musmem/incoming/*.txt`
@@ -228,13 +233,13 @@ Interactively resolve all `<<<<` lines in `.out` files. Run the script via Claud
 
 Claude launches it with:
 ```bash
-~/workspace/skills/musmemContests/python/review_flags.sh 2025_olympia-ifbb-male
-~/workspace/skills/musmemContests/python/review_flags.sh   # all files with <<<< lines
+~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.sh 2025_olympia-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.sh   # all files with <<<< lines
 ```
 
 Or run directly:
 ```bash
-python3 ~/workspace/skills/musmemContests/python/review_flags.py 2025_olympia-ifbb-male
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.py 2025_olympia-ifbb-male
 ```
 
 ### Keys (single keypress — no RETURN)
@@ -273,10 +278,10 @@ Verify new athlete names against the master files, resolve conflicts interactive
 
 ```bash
 # Process all pending .out files
-~/workspace/skills/musmemContests/python/append_and_verify.sh
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh
 
 # Process a specific file (with or without .out extension)
-~/workspace/skills/musmemContests/python/append_and_verify.sh 2025_arnold_classic-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh 2025_arnold_classic-ifbb-male
 ```
 
 Input: `~/workspace/musmem/formatted/*.out`
@@ -351,7 +356,8 @@ Base URL: `https://musclememory.net`
 | Comparing names without normalizing org prefix | Always strip "IFBB "/"NPC "/"NPC Worldwide "/"CPA " prefix before comparing |
 | Assuming contest is new without checking DB | Always query the API first |
 | Writing names in Last, First order | npcnewsonline.com uses First Last — do not set `l 1` |
-| No User-Agent in scripts | When fetching via curl/script use `MuscleMemoryBot/1.0 (+https://musclememory.net/bot)` — WebFetch does not support custom headers |
+| Wrong User-Agent for musclememory.net | The API blocks bot UAs and returns fake HTML — use a browser UA (e.g. `Mozilla/5.0 ... Chrome/120.0.0.0 Safari/537.36`) for all musclememory.net API calls |
+| No User-Agent when scraping external sites | When fetching npcnewsonline.com etc. via curl/script use `MuscleMemoryBot/1.0 (+https://musclememory.net/bot)` — WebFetch does not support custom headers |
 | Using WebFetch on large contest pages | WebFetch truncates at ~50KB — later divisions get silently cut off or hallucinated. Use curl + Python for large contests (NPC Nationals, Olympia, etc.) — see sources-reference.md |
 | Mixing male and female divisions in one file | Contests with both genders need `-male.txt` and `-female.txt` files — same division codes would collide in a single file |
 | Using divisions.php as code reference | Source of truth is now `en.json` DIVISIONS — `PRh` is Pro HeavyWeight (not `Ph`, which is Physique H) |

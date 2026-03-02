@@ -12,15 +12,15 @@ After Phase 4 (review flagged names), Phase 5 appends formatted `.out` files to 
 ## Script & Invocation
 
 Two files mirroring Phase 4:
-- `~/workspace/skills/musmemContests/python/append_and_verify.py` — main logic
-- `~/workspace/skills/musmemContests/python/append_and_verify.sh` — shell wrapper
+- `~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.py` — main logic
+- `~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh` — shell wrapper
 
 ```bash
 # Process all pending .out files
-~/workspace/skills/musmemContests/python/append_and_verify.sh
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh
 
 # Process a specific file (with or without .out extension)
-~/workspace/skills/musmemContests/python/append_and_verify.sh 2025_arnold_classic-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh 2025_arnold_classic-ifbb-male
 ```
 
 Gender inferred from filename: `-male` → `bb_male.dat`, `-female` → `bb_female.dat`.
