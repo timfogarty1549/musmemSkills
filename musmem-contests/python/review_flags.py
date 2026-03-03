@@ -5,16 +5,20 @@ review_flags.py — Interactively resolve <<<<-flagged lines in .out files.
 Usage:
     python3 review_flags.py                           # all .out files with <<<< lines
     python3 review_flags.py 2025_olympia-ifbb-male    # specific file (with or without .out)
+    python3 review_flags.py --accept-dict             # auto-apply dict matches, prompt only for unknowns
+    python3 review_flags.py --accept-dict 2025_olympia-ifbb-male
 
 Keys (no RETURN needed):
     1  Accept as-is
     2  Re-split (alternative comma position)
     3  Asianize (restore original word order, no comma)
-    4  DB lookup
+    4  Asianize with dash (restore original word order, no comma, with dash)
     5  Enter manually (requires typing + RETURN)
-    6  Skip (leave <<<< for now)
-    9  Back to previous
-    0  Done for now (write resolved, leave rest)
+    6  DB lookup
+    7  Previous (cached name from earlier decision)
+    8  Skip (leave <<<< for now)
+    b  Back to previous
+    d  Done for now (write resolved, leave rest)
     x  Exit (write resolved, skip remaining files)
 """
 
@@ -27,12 +31,15 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-FORMATTED_DIR = Path.home() / "workspace/musmem/formatted"
-SEARCH_URL = "https://musclememory.org/api/search"
+FORMATTED_DIR    = Path.home() / "workspace/musmem/formatted"
+WORKING_DATA_DIR = Path.home() / "workspace/musmem/working_data"
+NAMES_FILE       = WORKING_DATA_DIR / "review-athlete-names.dat"
+SEARCH_URL       = "https://musclememory.org/api/search"
 
-CYAN  = "\033[96m"
-BOLD  = "\033[1m"
-RESET = "\033[0m"
+CYAN   = "\033[96m"
+BOLD   = "\033[1m"
+YELLOW = "\033[93m"
+RESET  = "\033[0m"
 
 
 def getch():
@@ -44,6 +51,41 @@ def getch():
         return os.read(fd, 1).decode()
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old)
+
+
+def load_name_cache():
+    """Load original->chosen name mappings from the dat file."""
+    cache = {}
+    if not NAMES_FILE.exists():
+        return cache
+    with open(NAMES_FILE) as f:
+        for line in f:
+            line = line.strip()
+            if ":" in line:
+                orig, chosen = line.split(":", 1)
+                cache[orig] = chosen
+    return cache
+
+
+def write_name_cache(cache):
+    """Rewrite the dat file from the current cache dict."""
+    WORKING_DATA_DIR.mkdir(parents=True, exist_ok=True)
+    with open(NAMES_FILE, "w") as f:
+        for orig, ch in sorted(cache.items()):
+            f.write(f"{orig}:{ch}\n")
+
+
+def save_name_cache_entry(cache, original, chosen):
+    """Update cache dict and rewrite the dat file."""
+    cache[original] = chosen
+    write_name_cache(cache)
+
+
+def remove_name_cache_entry(cache, original):
+    """Remove an entry from the cache dict and rewrite the dat file."""
+    if original in cache:
+        del cache[original]
+        write_name_cache(cache)
 
 
 def get_gender(filename):
@@ -88,16 +130,22 @@ def resplit(name):
 
 
 def asianize(name):
-    return name.replace(", ", " ")
+    return resplit(name).replace(", ", " ")
 
+def asianize_with_dash(name):
+    return resplit(name).replace(", ", "~").replace(" ", "-").replace("~", " ")
 
 def db_search(query, gender):
     params = urllib.parse.urlencode({
         "offset": 0, "limit": 20,
         "match": query, "gender": gender, "searchType": "anywhere"
     })
+    req = urllib.request.Request(
+        f"{SEARCH_URL}?{params}",
+        headers={"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"},
+    )
     try:
-        with urllib.request.urlopen(f"{SEARCH_URL}?{params}", timeout=5) as r:
+        with urllib.request.urlopen(req, timeout=5) as r:
             data = json.loads(r.read())
             return [e["completeName"] for e in data.get("data", {}).get("names", [])]
     except Exception as e:
@@ -141,7 +189,7 @@ def apply_decisions(filepath, decisions):
         f.writelines(lines)
 
 
-def review_file(filepath):
+def review_file(filepath, name_cache, accept_dict=False):
     gender = get_gender(filepath.name)
     flagged = collect_flagged(filepath)
     total = len(flagged)
@@ -154,30 +202,42 @@ def review_file(filepath):
     print(f"{CYAN}{BOLD}{filepath.name}  ({total} flagged){RESET}")
     print(f"{CYAN}{'='*60}{RESET}")
 
-    decisions = {}  # line_num -> new_name | None (skip)
+    decisions      = {}  # line_num -> new_name | None (skip)
+    new_cache_keys = set()  # names added to cache during this session
+    backed         = False
     i = 0
 
     while i < total:
         line_num, line = flagged[i]
         name, rest = parse_line(line)
-        alt = resplit(name)
-        prev = decisions.get(line_num)
+        alt     = resplit(name)
+        cached  = name_cache.get(name)
+        prev    = decisions.get(line_num)
+
+        if accept_dict and cached and not backed:
+            decisions[line_num] = cached
+            print(f"\n[{i+1}/{total}] {name}; {rest}")
+            print(f"  [dict] {YELLOW}{cached}{RESET}")
+            i += 1
+            continue
+
+        backed = False
 
         print(f"\n[{i+1}/{total}] {name}; {rest}")
-        if prev is not None:
-            print(f"  (previous: {prev})")
-        elif prev is None and line_num in decisions:
-            print(f"  (previous: skip)")
+        if line_num in decisions:
+            print(f"  (previous: {prev if prev is not None else 'skip'})")
 
         print(f"  1) Accept:   {name}")
         print(f"  2) Re-split: {alt}" if alt else "  2) Re-split: (n/a)")
         print(f"  3) Asianize: {asianize(name)}")
-        print(f"  4) DB lookup")
+        print(f"  4) Asianize with dash: {asianize_with_dash(name)}")
         print(f"  5) Enter manually")
-        print(f"  6) Skip")
+        print(f"  6) DB lookup")
+        print(f"  7) Previous: {YELLOW}{cached}{RESET}" if cached else "  7) Previous: (none)")
+        print(f"  8) Skip")
         if i > 0:
-            print(f"  9) Back")
-        print(f"  0) Done for now")
+            print(f"  b) Back")
+        print(f"  d) Done for now")
         print(f"  x) Exit all")
         print("Choice: ", end="", flush=True)
 
@@ -187,22 +247,55 @@ def review_file(filepath):
             if ch == "1":
                 print(ch)
                 decisions[line_num] = name
+                save_name_cache_entry(name_cache, name, name)
+                new_cache_keys.add(name)
                 i += 1
                 break
 
             elif ch == "2" and alt:
                 print(ch)
                 decisions[line_num] = alt
+                save_name_cache_entry(name_cache, name, alt)
+                new_cache_keys.add(name)
                 i += 1
                 break
 
             elif ch == "3":
                 print(ch)
-                decisions[line_num] = asianize(name)
+                result = asianize(name)
+                decisions[line_num] = result
+                save_name_cache_entry(name_cache, name, result)
+                new_cache_keys.add(name)
                 i += 1
                 break
 
             elif ch == "4":
+                print(ch)
+                result = asianize_with_dash(name)
+                decisions[line_num] = result
+                save_name_cache_entry(name_cache, name, result)
+                new_cache_keys.add(name)
+                i += 1
+                break
+
+            elif ch == "7" and cached:
+                print(ch)
+                decisions[line_num] = cached
+                i += 1
+                break
+
+            elif ch == "5":
+                print(ch)
+                new_name = input("  Enter name: ").strip()
+                if new_name:
+                    decisions[line_num] = new_name
+                    save_name_cache_entry(name_cache, name, new_name)
+                    new_cache_keys.add(name)
+                    i += 1
+                    break
+                print("Choice: ", end="", flush=True)
+
+            elif ch == "6":
                 print(ch)
                 print(f"  Searching '{original_order(name)}'...")
                 matches = db_lookup(name, gender)
@@ -216,6 +309,8 @@ def review_file(filepath):
                     if 0 <= idx < len(matches[:9]):
                         print(pick)
                         decisions[line_num] = matches[idx]
+                        save_name_cache_entry(name_cache, name, matches[idx])
+                        new_cache_keys.add(name)
                         i += 1
                         break
                     else:
@@ -224,30 +319,27 @@ def review_file(filepath):
                     print("  No matches found.")
                 print("Choice: ", end="", flush=True)
 
-            elif ch == "5":
-                print(ch)
-                new_name = input("  Enter name: ").strip()
-                if new_name:
-                    decisions[line_num] = new_name
-                    i += 1
-                    break
-                print("Choice: ", end="", flush=True)
-
-            elif ch == "6":
+            elif ch == "8" or ch == "s":
                 print(ch)
                 decisions[line_num] = None
                 i += 1
                 break
 
-            elif ch == "9" and i > 0:
+            elif ch in ("b", "B") and i > 0:
                 print(ch)
                 prev_line_num = flagged[i - 1][0]
+                prev_name = parse_line(flagged[i - 1][1])[0]
                 prev_val = decisions.pop(prev_line_num, "(none)")
+                if prev_name in new_cache_keys:
+                    remove_name_cache_entry(name_cache, prev_name)
+                    new_cache_keys.discard(prev_name)
+                    print(f"  (removed dict entry for '{prev_name}')")
                 print(f"  (going back — was: {prev_val})")
+                backed = True
                 i -= 1
                 break
 
-            elif ch == "0":
+            elif ch in ("d", "D"):
                 print(ch)
                 _finish(filepath, decisions, flagged)
                 return True
@@ -267,7 +359,7 @@ def review_file(filepath):
 
 def _finish(filepath, decisions, flagged):
     resolved = sum(1 for v in decisions.values() if v is not None)
-    skipped = sum(1 for v in decisions.values() if v is None)
+    skipped  = sum(1 for v in decisions.values() if v is None)
     remaining = len(flagged) - len(decisions)
     apply_decisions(filepath, decisions)
     print(f"\nResolved: {resolved}  Skipped: {skipped}  <<<< remaining: {skipped + remaining}")
@@ -275,19 +367,24 @@ def _finish(filepath, decisions, flagged):
 
 
 def main():
-    if len(sys.argv) > 1:
-        arg = sys.argv[1]
-        name = arg if arg.endswith(".out") else arg + ".out"
+    name_cache  = load_name_cache()
+    args        = sys.argv[1:]
+    accept_dict = "--accept-dict" in args
+    args        = [a for a in args if a != "--accept-dict"]
+
+    if args:
+        arg      = args[0]
+        name     = arg if arg.endswith(".out") else arg + ".out"
         filepath = FORMATTED_DIR / name
         if not filepath.exists():
             print(f"File not found: {filepath}")
             sys.exit(1)
-        review_file(filepath)
+        review_file(filepath, name_cache, accept_dict)
     else:
         for f in sorted(FORMATTED_DIR.glob("*.out")):
             with open(f) as fh:
                 if any("<<<<" in line for line in fh):
-                    if not review_file(f):
+                    if not review_file(f, name_cache, accept_dict):
                         return
 
 
