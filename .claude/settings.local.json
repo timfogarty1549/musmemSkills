@@ -24,7 +24,8 @@
       "Read(~/workspace/angular/musmem-ui/src/assets/i18n/en.json)",
       "WebFetch(domain:www.npcnewsonline.com)",
       "WebSearch",
-      "WebFetch(*)"
+      "WebFetch(*)",
+      "Read(//private/tmp/**)"
     ]
   }
 }

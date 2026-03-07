@@ -31,10 +31,21 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 
-FORMATTED_DIR    = Path.home() / "workspace/musmem/formatted"
+def _load_config():
+    base = Path(__file__).parents[2] / "config"
+    paths = json.loads((base / "paths.json").read_text())
+    apis  = json.loads((base / "apis.json").read_text())
+    return (
+        {k: Path(v).expanduser() for k, v in paths.items()},
+        apis,
+    )
+
+_PATHS, _APIS = _load_config()
+
+FORMATTED_DIR    = _PATHS["formatted_folder"]
 WORKING_DATA_DIR = Path.home() / "workspace/musmem/working_data"
 NAMES_FILE       = WORKING_DATA_DIR / "review-athlete-names.dat"
-SEARCH_URL       = "https://musclememory.org/api/search"
+SEARCH_URL       = _APIS["musclememory_org"] + _APIS["endpoints"]["search"]
 
 CYAN   = "\033[96m"
 BOLD   = "\033[1m"

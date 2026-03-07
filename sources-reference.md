@@ -4,7 +4,7 @@
 
 Covers IFBB, NPC, NPC Worldwide, and CPA contests.
 
-**User-Agent (scripted/curl fetching only):** `MuscleMemoryBot/1.0 (+https://musclememory.net/bot)`
+**User-Agent (scripted/curl fetching only):** `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36`
 Claude's built-in WebFetch tool does not support custom headers — this applies only when fetching via curl or a script.
 
 **Important:** Do not use URLs with query-parameter tracking strings — they cause errors. Use the clean URLs below.
@@ -15,7 +15,7 @@ Claude's built-in WebFetch tool does not support custom headers — this applies
 |-----|--------------------|-----------------------------|
 | IFBB | `- IFBB` | `https://contests.npcnewsonline.com/contests/{year}/ifbb` |
 | NPC | `- NPC` | `https://contests.npcnewsonline.com/contests/{year}/npc` |
-| NPC Worldwide | `- NPC Worldwide` | `https://contests.npcnewsonline.com/contests/{year}/npc_worldwide` |
+| NPC Worldwide | `- NPC Worldwide` | `https://contests.npcnewsonline.com/contests/{year}/npcw` |
 | CPA | `- CPA` | `https://contests.npcnewsonline.com/contests/{year}/cpa` |
 
 ### Individual contest pages (Phase 2 — Results)

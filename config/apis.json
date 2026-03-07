@@ -1,0 +1,14 @@
+{
+  "musclememory_net": "https://musclememory.net",
+  "musclememory_org": "https://musclememory.org",
+  "endpoints": {
+    "contests":        "/api/contests",
+    "contests_year":   "/api/contests/{year}",
+    "contest_event":   "/api/contest?name={contest}&year={year}",
+    "contest_years":   "/api/contest/years?name={contest}",
+    "org":             "/api/org?name={org}",
+    "search":          "/api/search"
+  },
+  "user_agent_api":   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+  "user_agent_bot":   "MuscleMemoryBot/1.0 (+https://musclememory.net/bot)"
+}

@@ -18,6 +18,7 @@ Keys (no RETURN needed):
     Y/N  Confirm or skip append to master
 """
 
+import json
 import os
 import re
 import sys
@@ -26,11 +27,18 @@ import tty
 from dataclasses import dataclass, field
 from pathlib import Path
 
-FORMATTED_DIR  = Path.home() / "workspace/musmem/formatted"
-COMPLETED_DIR  = Path.home() / "workspace/musmem/completed"
+def _load_paths():
+    config = Path(__file__).parents[2] / "config/paths.json"
+    data = json.loads(config.read_text())
+    return {k: Path(v).expanduser() for k, v in data.items()}
+
+_PATHS = _load_paths()
+
+FORMATTED_DIR  = _PATHS["formatted_folder"]
+COMPLETED_DIR  = _PATHS["completed_folder"]
 MASTER = {
-    "male":   Path.home() / "workspace/musmem/bb_male.dat",
-    "female": Path.home() / "workspace/musmem/bb_female.dat",
+    "male":   _PATHS["master_male"],
+    "female": _PATHS["master_female"],
 }
 CYAN  = "\033[96m"
 BOLD  = "\033[1m"

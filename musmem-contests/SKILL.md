@@ -21,6 +21,8 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 
 ## Phase 1: Discovery
 
+> **Python scripting rule:** Never use `python3 -c "..."` or `python3 - <<'PYEOF'` heredocs. Always write scripts to `/tmp/script.py` using the Write tool, then run `python3 /tmp/script.py`. This applies to all curl-piped processing and any other Python work in this phase.
+
 ### 1. Fetch the MuscleMemory DB for the target year(s)
 
 ```
@@ -106,6 +108,7 @@ c CL
 - Bikini (all age groups)
 - Wellness (all age groups)
 - Fitness (all age groups)
+- Novice (all categories)
 
 **Did not place → placing 98:**
 When the highest placing number repeats within a division (e.g., multiple athletes all listed as 16th), replace ALL of those tied entries with placing `98`.
@@ -357,7 +360,7 @@ Base URL: `https://musclememory.net`
 | Assuming contest is new without checking DB | Always query the API first |
 | Writing names in Last, First order | npcnewsonline.com uses First Last — do not set `l 1` |
 | Wrong User-Agent for musclememory.net | The API blocks bot UAs and returns fake HTML — use a browser UA (e.g. `Mozilla/5.0 ... Chrome/120.0.0.0 Safari/537.36`) for all musclememory.net API calls |
-| No User-Agent when scraping external sites | When fetching npcnewsonline.com etc. via curl/script use `MuscleMemoryBot/1.0 (+https://musclememory.net/bot)` — WebFetch does not support custom headers |
+| No User-Agent when scraping external sites | When fetching npcnewsonline.com etc. via curl/script use `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36` — WebFetch does not support custom headers |
 | Using WebFetch on large contest pages | WebFetch truncates at ~50KB — later divisions get silently cut off or hallucinated. Use curl + Python for large contests (NPC Nationals, Olympia, etc.) — see sources-reference.md |
 | Mixing male and female divisions in one file | Contests with both genders need `-male.txt` and `-female.txt` files — same division codes would collide in a single file |
 | Using divisions.php as code reference | Source of truth is now `en.json` DIVISIONS — `PRh` is Pro HeavyWeight (not `Ph`, which is Physique H) |

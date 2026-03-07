@@ -7,11 +7,29 @@ description: Use when searching for the date, venue, or location of historic or 
 
 Searches the web for contest dates, venues, and locations, then writes results to `~/workspace/musmem/contest_locations.json`.
 
-## Input Modes
+## Two Paths
+
+### Path A — Name-based (historical / specific contests)
+
+Use when the user gives a contest name, optionally with a year or range.
 
 - `"Nationals - NPC, 1995"` → research that specific year (always, even if data exists)
-- `"Nationals - NPC, 1982-2025"` → research that year range
+- `"Nationals - NPC, 1982-2025"` → research that year range, skip years with existing data
 - `"Nationals - NPC"` → query API for all years in DB, research only years with no existing data
+
+Workflow: look up years in DB → web search per year → write results (see Path A Workflow below).
+
+### Path B — Year-based (modern contests via npcnewsonline.com)
+
+Use when the user gives a year (with or without an org name).
+
+- `"IFBB, 2025"` → fetch listing page for IFBB in 2025, extract date+location for all contests
+- `"2025"` → fetch listing pages for all orgs (IFBB, NPC, NPC Worldwide, CPA) for 2025
+- `"NPC, 2023-2025"` → fetch listing pages for NPC for each year in the range
+
+Workflow: fetch npcnewsonline.com listing pages → parse date+location in bulk → match to MuscleMemory contest names → write results (see Path B Workflow below).
+
+> **Python scripting rule:** Never use `python3 -c "..."` or `python3 - <<'PYEOF'` heredocs. Always write scripts to `/tmp/script.py` using the Write tool, then run `python3 /tmp/script.py`.
 
 ## MuscleMemory API
 
@@ -52,7 +70,50 @@ File: `~/workspace/musmem/contest_locations.json`
 - `location` — `"City, State, Country"` format, empty string if unknown
 - Write valid JSON after every update
 
-## Workflow
+## Path B Workflow
+
+### Step 1 — Fetch listing pages
+
+Use curl + Python (write script to `/tmp/`). Listing URLs from npcnewsonline.com:
+
+| Org | URL |
+|-----|-----|
+| IFBB | `https://contests.npcnewsonline.com/contests/{year}/ifbb` |
+| NPC | `https://contests.npcnewsonline.com/contests/{year}/npc` |
+| NPC Worldwide | `https://contests.npcnewsonline.com/contests/{year}/npc_worldwide` |
+| CPA | `https://contests.npcnewsonline.com/contests/{year}/cpa` |
+
+User-Agent for curl: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36`
+
+### Step 2 — Parse date and location
+
+Write a Python script to `/tmp/parse_listing.py` that parses the HTML and extracts, for each contest:
+- Contest name (as it appears on the site — will be normalized in next step)
+- Date
+- Location / venue (if present on the listing page)
+
+Examine the HTML structure on first use to identify the relevant tags and classes.
+
+### Step 3 — Normalize contest names
+
+Apply the same normalization as musmem-contests:
+- Strip the leading org prefix and space (e.g., `IFBB Arnold Classic` → `Arnold Classic`)
+- Append ` - {ORG}` (e.g., `Arnold Classic - IFBB`)
+
+### Step 4 — Match to MuscleMemory and write
+
+- For each parsed contest, check `contest_locations.json` for an existing entry
+- Skip years that already have data (unless the user gave a specific year)
+- Write `date`, `venue`, and `location` fields for each matched contest+year
+- Write valid JSON after every update
+
+### Step 5 — Report
+
+List contests written, skipped (existing data), and any that could not be matched to a MuscleMemory contest name.
+
+---
+
+## Path A Workflow
 
 ### Step 1 — Resolve contest name
 
@@ -120,3 +181,4 @@ After all targets: list what was found, what was skipped (had existing data), an
 | Stopping after one failed search | Try all tiers before declaring unknown |
 | Processing entries in parallel | One year at a time — no parallel agents |
 | Writing location as "City, State" | Always include country: `"City, State, USA"` |
+| Using `python3 -c` or heredoc for Python | Write script to `/tmp/script.py`, run `python3 /tmp/script.py` |

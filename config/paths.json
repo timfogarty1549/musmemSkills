@@ -1,0 +1,15 @@
+{
+  "master_male":   "~/workspace/musmem/data/bb_male.dat",
+  "master_female": "~/workspace/musmem/data/bb_female.dat",
+  "athletes_localized": "~/workspace/musmem/data/athletes_localized.json",
+  "social_media": "~/workspace/musmem/data/social_media.json",
+  "bio_male": "~/workspace/musmem/data/bio_male.dat",
+  "bio_female": "~/workspace/musmem/data/bio_female.dat",
+  "alias": "~/workspace/musmem/data/alias.dat",
+  "mags": "~/workspace/musmem/data/mags.dat",
+  "movie": "~/workspace/musmem/data/movie.dat",
+  "toc_folder": "~/workspace/musmem/data/toc",
+  "formatted_folder": "~/workspace/musmem/formatted",
+  "completed_folder": "~/workspace/musmem/completed",
+  "appended_folder": "~/workspace/musmem/appended"
+}

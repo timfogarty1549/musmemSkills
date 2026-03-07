@@ -10,7 +10,7 @@ import os
 import re
 import sys
 
-YEAR = 2024
+YEAR = int(os.environ.get('CONTEST_YEAR', 2024))
 OUTPUT_DIR = os.path.expanduser('~/workspace/musmem/incoming')
 
 ORG_PREFIXES = [
