@@ -174,7 +174,7 @@ If the article gives the year but not month/day, record only what is certain (e.
 ## Progress
 
 - Pre-screen: COMPLETE — 382 candidate articles from 423 total (manifest at `/tmp/article_manifest.tsv`)
-- Files processed: 50 / 382 candidates (sessions 1-2)
+- Files processed: 382 / 382 candidates (sessions 1-9) — **COMPLETE**
 
 ### Session 1 (files 1-24) — im/im* early volumes
 - Mr America - AAU: 1945 (confirmed existing), 1946 (date pre-existing; added venue+location), 1947, 1948, 1951, 1952, 1953, 1955
@@ -192,12 +192,142 @@ If the article gives the year but not month/day, record only what is certain (e.
 - Skipped (not contest reports): 7 files (editorials, winner profiles, letters to editor)
 - Notes: "Bert Goodrich Mr. U.S.A. 1956" (Shrine Auditorium, Los Angeles) — Mr USA - AAU starts 1964 in DB; left unmatched
 
+### Session 3 (files 51-100) — im/im* late volumes + ma/, ma2/, mb/* early volumes
+- Mr America - AAU: 1956, 1961, 1962, 1965, 1966, 1967, 1968 (historical 1939-1944 already in DB)
+- Junior Mr America - AAU: 1955, 1965, 1966
+- Mr Universe - NABBA: 1956 (date update), 1965, 1966, 1967, 1968
+- Universe - Pro - NABBA: 1956, 1965, 1966, 1967, 1968
+- Mr America - IFBB: 1962, 1965, 1966, 1967
+- Universe - IFBB: 1962, 1965, 1966
+- Olympia - IFBB: 1965, 1966, 1967, 1969 (new contest in DB)
+- Mr World - IFBB: 1966, 1967 (new contest in DB)
+- Skipped: editorials, letters, winner profiles, Mr USA (not in DB), historical exposés
+- Notes:
+  - 1955 NABBA Mr. Universe: London Palladium (not Victoria Palace Theatre; VPT starts 1961+)
+  - 1957 NABBA: London Coliseum (not VPT)
+  - 1962 Mr. America AAU venue: Highland Park High School Auditorium, Highland Park, MI
+    (DB had "Detroit, MI" — conflict flagged, not overwritten)
+  - "Bert Goodrich Mr. U.S.A. 1957" (Shrine Auditorium, LA) — not in DB; skipped
+
+### Session 4 (files 101-150) — mb/* volumes (1960s-1975)
+- Mr America - IFBB: 1960, 1963, 1971, 1972, 1973, 1974
+- Universe - IFBB: 1960, 1963, 1971, 1972, 1973, 1974
+- Mr Universe - NABBA: 1969, 1970
+- Universe - Pro - NABBA: 1969, 1970
+- Mr World - IFBB: 1970, 1971, 1972, 1973, 1974
+- Olympia - IFBB: 1970, 1971, 1973, 1974
+- Mr America - AAU: 1975
+- Skipped: winner profiles, training articles, editorials, Mr USA (not in DB), AABA contests
+- Notes:
+  - 1960 IFBB shows: Monument-National, Montreal (event link confirmed)
+  - 1963 IFBB shows: Brooklyn Academy of Music (event links confirmed)
+  - 1970 Olympia: Town Hall, New York City (no specific date in article)
+  - 1971 IFBB Mr. America: Aquarius Theatre, Hollywood (venue history: Earl Carroll's → Moulin Rouge → Hullabaloo → Aquarius)
+  - 1971 IFBB Universe + Olympia: Palais de la Mutualité, Paris (pre-judging Sept 24, finals Sept 25)
+  - 1971 Mr. World: White Plains County Center, White Plains, NY (Sept 12)
+  - 1972 Mr. America + Mr. World: Brooklyn Academy of Music (Sept 16)
+  - 1972 Universe: Al-Nasr Cinema, Baghdad, Iraq (Nov 21)
+  - 1973 Mr. America + Mr. World + Olympia: Brooklyn Academy of Music (Sept 8)
+  - 1973 Universe: Victoria Hall, Geneva, Switzerland (Oct 20)
+  - 1974 Mr. America + Mr. World + Olympia: Felt Forum (MSG), New York (Oct 12)
+  - 1974 Universe: Teatro Nuovo, Verona, Italy (Oct 3-6)
+  - 1975 Mr. America AAU: Culver City Veterans Memorial Auditorium (June 19)
+  - mb760143.xml (file 149): AABA show July 19, 1975 (Embassy Auditorium, LA) — distinct from AAU Mr. America; skipped
+
 ### Conflicts detected
 - **Mr America - AAU 1954**: stored date "June 26-27, 1954" vs. article evidence "June 25-26, 1954"
   (venue/location match: Greek Theatre, Los Angeles — date discrepancy needs resolution)
+- **Mr America - AAU 1962**: stored location "Detroit, Michigan, USA" vs. article evidence
+  "Highland Park, Michigan, USA" — venue "Highland Park High School Auditorium" and date "June 2-3, 1962"
+  were NOT written; needs manual resolution
 
-## To Resume
+### Session 5 (files 151-200) — mb/* 1975-1976 + md/* 1964-1972
+- Mr Universe - NABBA: 1963 (Victoria Palace Theatre — previously no 1963 article found)
+- Universe - Pro - NABBA: 1963 (Victoria Palace Theatre)
+- Mr America - AAU: 1969 (DePaul Alumni Hall, Chicago, June 13-15), 1970 (Veterans Memorial Auditorium, Culver City, June 14), 1971 (York, PA, June 12), 1972 (Masonic Temple, Detroit), 1976 (Philadelphia)
+- Junior Mr America - AAU: 1970 (Brentwood, NY, May 17), 1971 (Baytown, TX, May 16)
+- Mr World - IFBB: 1975 (Felt Forum/MSG, New York, September 27)
+- Universe - IFBB: 1975 (University of South Africa, Pretoria, November 7-8)
+- Olympia - IFBB: 1975 (University of South Africa, Pretoria, November 7-8), 1976 (Veterans Memorial Auditorium, Columbus, September 18)
+- Skipped: historical retrospectives, editorials, winner profiles, Mr. United States (not in DB), FIHC/AAU Mr. World York (not confirmed in DB), "Setting the Record Straight" controversy articles
+- Notes:
+  - 1969 NABBA Universe: Victoria Palace Theatre, September 20, 1969 — NOT written (1969 already has location "London" from session 4; merge would skip)
+  - 1970 AAU Mr. World: Veterans Memorial Hall, Columbus — not matched to confirmed DB contest name; skipped
+  - 1971 AAU Mr. World: William Penn High School, York, PA, November 6 — not matched to DB; skipped
+  - 1976 IFBB Mr. America: mentioned as October 2, 1976 (from Robby Robinson article) — not yet written, no article found in this batch
 
-Next session: **files 51–100** from the manifest (`filepaths[50:100]` in 0-indexed terms).
-Use the same pattern as `/tmp/list_batch.py` — write a script to `/tmp/`, run it to list the next batch,
-then read and process each file sequentially.
+### Session 6 (files 201-250) — md/* 1973-1979 + mp/* 1947-1957
+- Mr America - AAU: 1949 (Masonic Auditorium, Cleveland, May 21-22), 1973 (Williamsburg, VA), 1974 (York, PA), 1977 (Santa Monica Auditorium, July 16), 1978 (Cincinnati Music Hall, September 2)
+- Mr Universe - NABBA + Pro: 1971 (London), 1972 (London), 1977 (London)
+- Skipped: 1957 Mr America (Peabody Auditorium, Daytona Beach — existing data already in DB); AAU/FIHC Mr. World 1972+1973 (Zembo Mosque, Harrisburg, PA — not confirmed in DB); WABBA Paris 1977 (not in DB); Mr. USA AAU (not confirmed in DB); training articles, profiles, editorials
+- Notes:
+  - 1949 AAU Mr. America: entry existed in DB (UPDATED, not ADDED — likely had existing location data that was augmented)
+  - 1957 AAU Mr. America: confirmed at Peabody Auditorium, Daytona Beach, FL — but SKIP (existing DB entry has data)
+  - 1970 NABBA Universe: confirmed at Ohio State University, Columbus (same as Veterans Memorial Hall story) — existing entry skipped
+  - NABBA venues 1971-1972: London, venue not named in articles (likely Victoria Palace Theatre based on pattern)
+  - File 229 (1979 Mr. America): "still to be typed in" placeholder — no location data
+
+### Session 7 (files 251-300) — mp2/* + mti/* + sh/* 1936-1950
+
+- Mr America - AAU: 1950 (Academy of Music, Philadelphia, May 12-13)
+- Mr Universe - NABBA: 1948 (Scala Theatre, London, August 13), 1950 (Scala Theatre, London, June 24)
+- Pro Mr America: 1946 (San Francisco, September 27)
+- World-Universe - FICH: 1950 (Paris, October 15)
+- Best Developed Athlete in America - IFBB: 1950 (New York City, September 8)
+- Junior Mr America - AAU: 1949 (Chattanooga, Tennessee, May 1)
+- Mr France: 1948 (Cannes, August 15)
+- Mr Europe: 1948 (Cannes, August 16)
+- Mr World: 1948 (Cannes, August 16)
+- Skipped: editorials, winner profiles, training articles, 1939-1949 Mr. America (already in DB), editorial/challenge letters (mti/mp2 files), 1947 Mr. Universe Philadelphia (no DB match — pre-NABBA show), Most Muscular Physique in America contest 1946 (not in DB), Mr USA contests
+- Notes:
+  - 1946 AAU Mr. America: S&H article says June 1-2 vs. DB "May 30-31" — date conflict noted; skip (already in DB)
+  - 1947 AAU Mr. America: confirmed Lane Tech Auditorium, Chicago, June 28-29 (already in DB)
+  - 1948 NABBA Mr. Universe: date confirmed August 13, 1948 (sh481110 confirms this; Scala Theatre, London)
+  - 1950 Mr. America: UPDATED (year existed but had no data; now has Academy of Music, Philadelphia, May 12-13)
+  - Junior Mr America 1942: Bristol, Connecticut (from sh430918 — not in DB based on sessions 1-6)
+  - Junior Mr America 1944: Pittsburgh, Pennsylvania (from sh440716 — not in DB; no venue named)
+
+### Session 8 (files 301-350) — sh/ Strength & Health 1951-1966
+
+- Mr World: 1952 ("the Met", Philadelphia, October 25)
+- World-Universe - FICH: 1947 (Philadelphia), 1954 (Roubaix, France, October 16), 1955 (Munich, Germany, October 12-17), 1965 (Tehran, Iran)
+- Universe - Pro - NABBA: 1955 (Scala Theatre, London, June 10-11)
+- Mr America - AAU: 1960 (Cleveland, Ohio), 1963 (Zembo Mosque, Harrisburg, PA, June 28-29)
+- Skipped: most S&H articles — editorials, winner profiles, judging articles, training articles, years already in DB
+- Notes:
+  - 1951 Mr America: already in DB (Greek Theatre, Griffith Park, LA, June 15-16) — confirmed
+  - 1952 AAU Mr Universe: "still to be typed in" — skip
+  - 1953 Mr America: already in DB (Murat Theater, Indianapolis) — confirmed
+  - 1954 Mr America: date conflict persists (article: June 25-26; DB: June 26-27) — NOT overwritten
+  - 1955 NABBA Amateur: DB has "London Palladium" but article sh551030 says "Scala Theatre" — CONFLICT, not overwritten
+  - 1961 Mr America: confirmed June 24, Santa Monica — already in DB (Santa Monica Civic Aud.)
+  - 1963 Mr America: Zembo Mosque, Harrisburg — NEW (40 contestants, greatest since 1940)
+  - 1964 Mr America: already in DB (Chicago, June 13-14) — confirmed
+  - 1966 Mr America: venue = York High School Auditorium — location already in DB, not written
+  - World-Universe FICH 1947: first FICH physique contest, Philadelphia, Steve Stanko won
+  - World-Universe FICH 1955: event link in article confirmed `World-Universe - FICH` name
+
+### Session 9 (files 351-382) — sh/ Strength & Health 1966-1969 + yp/ Your Physique 1942-1952
+
+- Mr America - AAU: 1967 (UPDATED — added venue "Veterans' Memorial Auditorium"; Columbus confirmed), 1968 (UPDATED — added date "June 8, 1968" and venue "William Penn High School Auditorium")
+- Mr Universe - NABBA: 1951 (NEW — Scala Theatre, London, September 1, 1951; Reg Park won)
+- Skipped: profiles, editorials, winner stories, training articles, years already fully in DB
+- Notes:
+  - sh/sh670920.xml (1967 Mr America): "Veterans' Memorial Auditorium in Columbus" — added venue (DB had location only)
+  - sh/sh680918.xml (1968 Mr America): "William Penn High School Auditorium, Sunday evening, June 8th" — added date+venue; did NOT add location (city unnamed in article, DB has "Columbus, Ohio, USA", William Penn High School is in York, PA — potential conflict avoided)
+  - sh/sh681036.xml (1968 Mr America score sheet): no new location data; skip
+  - yp/yp160316.xml (1951 Mr Universe): full contest report — Scala Theatre, London, September 1, 1951 — NEW
+  - yp/yp16057.xml (1952, Weider personal account of 1951 Universe): confirms London/Reg Park, no new date/venue
+  - yp/yp140129.xml (1950 NABBA Universe editorial): no specific date/venue; skip
+  - yp/yp140620.xml (1950 FICH World-Universe, Paris): event link confirmed; DB already has complete data
+  - 1946, 1947, 1969 Mr America: all fully in DB, confirmed by yp articles; skipped
+
+## Persistent Conflicts (manual resolution required)
+
+- **Mr America - AAU 1954**: stored date "June 26-27, 1954" vs. article evidence "June 25-26, 1954"
+- **Mr America - AAU 1962**: stored location "Detroit, Michigan, USA" vs. article evidence "Highland Park, Michigan, USA" (Highland Park High School Auditorium, June 2-3, 1962) — venue and date NOT written
+- **Mr Universe - NABBA 1955**: stored venue "London Palladium" vs. article (sh551030) "Scala Theatre" — date June 10-11, 1955 NOT written
+
+## Completion
+
+All 382 candidate articles processed (sessions 1-9). Article scraping campaign complete.

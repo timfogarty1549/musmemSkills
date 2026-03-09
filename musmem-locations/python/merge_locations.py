@@ -96,6 +96,381 @@ new_entries = [
     {"contest": "Universe - IFBB", "year": "1964",
      "date": "September 19, 1964", "venue": "Brooklyn Academy of Music",
      "location": "New York City, New York, USA"},
+    # --- Session 3: files 51-100 ---
+    # Mr America - AAU 1956 (mb560821.xml)
+    {"contest": "Mr America - AAU", "year": "1956",
+     "date": "June 1-2, 1956", "venue": "University of Pennsylvania Palestra",
+     "location": "Philadelphia, Pennsylvania, USA"},
+    # Mr America - AAU 1962 update — more specific than stored "Detroit, Michigan, USA"
+    # (may produce CONFLICT on location; venue and date are new data)
+    {"contest": "Mr America - AAU", "year": "1962",
+     "date": "June 2-3, 1962", "venue": "Highland Park High School Auditorium",
+     "location": "Highland Park, Michigan, USA"},
+    # Mr America - AAU 1965-1968 (im24069, im250638, im260614, im270634)
+    {"contest": "Mr America - AAU", "year": "1965",
+     "date": "June 11-12, 1965", "venue": "Embassy Auditorium",
+     "location": "Los Angeles, California, USA"},
+    {"contest": "Mr America - AAU", "year": "1966",
+     "location": "York, Pennsylvania, USA"},
+    {"contest": "Mr America - AAU", "year": "1967",
+     "location": "Columbus, Ohio, USA"},
+    {"contest": "Mr America - AAU", "year": "1968",
+     "location": "Columbus, Ohio, USA"},
+    # Junior Mr America - AAU 1955 (mb550822.xml — same event as Mr America)
+    {"contest": "Junior Mr America - AAU", "year": "1955",
+     "date": "June 4, 1955", "venue": "Masonic Temple",
+     "location": "Cleveland, Ohio, USA"},
+    # Junior Mr America - AAU 1965-1966 (im250628, im250638)
+    {"contest": "Junior Mr America - AAU", "year": "1965",
+     "date": "June 11-12, 1965", "venue": "Embassy Auditorium",
+     "location": "Los Angeles, California, USA"},
+    {"contest": "Junior Mr America - AAU", "year": "1966",
+     "date": "May 28-29, 1966", "venue": "San Jose Civic Auditorium",
+     "location": "San Jose, California, USA"},
+    # Mr Universe - NABBA 1956 date update (mb561111.xml) + 1965-1968 (im/ files)
+    {"contest": "Mr Universe - NABBA", "year": "1956",
+     "date": "June 15-16, 1956", "venue": "London Palladium",
+     "location": "London, England, UK"},
+    {"contest": "Mr Universe - NABBA", "year": "1965",
+     "date": "September 25, 1965", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Mr Universe - NABBA", "year": "1966",
+     "date": "September 23-24, 1966", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Mr Universe - NABBA", "year": "1967",
+     "date": "September 23, 1967", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Mr Universe - NABBA", "year": "1968",
+     "date": "September 21, 1968", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    # Universe - Pro - NABBA 1956 (mb561111.xml) + 1965-1968 (im/ files)
+    {"contest": "Universe - Pro - NABBA", "year": "1956",
+     "date": "June 15-16, 1956", "venue": "London Palladium",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1965",
+     "date": "September 25, 1965", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1966",
+     "date": "September 23-24, 1966", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1967",
+     "date": "September 23, 1967", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1968",
+     "date": "September 21, 1968", "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    # Mr America - IFBB 1962, 1965-1967 (ma050846, im250218, im260214 via ma2, im270120)
+    {"contest": "Mr America - IFBB", "year": "1962",
+     "date": "September 15, 1962", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr America - IFBB", "year": "1965",
+     "date": "September 18, 1965", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr America - IFBB", "year": "1966",
+     "date": "September 17, 1966", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr America - IFBB", "year": "1967",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # Universe - IFBB 1962, 1965-1966 (same shows as Mr America IFBB)
+    {"contest": "Universe - IFBB", "year": "1962",
+     "date": "September 15, 1962", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Universe - IFBB", "year": "1965",
+     "date": "September 18, 1965", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Universe - IFBB", "year": "1966",
+     "date": "September 17, 1966", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # Olympia - IFBB 1965-1967, 1969 (ma110478, im250218, im260214 via ma2, im270120)
+    {"contest": "Olympia - IFBB", "year": "1965",
+     "date": "September 18, 1965", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Olympia - IFBB", "year": "1966",
+     "date": "September 17, 1966", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Olympia - IFBB", "year": "1967",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Olympia - IFBB", "year": "1969",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # Mr World - IFBB 1966-1967 (im260214 via ma2, im270120)
+    {"contest": "Mr World - IFBB", "year": "1966",
+     "date": "September 17, 1966", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr World - IFBB", "year": "1967",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # --- Session 4: files 101-150 ---
+    # mb610325.xml: 1960 IFBB shows at Monument-National, Montreal (event link confirmed)
+    {"contest": "Mr America - IFBB", "year": "1960",
+     "date": "October 2, 1960", "venue": "Monument-National",
+     "location": "Montreal, Quebec, Canada"},
+    {"contest": "Universe - IFBB", "year": "1960",
+     "date": "October 2, 1960", "venue": "Monument-National",
+     "location": "Montreal, Quebec, Canada"},
+    # mb640312.xml: 1963 IFBB shows at Brooklyn Academy of Music (event links confirmed)
+    {"contest": "Mr America - IFBB", "year": "1963",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Universe - IFBB", "year": "1963",
+     "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # mb700440.xml: 1969 NABBA Universe (London, no venue/date)
+    {"contest": "Mr Universe - NABBA", "year": "1969",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1969",
+     "location": "London, England, UK"},
+    # mb710552.xml: 1970 NABBA Universe (London, no venue/date)
+    {"contest": "Mr Universe - NABBA", "year": "1970",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1970",
+     "location": "London, England, UK"},
+    # mb701024.xml: 1970 IFBB Mr. World in Belgium (October 12, no city)
+    {"contest": "Mr World - IFBB", "year": "1970",
+     "date": "October 12, 1970", "location": "Belgium"},
+    # mb710719.xml: 1970 Olympia at Town Hall, New York (no specific date in article)
+    {"contest": "Olympia - IFBB", "year": "1970",
+     "venue": "Town Hall", "location": "New York, New York, USA"},
+    # mb711275.xml: 1971 IFBB Mr. America at Aquarius Theatre, Hollywood
+    {"contest": "Mr America - IFBB", "year": "1971",
+     "venue": "Aquarius Theatre",
+     "location": "Hollywood, California, USA"},
+    # mb720424.xml: 1971 IFBB Universe + Olympia at Palais de la Mutualité, Paris
+    # (pre-judging Sept 24, formal contest Sept 25)
+    {"contest": "Universe - IFBB", "year": "1971",
+     "date": "September 24-25, 1971", "venue": "Palais de la Mutualité",
+     "location": "Paris, France"},
+    {"contest": "Olympia - IFBB", "year": "1971",
+     "date": "September 25, 1971", "venue": "Palais de la Mutualité",
+     "location": "Paris, France"},
+    # mb720619.xml: 1971 IFBB Mr. World at White Plains County Center, Sept 12
+    {"contest": "Mr World - IFBB", "year": "1971",
+     "date": "September 12, 1971", "venue": "White Plains County Center",
+     "location": "White Plains, New York, USA"},
+    # mb730524.xml: 1972 IFBB Mr. America + Mr. World at BAM, Sept 16
+    {"contest": "Mr America - IFBB", "year": "1972",
+     "date": "September 16, 1972", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr World - IFBB", "year": "1972",
+     "date": "September 16, 1972", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # mb730739.xml: 1972 IFBB Universe at Al-Nasr Cinema, Baghdad, Nov 21
+    {"contest": "Universe - IFBB", "year": "1972",
+     "date": "November 21, 1972", "venue": "Al-Nasr Cinema",
+     "location": "Baghdad, Iraq"},
+    # mb740129.xml / mb740524.xml: 1973 IFBB Mr. America + Mr. World + Olympia at BAM, Sept 8
+    {"contest": "Mr America - IFBB", "year": "1973",
+     "date": "September 8, 1973", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Mr World - IFBB", "year": "1973",
+     "date": "September 8, 1973", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    {"contest": "Olympia - IFBB", "year": "1973",
+     "date": "September 8, 1973", "venue": "Brooklyn Academy of Music",
+     "location": "Brooklyn, New York, USA"},
+    # mb740724.xml: 1973 IFBB Universe at Victoria Hall, Geneva, Oct 20
+    {"contest": "Universe - IFBB", "year": "1973",
+     "date": "October 20, 1973", "venue": "Victoria Hall",
+     "location": "Geneva, Switzerland"},
+    # mb750328.xml: 1974 IFBB Mr. America + Mr. World + Olympia at Felt Forum, Oct 12
+    {"contest": "Mr America - IFBB", "year": "1974",
+     "date": "October 12, 1974", "venue": "Felt Forum",
+     "location": "New York, New York, USA"},
+    {"contest": "Mr World - IFBB", "year": "1974",
+     "date": "October 12, 1974", "venue": "Felt Forum",
+     "location": "New York, New York, USA"},
+    {"contest": "Olympia - IFBB", "year": "1974",
+     "date": "October 12, 1974", "venue": "Felt Forum",
+     "location": "New York, New York, USA"},
+    # mb750528.xml: 1974 IFBB Universe at Teatro Nuovo, Verona, Oct 3-6
+    {"contest": "Universe - IFBB", "year": "1974",
+     "date": "October 3-6, 1974", "venue": "Teatro Nuovo",
+     "location": "Verona, Italy"},
+    # mb751112.xml: 1975 AAU Mr. America at Culver City Veterans Memorial Auditorium, June 19
+    {"contest": "Mr America - AAU", "year": "1975",
+     "date": "June 19, 1975", "venue": "Culver City Veterans Memorial Auditorium",
+     "location": "Culver City, California, USA"},
+    # --- Session 5: files 151-200 ---
+    # md010226.xml: 1963 NABBA Mr. Universe at Victoria Palace Theatre, London
+    {"contest": "Mr Universe - NABBA", "year": "1963",
+     "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1963",
+     "venue": "Victoria Palace Theatre",
+     "location": "London, England, UK"},
+    # md061032.xml: 1969 AAU Mr. America at DePaul Alumni Hall, Chicago, June 13-15
+    {"contest": "Mr America - AAU", "year": "1969",
+     "date": "June 13-15, 1969", "venue": "Alumni Hall, DePaul University",
+     "location": "Chicago, Illinois, USA"},
+    # md070932.xml: 1970 AAU Mr. America at Veterans Memorial Auditorium, Culver City, June 14
+    {"contest": "Mr America - AAU", "year": "1970",
+     "date": "June 14, 1970", "venue": "Veterans Memorial Auditorium",
+     "location": "Culver City, California, USA"},
+    # md070822.xml: 1970 Junior Mr. America at Brentwood, NY, May 17
+    {"contest": "Junior Mr America - AAU", "year": "1970",
+     "date": "May 17, 1970",
+     "location": "Brentwood, New York, USA"},
+    # md08098.xml: 1971 AAU Mr. America at York, PA, June 12
+    # (also confirms Junior Mr. America AAU 1971 in Baytown, TX, May 16)
+    {"contest": "Mr America - AAU", "year": "1971",
+     "date": "June 12, 1971",
+     "location": "York, Pennsylvania, USA"},
+    {"contest": "Junior Mr America - AAU", "year": "1971",
+     "date": "May 16, 1971",
+     "location": "Baytown, Texas, USA"},
+    # md09098.xml: 1972 AAU Mr. America at Masonic Temple, Detroit
+    {"contest": "Mr America - AAU", "year": "1972",
+     "venue": "Masonic Temple",
+     "location": "Detroit, Michigan, USA"},
+    # mb761164.xml: 1976 AAU Mr. America in Philadelphia (no venue or date in article)
+    {"contest": "Mr America - AAU", "year": "1976",
+     "location": "Philadelphia, Pennsylvania, USA"},
+    # mb760441.xml / mb760243.xml: 1975 IFBB Mr. World at Felt Forum (MSG), Sept 27
+    {"contest": "Mr World - IFBB", "year": "1975",
+     "date": "September 27, 1975", "venue": "Felt Forum",
+     "location": "New York, New York, USA"},
+    # mb760417.xml: 1975 IFBB Universe + Olympia at University of South Africa, Pretoria, Nov 7-8
+    {"contest": "Universe - IFBB", "year": "1975",
+     "date": "November 7-8, 1975", "venue": "University of South Africa",
+     "location": "Pretoria, South Africa"},
+    {"contest": "Olympia - IFBB", "year": "1975",
+     "date": "November 7-8, 1975", "venue": "University of South Africa",
+     "location": "Pretoria, South Africa"},
+    # mb761241.xml / mb761244.xml: 1976 Olympia at Veterans Memorial Auditorium, Columbus, Sept 18
+    {"contest": "Olympia - IFBB", "year": "1976",
+     "date": "September 18, 1976", "venue": "Veterans Memorial Auditorium",
+     "location": "Columbus, Ohio, USA"},
+    # --- Session 6: files 201-250 ---
+    # mp080350.xml: 1949 AAU Mr. America at Masonic Auditorium, Cleveland, May 21-22
+    {"contest": "Mr America - AAU", "year": "1949",
+     "date": "May 21-22, 1949", "venue": "Masonic Auditorium",
+     "location": "Cleveland, Ohio, USA"},
+    # mp200825.xml: 1957 AAU Mr. America at Peabody Auditorium, Daytona Beach
+    {"contest": "Mr America - AAU", "year": "1957",
+     "venue": "Peabody Auditorium",
+     "location": "Daytona Beach, Florida, USA"},
+    # md10018.xml: 1972 NABBA Mr. Universe in London (no venue named)
+    {"contest": "Mr Universe - NABBA", "year": "1971",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1971",
+     "location": "London, England, UK"},
+    {"contest": "Mr Universe - NABBA", "year": "1972",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1972",
+     "location": "London, England, UK"},
+    # md10098.xml: 1973 AAU Mr. America in Williamsburg, VA (no venue or date)
+    {"contest": "Mr America - AAU", "year": "1973",
+     "location": "Williamsburg, Virginia, USA"},
+    # md110734.xml: 1974 AAU Mr. America in York, PA (York Barbell gym)
+    {"contest": "Mr America - AAU", "year": "1974",
+     "location": "York, Pennsylvania, USA"},
+    # md140520.xml: 1977 AAU Mr. America at Santa Monica Auditorium, July 16
+    {"contest": "Mr America - AAU", "year": "1977",
+     "date": "July 16, 1977", "venue": "Santa Monica Auditorium",
+     "location": "Santa Monica, California, USA"},
+    # md150120.xml: 1977 NABBA Mr. Universe in London (no venue named)
+    {"contest": "Mr Universe - NABBA", "year": "1977",
+     "location": "London, England, UK"},
+    {"contest": "Universe - Pro - NABBA", "year": "1977",
+     "location": "London, England, UK"},
+    # md150630.xml: 1978 AAU Mr. America at Cincinnati Music Hall, September 2
+    {"contest": "Mr America - AAU", "year": "1978",
+     "date": "September 2, 1978", "venue": "Cincinnati Music Hall",
+     "location": "Cincinnati, Ohio, USA"},
+
+    # --- Session 7: files 251-300 --- sh/ Strength & Health 1940s-1950s
+    # sh500714.xml: 1950 AAU Mr. America at Academy of Music, Philadelphia, May 12-13
+    {"contest": "Mr America - AAU", "year": "1950",
+     "date": "May 12-13, 1950", "venue": "Academy of Music",
+     "location": "Philadelphia, Pennsylvania, USA"},
+    # sh481010.xml + sh481110.xml: Mr Universe - NABBA 1948, Scala Theatre, London, August 13
+    {"contest": "Mr Universe - NABBA", "year": "1948",
+     "date": "August 13, 1948", "venue": "Scala Theatre",
+     "location": "London, England, UK"},
+    # sh500926.xml: Mr Universe - NABBA 1950, Scala Theatre, London, June 24
+    {"contest": "Mr Universe - NABBA", "year": "1950",
+     "date": "June 24, 1950", "venue": "Scala Theatre",
+     "location": "London, England, UK"},
+    # sh461224.xml: Pro Mr America 1946, San Francisco, September 27 (no venue named)
+    {"contest": "Pro Mr America", "year": "1946",
+     "date": "September 27, 1946",
+     "location": "San Francisco, California, USA"},
+    # sh501218.xml: World-Universe - FICH 1950, Paris, October 15
+    {"contest": "World-Universe - FICH", "year": "1950",
+     "date": "October 15, 1950",
+     "location": "Paris, France"},
+    # sh501218.xml: Best Developed Athlete in America - IFBB 1950, NYC, September 8
+    {"contest": "Best Developed Athlete in America - IFBB", "year": "1950",
+     "date": "September 8, 1950",
+     "location": "New York, New York, USA"},
+    # sh490612.xml: Junior Mr America - AAU 1949, Chattanooga, May 1
+    {"contest": "Junior Mr America - AAU", "year": "1949",
+     "date": "May 1, 1949",
+     "location": "Chattanooga, Tennessee, USA"},
+    # sh481110.xml: Mr France 1948, Cannes, August 15; Mr Europe + Mr World 1948, Cannes, August 16
+    {"contest": "Mr France", "year": "1948",
+     "date": "August 15, 1948",
+     "location": "Cannes, France"},
+    {"contest": "Mr Europe", "year": "1948",
+     "date": "August 16, 1948",
+     "location": "Cannes, France"},
+    {"contest": "Mr World", "year": "1948",
+     "date": "August 16, 1948",
+     "location": "Cannes, France"},
+    # --- Session 8: files 301-350 --- sh/ Strength & Health 1950s-1960s
+    # sh51099.xml: 1951 Mr America at Greek Theatre, Griffith Park, LA — already in DB
+    # sh521019.xml: 1952 AAU Mr Universe — placeholder, skip
+    # sh53017.xml: 1952 Mr World at "the Met", Philadelphia, October 25 — NEW
+    {"contest": "Mr World", "year": "1952",
+     "date": "October 25, 1952", "venue": "the Met",
+     "location": "Philadelphia, Pennsylvania, USA"},
+    # sh530926.xml: 1953 Mr America, Indianapolis — already in DB (Murat Theater)
+    # sh541028.xml: 1954 Mr America, Greek Theatre, LA — already in DB (date conflict persists)
+    # sh550228.xml: 1954 World-Universe - FICH, Roubaix, France, October 16 — NEW
+    {"contest": "World-Universe - FICH", "year": "1954",
+     "date": "October 16, 1954",
+     "location": "Roubaix, France"},
+    # sh550924.xml: 1955 Mr America — already in DB (Masonic Auditorium, Cleveland)
+    # sh551030.xml: 1955 NABBA Mr Universe (Amateur), Scala Theatre, London, June 10-11
+    #   NOTE: DB has "London Palladium" for 1955 — CONFLICT, do not overwrite
+    # sh551030.xml: 1955 NABBA Mr Universe (Pro), Scala Theatre, London, June 10-11 — NEW
+    {"contest": "Universe - Pro - NABBA", "year": "1955",
+     "date": "June 10-11, 1955", "venue": "Scala Theatre",
+     "location": "London, England, UK"},
+    # sh560148.xml: 1955 FHIC/FICH Mr Universe (World-Universe - FICH), Munich, October 12-17 — NEW
+    {"contest": "World-Universe - FICH", "year": "1955",
+     "date": "October 12-17, 1955",
+     "location": "Munich, Germany"},
+    # sh581018.xml: 1958 Mr America — already in DB (Embassy Auditorium, LA)
+    # sh601014.xml: 1960 Mr America, Cleveland — NOT in DB — NEW (location only)
+    {"contest": "Mr America - AAU", "year": "1960",
+     "location": "Cleveland, Ohio, USA"},
+    # sh611016.xml: 1961 Mr America, Santa Monica, June 24 — already in DB (Santa Monica Civic Aud.)
+    # sh631017.xml: 1963 Mr America, Zembo Mosque, Harrisburg, PA, June 28-29 — NEW
+    {"contest": "Mr America - AAU", "year": "1963",
+     "date": "June 28-29, 1963", "venue": "Zembo Mosque",
+     "location": "Harrisburg, Pennsylvania, USA"},
+    # sh640940.xml: 1964 Mr America — already in DB (Chicago, June 13-14)
+    # sh660322.xml: 1965 FIHC Mr Universe, Teheran, Iran — NEW
+    {"contest": "World-Universe - FICH", "year": "1965",
+     "location": "Tehran, Iran"},
+    # sh660322.xml: 1947 FIHC Mr Universe, Philadelphia (first FIHC contest, Steve Stanko won) — NEW
+    {"contest": "World-Universe - FICH", "year": "1947",
+     "location": "Philadelphia, Pennsylvania, USA"},
+    # sh660922.xml: 1966 Mr America, York High School Auditorium — already in DB (York, PA; location filled, skip)
+    # --- Session 9: files 351-382 ---
+    # sh670920.xml: 1967 Mr America at Veterans' Memorial Auditorium, Columbus — DB has location only; add venue
+    {"contest": "Mr America - AAU", "year": "1967",
+     "venue": "Veterans' Memorial Auditorium"},
+    # sh680918.xml: 1968 Mr America, June 8 — DB has location only; add date+venue (not adding location to avoid conflict)
+    {"contest": "Mr America - AAU", "year": "1968",
+     "date": "June 8, 1968", "venue": "William Penn High School Auditorium"},
+    # yp160316.xml: 1951 Mr Universe - NABBA, Scala Theatre, London, September 1 — NEW
+    {"contest": "Mr Universe - NABBA", "year": "1951",
+     "date": "September 1, 1951", "venue": "Scala Theatre",
+     "location": "London, England, UK"},
 ]
 
 _page25 = [
