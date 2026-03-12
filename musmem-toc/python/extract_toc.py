@@ -14,7 +14,7 @@ import re
 import os
 
 TOC_KEYWORDS = re.compile(
-    r'\b(contents|table of contents|in this issue|this month)\b',
+    r'\b(contents|table of contents|in this issue|this month|feature articles?)\b',
     re.IGNORECASE
 )
 MONTH_NAMES = re.compile(
@@ -522,14 +522,14 @@ def main():
     if toc_rows_to_add or new_entries:
         print(f"\n=== ENTRIES TO APPEND ({len(toc_rows_to_add) + len(new_entries)}) ===")
         lines_to_append = []
-        # TOC location rows include col 9 (PDF page)
+        # TOC location rows: col 9 (index 8) = PDF page; col 10 (index 9) = empty text flag
         for title, author, mag_page, pdf_page in toc_rows_to_add:
-            row = f"{mag_name}\t{year}\t{month}\t{volume}\t{issue}\t{title}\t{author}\t{mag_page}\t{pdf_page}"
+            row = f"{mag_name}\t{year}\t{month}\t{volume}\t{issue}\t{title}\t{author}\t{mag_page}\t{pdf_page}\t"
             lines_to_append.append(row)
             print(f"  {row}")
-        # Regular article rows (col 9 left empty; Phase 2 fills it)
+        # Regular article rows: col 9 (index 8) empty (Phase 2 fills it); col 10 (index 9) empty text flag
         for title, author, page in new_entries:
-            row = f"{mag_name}\t{year}\t{month}\t{volume}\t{issue}\t{title}\t{author}\t{page}"
+            row = f"{mag_name}\t{year}\t{month}\t{volume}\t{issue}\t{title}\t{author}\t{page}\t\t"
             lines_to_append.append(row)
             print(f"  {row}")
 

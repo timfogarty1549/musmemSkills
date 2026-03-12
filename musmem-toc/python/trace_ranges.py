@@ -51,13 +51,25 @@ import sys
 import re
 import os
 
-# OCR-tolerant: matches "Continued", "Continucd", "Continues", etc.
+# OCR-tolerant spaced regex: matches "Continued", "Continucd", "Conteinued", etc.
+# cont[ei] catches both "contin..." (normal) and "contein..." (i/e transposition by OCR)
 ON_RE = re.compile(
-    r'contin[a-z]+\s+on\s+(?:p(?:age|\.)\s*)?(\d+)',
+    r'cont[ei][a-z]+\s+on\s+(?:p(?:age|\.)\s*)?(\d+)',
     re.IGNORECASE
 )
 FROM_RE = re.compile(
-    r'contin[a-z]+\s+from\s+(?:p(?:age|\.)\s*)?(\d+)',
+    r'cont[ei][a-z]+\s+from\s+(?:p(?:age|\.)\s*)?(\d+)',
+    re.IGNORECASE
+)
+
+# Compact regex for fully character-scattered OCR: matches after spaces are removed.
+# e.g. "( C o n t in u e d f r o m p a g e 2 7 )" collapses to "(Continuedfrompage27)"
+ON_RE_COMPACT = re.compile(
+    r'cont[ei][a-z]*on(?:p(?:age|\.)?\.?)?(\d+)',
+    re.IGNORECASE
+)
+FROM_RE_COMPACT = re.compile(
+    r'cont[ei][a-z]*from(?:p(?:age|\.)?\.?)?(\d+)',
     re.IGNORECASE
 )
 
@@ -95,24 +107,74 @@ def prescan_pdf(pdf):
       on_map[p]         = dest pages that p sends to via "Continued ON page X"
       from_map[y]       = pages that say "Continued FROM page y" (reverse index)
       page_from_refs[p] = source pages that p itself references via "Continued FROM"
-      word_count_map[p] = number of whitespace-delimited words on page p
-    Printed in a summary at run time.
+      word_count_map[p] = word count for the page (from extract_words)
+
+    Two-pass marker detection per page for maximum OCR tolerance:
+      Pass 1 (spaced): run ON_RE/FROM_RE on word-clustered text — works when OCR
+        produces the marker as a whole phrase (most common case).
+      Pass 2 (compact): for each y-bucket line, collapse all spaces and run
+        ON_RE_COMPACT/FROM_RE_COMPACT — catches character-scattered OCR where
+        markers appear as individual letter tokens, e.g.:
+        "( C o n t in u e d f r o m p a g e 2 7 )" → "(Continuedfrompage27)"
     """
     on_map = {}
     from_map = {}
     page_from_refs = {}
     word_count_map = {}
+
     for i, page in enumerate(pdf.pages):
         pnum = i + 1
-        text = page.extract_text() or ''
-        word_count_map[pnum] = len(text.split())
-        for m in ON_RE.finditer(text):
+
+        # Use word clustering (same approach as Phase 1 extract_toc.py)
+        words = page.extract_words(x_tolerance=5, y_tolerance=3)
+        word_count_map[pnum] = len(words)
+
+        # Group words into y-bucket lines
+        y_lines = {}
+        for w in words:
+            y = round(w['top'] / 6) * 6
+            y_lines.setdefault(y, []).append(w)
+
+        # Build line texts in reading order
+        line_texts = []
+        for y in sorted(y_lines):
+            line_text = ' '.join(w['text'] for w in sorted(y_lines[y], key=lambda w: w['x0']))
+            line_texts.append(line_text)
+
+        full_text = '\n'.join(line_texts)
+
+        # Track what we've already found to avoid duplicates from pass 2
+        found_on = set()
+        found_from = set()
+
+        # Pass 1: spaced regex on clustered text
+        for m in ON_RE.finditer(full_text):
             dest = int(m.group(1))
-            on_map.setdefault(pnum, []).append(dest)
-        for m in FROM_RE.finditer(text):
+            if dest not in found_on:
+                on_map.setdefault(pnum, []).append(dest)
+                found_on.add(dest)
+        for m in FROM_RE.finditer(full_text):
             src = int(m.group(1))
-            from_map.setdefault(src, []).append(pnum)
-            page_from_refs.setdefault(pnum, []).append(src)
+            if src not in found_from:
+                from_map.setdefault(src, []).append(pnum)
+                page_from_refs.setdefault(pnum, []).append(src)
+                found_from.add(src)
+
+        # Pass 2: compact regex on each line with spaces removed
+        for line_text in line_texts:
+            collapsed = ''.join(line_text.split())
+            for m in ON_RE_COMPACT.finditer(collapsed):
+                dest = int(m.group(1))
+                if dest not in found_on:
+                    on_map.setdefault(pnum, []).append(dest)
+                    found_on.add(dest)
+            for m in FROM_RE_COMPACT.finditer(collapsed):
+                src = int(m.group(1))
+                if src not in found_from:
+                    from_map.setdefault(src, []).append(pnum)
+                    page_from_refs.setdefault(pnum, []).append(src)
+                    found_from.add(src)
+
     return on_map, from_map, page_from_refs, word_count_map
 
 
@@ -182,10 +244,14 @@ def trace_article(start_page, pdf_page_count, all_start_pages, on_map, from_map,
             visited.add(p)
             result.append(p)
 
-            # Update had_our_marker: did this page reference any of our pages?
-            from_refs = page_from_refs.get(p, [])
-            if any(ref in visited for ref in from_refs):
-                had_our_marker = True
+            # Update had_our_marker: did this page (after seg_start) reference our article?
+            # Skip seg_start itself — we already know it's our continuation start. Setting
+            # had_our_marker at seg_start would cause the very next empty-from-refs page to
+            # be treated as "new territory", cutting off legitimate continuation content.
+            if p != seg_start:
+                from_refs = page_from_refs.get(p, [])
+                if any(ref in visited for ref in from_refs):
+                    had_our_marker = True
 
             # Reverse lookup: pages that say "Continued FROM page p"
             for cont_page in from_map.get(p, []):
@@ -317,8 +383,12 @@ def main():
             range_str = build_range_string(pages)
             print(f"  {title!r}  p.{start_page} → {range_str}")
 
-            stripped = all_lines[i].rstrip('\n').rstrip('\t')
-            all_lines[i] = stripped + f"\t{range_str}\n"
+            # Write range to col 9 (index 8), preserving col 10 (index 9) text flag
+            parts = all_lines[i].rstrip('\n').split('\t')
+            while len(parts) < 10:
+                parts.append('')   # ensure indices 0-9 exist
+            parts[8] = range_str   # PDF range at index 8; text flag stays at index 9
+            all_lines[i] = '\t'.join(parts) + '\n'
             traced += 1
 
     with open(dat_path, 'w', encoding='utf-8') as f:
