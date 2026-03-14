@@ -9,13 +9,14 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 
 ## Quick Reference
 
-| Phase | What Claude does | Alias |
-|-------|------------------|-------|
-| 1 — Discovery | Fetch DB + scrape org site → report missing contests | |
-| 2 — Results | Scrape individual contest pages → write flat file | |
-| 3 — Format | Run flat files through format.php → write `.out` files | musmemFormat |
-| 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files | musmemReview |
-| 5 — Append | Verify new athlete names against master, then append to master files | musmemAppend |
+| Phase | What Claude does | Output | Alias |
+|-------|------------------|--------|-------|
+| 1 — Discovery | Fetch DB + scrape org site → report missing contests | — | |
+| 2 — Results | Scrape individual contest pages → write flat file | `incoming/` | |
+| 3 — Format | Run flat files through format.php → write `.out` files | `formatted/` | musmemFormat |
+| 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files | `formatted/` | musmemReview |
+| 5 — Complete | Verify new athlete names against master, write corrected `.out` | `completed/` | musmemComplete |
+| 6 — Append | Append files from `completed/` to master, move to `appended/` | `appended/` | musmemAppend |
 
 ---
 
@@ -273,35 +274,58 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.py 2
 
 ---
 
-## Phase 5: Append
+## Phase 5: Complete
 
-Verify new athlete names against the master files, resolve conflicts interactively, then append to the master.
+Verify new athlete names against the master files, resolve conflicts interactively, then write the corrected `.out` file to `completed/`. **Does not modify the master.**
 
 ### Run the script
 
 ```bash
 # Process all pending .out files
-~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_complete.sh
 
 # Process a specific file (with or without .out extension)
-~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh 2025_arnold_classic-ifbb-male
+~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_complete.sh 2025_arnold_classic-ifbb-male
 ```
 
 Input: `~/workspace/musmem/formatted/*.out`
-Master files: `~/workspace/musmem/bb_male.dat`, `~/workspace/musmem/bb_female.dat`
-After append: file moved to `~/workspace/musmem/appended/`
+Master files: read-only reference for conflict detection
+After completion: corrected file written to `~/workspace/musmem/completed/`, original removed from `formatted/`
 
 Gender inferred from filename (`-male` / `-female`).
 
 ### Per-file workflow
 
 1. Read master as read-only reference
-2. Extract new athlete names (not already in master)
-3. Find similar names in master using soundex, edit distance, anagram, and word-order checks
-4. Iterate conflicts interactively — corrections held in memory
-5. On approval: apply corrections to `.out` data → append to master → sort master → move `.out` to `appended/`
+2. For each unique name in the `.out` file, run the candidate-matching pipeline (see below)
+3. **Auto-accept** names with exactly one exact match and temporal gap ≤ `--max-gap` — no user input
+4. Iterate remaining conflicts interactively — corrections held in memory
+5. On approval: apply corrections → write corrected file to `completed/` → remove original from `formatted/`
 
-If no conflicts, file is appended automatically with no interaction.
+If no conflicts require review, prompts to write immediately.
+
+### Candidate-matching pipeline
+
+Strategies are run in order. All matches across all strategies are collected, deduplicated, and presented together.
+
+| Step | Strategy | Examples caught |
+|------|----------|-----------------|
+| 1 | **Exact + variants** | `Smith, John` → also finds `Smith, John [2]`, `Smith, John Jr`, `Smith, John III` |
+| 2 | **Diacritic normalization** | `Pena` ↔ `Pen~a` ↔ `Peña`; uses internal special-char codes — see `special-chars-reference.md` |
+| 3 | **Name part subset/superset** | `Smith, Lisa` ↔ `Smith, Lisa Marie`; partial Latin surnames |
+| 4 | **Space normalization** | `Shu Xiao Fan` ↔ `Shu Xiaofan` ↔ `ShuXiaofan` |
+| 5 | **Eastern format** | `Xiaofan Shu` (no comma) ↔ `Shu, Xiaofan` |
+| 6 | **Word order permutations** | `Xiao Fan Shu` ↔ `Shu Xiao Fan` ↔ `Fan Shu Xiao` |
+| 7–8 | **Soundex / edit distance** | `Smithe` ↔ `Smith`; fallback only when steps 1–6 find nothing |
+
+**Auto-accept rule:** Only when there is exactly one candidate, found via exact match only, with temporal gap ≤ `--max-gap`. Any other match type (diacritic, subset, space, etc.) always requires confirmation — even with one candidate.
+
+**Temporal gap warning:** If an exact match is found but the athlete's last master appearance is more than `--max-gap` years before the incoming contest year, a ⚠ year-gap warning is shown and confirmation is required. Default `--max-gap` is 8 years.
+
+```bash
+# Override gap threshold
+python3 verify_and_complete.py --max-gap 12 2025_arnold_classic-ifbb-male
+```
 
 ### Keys (single keypress — no RETURN)
 
@@ -312,29 +336,67 @@ If no conflicts, file is appended automatically with no interaction.
 | `D` | Details — prompts for a number, then lists all master records for that candidate |
 | `S` | Skip — leave name as-is, move to next conflict |
 | `9` | Back to previous conflict |
-| `0` | Done for now — append resolved file, stop this file |
-| `X` | Exit all — append resolved file, stop all remaining files |
+| `0` | Done for now — prompt to write, stop this file |
+| `X` | Exit all — prompt to write, stop all remaining files |
 
 ### Candidate summary format
 
 ```
-NEW: Smithe, John  (Arnold Classic - IFBB 2025, OP-3)
-
-Candidates in master:
-  1. Smith, John       — 18 contests, 2008–2019, OP/CL
-  2. Smith, John [2]   — 4 contests, 2021–2024, PH
-  3. Smith, John [3]   — 1 contest, 2023, M4
-  N  New athlete → Smith, John [4]
+[2/5] Smith, John  (Arnold Classic - IFBB, 2025, OP-3)
+  1. Smith, John              — 18 contests, 2008–2019, OP/CL
+  2. Smith, John [2]          — 4 contests, 2021–2024, PH
+  3. Smithe, John             — 1 contest, 2023, M4   (soundex)
+  N  New athlete → Smith, John [3]
   D  Details (then enter number)
-  S  Skip (leave as-is for now)
-  9  Back to previous
+  S  Skip (keep name as-is)
+  9  Back
   0  Done for now
   X  Exit all
 ```
 
+Candidates found via non-exact strategies show a tag: `(diacritic)`, `(subset)`, `(space)`, `(eastern)`, `(wordorder)`, `(soundex)`. Temporal gap warnings show as `⚠ 47yr gap`.
+
 ### Name disambiguation (`[n]` notation)
 
 Incoming `.out` files use plain names (no `[n]`). The master may have multiple athletes with the same base name: `Smith, John`, `Smith, John [2]`, `Smith, John [3]`, etc. All variants are presented as candidates. Selecting `N` assigns the next available number to every occurrence in the `.out` file.
+
+---
+
+## Phase 6: Append
+
+Append corrected `.out` files from `completed/` to the master `.dat` files, then move each file to `archive/`.
+
+### Run the script
+
+```bash
+# Process all files in completed/
+~/workspace/skills/musmemSkills/musmem-contests/python/append_to_master.sh
+
+# Process a specific file (with or without .out extension)
+~/workspace/skills/musmemSkills/musmem-contests/python/append_to_master.sh 2025_arnold_classic-ifbb-male
+```
+
+Input: `~/workspace/musmem/completed/*.out`
+Master files: `~/workspace/musmem/data/bb_male.dat`, `~/workspace/musmem/data/bb_female.dat`
+After append: file moved to `~/workspace/musmem/appended/`
+
+Gender inferred from filename (`-male` / `-female`).
+
+### Per-file workflow
+
+For each file, shows:
+- Contest name, year, and whether it already exists in master (duplicate warning)
+- Number of records to append
+
+Prompts Y/N/X before appending. On Y: appends records to master, moves file to `archive/`.
+
+### Keys (single keypress — no RETURN)
+
+| Key | Action |
+|-----|--------|
+| `Y` | Append to master and move to `appended/` |
+| `N` | Skip — leave file in `completed/` |
+| `X` | Exit — stop processing remaining files |
 
 ---
 

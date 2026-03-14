@@ -6,6 +6,10 @@
 - **No parallel agents.** Process contests sequentially — multiple agents hit rate limits before completing.
 - **Fully autonomous within a phase.** Do not ask for permission at each step; just do the work.
 
+## MuscleMemory API
+
+See [musclememory-api.md](musclememory-api.md) for available API endpoints.
+
 ## Skills
 
 - **Project skill files live in `.claude/skills/` within this project.** Do not read from `~/.claude/skills`. Always invoke skills via the `Skill` tool — never read skill files directly.
