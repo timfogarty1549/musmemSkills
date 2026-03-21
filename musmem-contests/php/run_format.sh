@@ -20,12 +20,21 @@ if [ "$1" = "--force" ]; then
     shift
 fi
 
+TOTAL_ATHLETES=0
+
 process() {
     local f="$1"
     local base=$(basename "$f" .txt)
     local out="$FORMATTED/$base.out"
     echo "Processing $base..."
-    php "$FORMAT_PHP" "$f" "$out"
+    local output
+    output=$(php "$FORMAT_PHP" "$f" "$out" 2>&1)
+    echo "$output" | grep -v '^ATHLETES_COUNT='
+    local count
+    count=$(echo "$output" | grep '^ATHLETES_COUNT=' | cut -d= -f2)
+    count=${count:-0}
+    TOTAL_ATHLETES=$((TOTAL_ATHLETES + count))
+    # echo "  → $count athletes"
 }
 
 if [ -n "$1" ]; then
@@ -37,6 +46,7 @@ if [ -n "$1" ]; then
         exit 1
     fi
     process "$f"
+    echo "Total: $TOTAL_ATHLETES athletes"
 else
     # Batch mode
     count=0
@@ -51,6 +61,6 @@ else
     if [ "$count" -eq 0 ]; then
         echo "No unprocessed files found."
     else
-        echo "Done. $count file(s) written to $FORMATTED"
+        echo "Done. $count file(s) written to $FORMATTED ($TOTAL_ATHLETES total athletes)"
     fi
 fi

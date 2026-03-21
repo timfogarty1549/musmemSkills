@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/specialChars.php';
+
 $fname = $argv[1];
 
 $list = file( $fname );
@@ -8,6 +10,7 @@ $year = '';
 $title = '';
 $class = '';
 $lastFirst = false;
+$athleteCount = 0;
 foreach( $list as $line ) {
 	$line = trim($line);
     if (!empty($line)) {
@@ -31,23 +34,28 @@ foreach( $list as $line ) {
 				$class = '';
 				break;
 			default:
+				$athleteCount++;
 				formatLine( $out, cleanUTF($line), $year, $title, $class, $lastFirst );
 		}
 	}
 }
+echo "ATHLETES_COUNT=$athleteCount\n";
 exit();
 
 function cleanUTF( $line ) {
-	$str = str_replace( ['ñ','í','á','é','ó', 'ö', 'ü', 'ä' ],
-						['n~','i','a','e','o','o:','u:','a:'], $line );
-	if( $str != $line ) echo "$line -> $str\n";
+	$str = SpecialChars::replace($line);
+	$flag = $str != htmlentities($str, ENT_COMPAT | ENT_IGNORE, "UTF-8") ? ' <<<<<<' : '';
+	if( $str != $line ) {
+		echo "$line -> $str$flag\n";
+	}
+	if ($flag != '') {
+		echo PHP_EOL, "$line $flag", PHP_EOL;
+		echo bin2hex($str), PHP_EOL, PHP_EOL;
+	}
 	return $str;
 }
 
 function formatLine( $out, $line, $year, $title, $class, $lastFirst ) {
-	if( $line != htmlentities($line, ENT_COMPAT | ENT_IGNORE, "UTF-8") ) {
-	  echo $line."\n";
-	}
 	$asian = $line[0] == '*';
 	if( $asian ) $line[0] = '0';
 	$pos = intval( $line );
@@ -339,9 +347,11 @@ function formatName($line, $asian, $lastFirst, $diag=null) {
 				$count--;
 				$fields[$count] = '';
 			}
-			if( empty($fields) || count($fields) < 2 ) {
+			if( empty($fields)) {
 				echo "error ----->$orig_line {$diag[0]} {$diag[1]}\n";
 				return [ '', '' ];
+			} else if( count($fields) < 2 ) {
+				return [ $fields[0], '<<<<'];
 			} else if( strlen($fields[1]) == 1 || $count == 4) {
 				$firstName = trim(join(' ', array_slice( $fields, 0, 2 ) ));
 				$lastName = trim(join(' ', array_slice( $fields, 2 ) ));
@@ -365,7 +375,10 @@ function titleCase( $line ) {
 	$delimiters = array( "O'", "Mc", "-" );
 	foreach( $delimiters as $delim ) {
 		$i = strpos( $line, $delim );
-		if( $i !== false ) $line[$i+strlen($delim)] = strtoupper( $line[$i+strlen($delim)] );
+		$next = $i + strlen( $delim );
+		if( $i !== false && $next < strlen( $line ) ) {
+			$line[$next] = strtoupper( $line[$next] );
+		}
 	}
 	return $line;
 }
