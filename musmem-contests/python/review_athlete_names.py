@@ -16,8 +16,11 @@ Usage:
 
 import argparse
 import json
+import os
 import re
 import sys
+import termios
+import tty
 import unicodedata
 from collections import defaultdict
 from dataclasses import dataclass, field
@@ -37,6 +40,17 @@ INPUT_FILE = Path("~/workspace/musmem/working_data/review-athlete-names.dat").ex
 CYAN   = "\033[96m"
 YELLOW = "\033[93m"
 RESET  = "\033[0m"
+
+
+def getch() -> str:
+    """Read a single character without requiring RETURN."""
+    fd = sys.stdin.fileno()
+    old = termios.tcgetattr(fd)
+    try:
+        tty.setraw(fd)
+        return os.read(fd, 1).decode()
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old)
 
 
 # ---------------------------------------------------------------------------
@@ -414,6 +428,24 @@ def is_exact_only(candidates: list) -> bool:
 # Main
 # ---------------------------------------------------------------------------
 
+def apply_name_corrections(lines: list, corrections: dict) -> list:
+    """Return a new list of lines with incoming names substituted per corrections dict.
+    Each line has format:  context_col : Name
+    Only the name portion (after last ' : ') is replaced."""
+    if not corrections:
+        return lines
+    result = []
+    for line in lines:
+        stripped = line.rstrip("\n")
+        if " : " in stripped:
+            prefix, name = stripped.rsplit(" : ", 1)
+            name = name.strip()
+            if name in corrections:
+                line = prefix + " : " + corrections[name] + "\n"
+        result.append(line)
+    return result
+
+
 def format_entry(entry: AthleteEntry) -> str:
     yr = f"{entry.y0}–{entry.y1}" if entry.y0 != entry.y1 else str(entry.y0)
     divs = "/".join(entry.divisions[:4])
@@ -424,6 +456,8 @@ def main():
     parser = argparse.ArgumentParser(description="Check athlete names against master dat file.")
     parser.add_argument("--female", action="store_true", help="Compare against bb_female.dat instead of bb_male.dat")
     parser.add_argument("--since", type=int, default=2010, metavar="YEAR", help="Ignore master records before this year (default: 2010)")
+    parser.add_argument("--interactive", "-i", action="store_true",
+                        help="Prompt for each variation; write corrections back to input file")
     args = parser.parse_args()
 
     master_file = _PATHS["master_female"] if args.female else _PATHS["master_male"]
@@ -440,6 +474,9 @@ def main():
     input_lines = INPUT_FILE.read_text(encoding="utf-8", errors="replace").splitlines()
 
     variation_count = 0
+
+    pending_corrections: dict = {}      # incoming_name -> master_name (M decisions)
+    pending_master_flags: list = []     # [(incoming, master)] for I decisions
 
     for lineno, raw in enumerate(input_lines, 1):
         raw = raw.strip()
@@ -471,6 +508,76 @@ def main():
             for c in var_cands:
                 tags = "+".join(c.match_types)
                 print(f"          {tags:<8}: {format_entry(c.entry)}")
+
+            if args.interactive:
+                chosen_entry = None
+
+                if len(var_cands) == 1 and not exact_cands:
+                    chosen_entry = var_cands[0].entry
+                    print(f"\n  [M] use Master  → \"{chosen_entry.full_name}\"")
+                    print(f"  [I] Incoming is canonical  (flag master for update)")
+                    print(f"  [N] Not same athlete")
+                    print(f"  [S] Skip")
+                    print(f"  Choice: ", end="", flush=True)
+                    while True:
+                        ch = getch().upper()
+                        if ch in "MINS\x03":
+                            print(ch)
+                            break
+                    if ch == "\x03":
+                        print("\nAborted.")
+                        break
+                else:
+                    # Multiple candidates: pick one first
+                    all_cands = exact_cands + var_cands
+                    for idx_c, c in enumerate(all_cands, 1):
+                        tags = "exact" if c.match_types == ["exact"] else "+".join(c.match_types)
+                        print(f"  [{idx_c}] {tags}: {format_entry(c.entry)}")
+                    valid_digits = [str(i) for i in range(1, len(all_cands) + 1)]
+                    print(f"  Select candidate ({'/'.join(valid_digits)}) or [N]ot same / [S]kip: ", end="", flush=True)
+                    while True:
+                        ch = getch().upper()
+                        if ch in valid_digits or ch in "NS\x03":
+                            print(ch)
+                            break
+                    if ch == "\x03":
+                        print("\nAborted.")
+                        break
+                    if ch in valid_digits:
+                        chosen_entry = all_cands[int(ch) - 1].entry
+                        print(f"  [M] use Master  → \"{chosen_entry.full_name}\"")
+                        print(f"  [I] Incoming is canonical")
+                        print(f"  [N] Not same athlete")
+                        print(f"  [S] Skip")
+                        print(f"  Choice: ", end="", flush=True)
+                        while True:
+                            ch = getch().upper()
+                            if ch in "MINS\x03":
+                                print(ch)
+                                break
+                        if ch == "\x03":
+                            print("\nAborted.")
+                            break
+
+                if ch == "M" and chosen_entry:
+                    pending_corrections[name] = chosen_entry.full_name
+                    print(f"  → will rename \"{name}\" → \"{chosen_entry.full_name}\"")
+                elif ch == "I" and chosen_entry:
+                    pending_master_flags.append((name, chosen_entry.full_name))
+                    print(f"  → flagged for master update")
+
+    if args.interactive and pending_corrections:
+        raw_lines = INPUT_FILE.read_text(encoding="utf-8", errors="replace").splitlines(keepends=True)
+        updated = apply_name_corrections(raw_lines, pending_corrections)
+        INPUT_FILE.write_text("".join(updated), encoding="utf-8")
+        print(f"\nWrote {len(pending_corrections)} correction(s) to {INPUT_FILE.name}.")
+
+    if args.interactive and pending_master_flags:
+        master_corr_file = INPUT_FILE.parent / "master-corrections.txt"
+        with open(master_corr_file, "a", encoding="utf-8") as f:
+            for incoming, master in pending_master_flags:
+                f.write(f"{incoming}  →  {master}\n")
+        print(f"Wrote {len(pending_master_flags)} master flag(s) to {master_corr_file.name}.")
 
     print(file=sys.stderr)
     print(f"Done. {variation_count} variations found.", file=sys.stderr)
