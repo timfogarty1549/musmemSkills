@@ -478,6 +478,7 @@ def main():
     pending_corrections: dict = {}      # incoming_name -> master_name (M decisions)
     pending_master_flags: list = []     # [(incoming, master)] for I decisions
 
+    aborted = False
     for lineno, raw in enumerate(input_lines, 1):
         raw = raw.strip()
         if not raw:
@@ -526,6 +527,7 @@ def main():
                             break
                     if ch == "\x03":
                         print("\nAborted.")
+                        aborted = True
                         break
                 else:
                     # Multiple candidates: pick one first
@@ -542,6 +544,7 @@ def main():
                             break
                     if ch == "\x03":
                         print("\nAborted.")
+                        aborted = True
                         break
                     if ch in valid_digits:
                         chosen_entry = all_cands[int(ch) - 1].entry
@@ -557,7 +560,14 @@ def main():
                                 break
                         if ch == "\x03":
                             print("\nAborted.")
+                            aborted = True
                             break
+                    else:
+                        # ch is N or S — skip the M/I recording below
+                        continue  # to next variation
+
+                if aborted:
+                    break
 
                 if ch == "M" and chosen_entry:
                     pending_corrections[name] = chosen_entry.full_name
