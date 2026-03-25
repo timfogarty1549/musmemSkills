@@ -428,6 +428,12 @@ def is_exact_only(candidates: list) -> bool:
 # Main
 # ---------------------------------------------------------------------------
 
+def format_entry(entry: AthleteEntry) -> str:
+    yr = f"{entry.y0}–{entry.y1}" if entry.y0 != entry.y1 else str(entry.y0)
+    divs = "/".join(entry.divisions[:4])
+    return f"{entry.full_name}  ({entry.count} contests, {yr}, {divs})"
+
+
 def apply_name_corrections(lines: list, corrections: dict) -> list:
     """Return a new list of lines with incoming names substituted per corrections dict.
     Each line has format:  context_col : Name
@@ -444,12 +450,6 @@ def apply_name_corrections(lines: list, corrections: dict) -> list:
                 line = prefix + " : " + corrections[name] + "\n"
         result.append(line)
     return result
-
-
-def format_entry(entry: AthleteEntry) -> str:
-    yr = f"{entry.y0}–{entry.y1}" if entry.y0 != entry.y1 else str(entry.y0)
-    divs = "/".join(entry.divisions[:4])
-    return f"{entry.full_name}  ({entry.count} contests, {yr}, {divs})"
 
 
 def main():
