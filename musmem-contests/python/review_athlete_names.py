@@ -393,8 +393,6 @@ def find_all_candidates(name: str, idx: MasterIndex) -> list:
 
         # Edit distance <= 2 on last name (same first) — still O(same-first candidates)
         if first and last:
-            for candidate_base in idx.by_soundex_last.get((first.lower(), soundex(last)), []):
-                pass  # already handled above via soundex
             # Full edit-distance pass against same-first-name entries only
             # (use last-ascii index to limit scope)
             for candidate_base in list(idx.by_base.keys()):
