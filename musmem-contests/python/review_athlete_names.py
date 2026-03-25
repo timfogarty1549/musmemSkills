@@ -532,9 +532,9 @@ def main():
                 else:
                     # Multiple candidates: pick one first
                     all_cands = exact_cands + var_cands
-                    for idx_c, c in enumerate(all_cands, 1):
+                    for num, c in enumerate(all_cands, 1):
                         tags = "exact" if c.match_types == ["exact"] else "+".join(c.match_types)
-                        print(f"  [{idx_c}] {tags}: {format_entry(c.entry)}")
+                        print(f"  [{num}] {tags}: {format_entry(c.entry)}")
                     valid_digits = [str(i) for i in range(1, len(all_cands) + 1)]
                     print(f"  Select candidate ({'/'.join(valid_digits)}) or [N]ot same / [S]kip: ", end="", flush=True)
                     while True:
@@ -565,9 +565,6 @@ def main():
                     else:
                         # ch is N or S — skip the M/I recording below
                         continue  # to next variation
-
-                if aborted:
-                    break
 
                 if ch == "M" and chosen_entry:
                     pending_corrections[name] = chosen_entry.full_name
