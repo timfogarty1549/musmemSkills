@@ -9,7 +9,10 @@
   "mags": "~/workspace/musmem/data/mags.dat",
   "movie": "~/workspace/musmem/data/movie.dat",
   "toc_folder": "~/workspace/musmem/data/toc",
-  "formatted_folder": "~/workspace/musmem/formatted",
-  "completed_folder": "~/workspace/musmem/completed",
-  "appended_folder": "~/workspace/musmem/appended"
+  "incoming_folder":   "~/workspace/musmem/1-incoming",
+  "normalize_folder":  "~/workspace/musmem/2-normalize-athletes",
+  "formatted_folder":  "~/workspace/musmem/3-formatted",
+  "reviewed_folder":   "~/workspace/musmem/4-reviewed",
+  "completed_folder":  "~/workspace/musmem/5-completed",
+  "appended_folder":   "~/workspace/musmem/6-appended"
 }

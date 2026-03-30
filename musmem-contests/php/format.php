@@ -56,7 +56,7 @@ function cleanUTF( $line ) {
 }
 
 function formatLine( $out, $line, $year, $title, $class, $lastFirst ) {
-	$asian = $line[0] == '*';
+	$asian = $line[0] == '*' || $line[0] == '@';
 	if( $asian ) $line[0] = '0';
 	$pos = intval( $line );
 //	if( $pos == 16 ) $pos = 98;

@@ -38,7 +38,7 @@ def _load_paths():
 
 _PATHS = _load_paths()
 
-FORMATTED_DIR  = _PATHS["formatted_folder"]
+FORMATTED_DIR  = _PATHS["reviewed_folder"]
 COMPLETED_DIR  = _PATHS["completed_folder"]
 MASTER = {
     "male":   _PATHS["master_male"],
@@ -620,11 +620,11 @@ def _prompt_and_complete(out_path: Path, out_lines: list, corrections: dict) -> 
             dest = COMPLETED_DIR / out_path.name
             dest.write_text("".join(corrected))
             out_path.unlink()
-            print(f"  Written \u2192 completed/{out_path.name}\n")
+            print(f"  Written \u2192 5-completed/{out_path.name}\n")
             return True
         elif ch == "N":
             print(ch)
-            print(f"  Skipped \u2014 {out_path.name} left in formatted/\n")
+            print(f"  Skipped \u2014 {out_path.name} left in 4-reviewed/\n")
             return False
         elif ch == "\x03":
             print("\nAborted.")

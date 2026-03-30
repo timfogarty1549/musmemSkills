@@ -43,6 +43,7 @@ def _load_config():
 _PATHS, _APIS = _load_config()
 
 FORMATTED_DIR    = _PATHS["formatted_folder"]
+REVIEWED_DIR     = _PATHS["reviewed_folder"]
 WORKING_DATA_DIR = Path.home() / "workspace/musmem/working_data"
 NAMES_FILE       = WORKING_DATA_DIR / "review-athlete-names.dat"
 SEARCH_URL       = _APIS["musclememory_org"] + _APIS["endpoints"]["search"]
@@ -128,7 +129,7 @@ def resplit(name):
     """Return alternative comma position, or None if not applicable."""
     words = original_order(name).split()
     if len(words) < 3:
-        return None
+        return name
     if ", " in name:
         first_count = len(name.split(", ", 1)[1].split())
     else:
@@ -136,7 +137,7 @@ def resplit(name):
     total = len(words)
     new_first = first_count + 1 if first_count < total - 1 else first_count - 1
     if new_first <= 0 or new_first >= total:
-        return None
+        return name
     return f"{' '.join(words[new_first:])}, {' '.join(words[:new_first])}"
 
 
@@ -188,7 +189,7 @@ def collect_flagged(filepath):
 
 
 def apply_decisions(filepath, decisions):
-    """Write resolved decisions to file. Skipped (None) lines keep their <<<<."""
+    """Write resolved decisions to REVIEWED_DIR. Skipped (None) lines keep their <<<<."""
     with open(filepath) as f:
         lines = f.readlines()
     for line_num, new_name in decisions.items():
@@ -196,7 +197,9 @@ def apply_decisions(filepath, decisions):
             continue
         name, rest = parse_line(lines[line_num])
         lines[line_num] = f"{new_name}; {rest}\n"
-    with open(filepath, "w") as f:
+    REVIEWED_DIR.mkdir(parents=True, exist_ok=True)
+    dest = REVIEWED_DIR / filepath.name
+    with open(dest, "w") as f:
         f.writelines(lines)
 
 
@@ -374,7 +377,7 @@ def _finish(filepath, decisions, flagged):
     remaining = len(flagged) - len(decisions)
     apply_decisions(filepath, decisions)
     print(f"\nResolved: {resolved}  Skipped: {skipped}  <<<< remaining: {skipped + remaining}")
-    print(f"Written:  {filepath.name}\n")
+    print(f"Written:  4-reviewed/{filepath.name}\n")
 
 
 def main():

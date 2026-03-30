@@ -37,7 +37,7 @@ _PATHS = _load_paths()
 
 INPUT_FILE = Path("~/workspace/musmem/working_data/review-athlete-names.dat").expanduser()
 
-CYAN   = "\033[96m"
+CYAN   = "\033[94m"
 YELLOW = "\033[93m"
 RESET  = "\033[0m"
 
@@ -503,29 +503,33 @@ def main():
             exact_cands = [c for c in candidates if c.match_types == ["exact"]]
             var_cands   = [c for c in candidates if c.match_types != ["exact"]]
 
-            print(f"{CYAN}VARIATION{RESET}  {name}")
-            for c in exact_cands:
-                print(f"          exact   : {format_entry(c.entry)}")
-            for c in var_cands:
-                tags = "+".join(c.match_types)
-                print(f"          {tags:<8}: {format_entry(c.entry)}")
+            print()
+            print()
+            print(f"VARIATION  {CYAN}{name}{RESET}")
+            if not args.interactive:
+                for c in exact_cands:
+                    print(f"          exact   : {CYAN}{format_entry(c.entry)}{RESET}")
+                for c in var_cands:
+                    tags = "+".join(c.match_types)
+                    print(f"          {tags:<8}: {CYAN}{format_entry(c.entry)}{RESET}")
 
             if args.interactive:
                 chosen_entry = None
 
                 if len(var_cands) == 1 and not exact_cands:
                     chosen_entry = var_cands[0].entry
-                    print(f"\n  [M] use Master  → \"{chosen_entry.full_name}\"")
+                    print(f"\n  [M] use Master  → {CYAN}{format_entry(chosen_entry)}{RESET}")
                     print(f"  [I] Incoming is canonical  (flag master for update)")
                     print(f"  [N] Not same athlete")
                     print(f"  [S] Skip")
+                    print(f"  [X] Exit")
                     print(f"  Choice: ", end="", flush=True)
                     while True:
                         ch = getch().upper()
-                        if ch in "MINS\x03":
+                        if ch in "MINSX\x03":
                             print(ch)
                             break
-                    if ch == "\x03":
+                    if ch in ("X", "\x03"):
                         print("\nAborted.")
                         aborted = True
                         break
@@ -534,36 +538,39 @@ def main():
                     all_cands = exact_cands + var_cands
                     for num, c in enumerate(all_cands, 1):
                         tags = "exact" if c.match_types == ["exact"] else "+".join(c.match_types)
-                        print(f"  [{num}] {tags}: {format_entry(c.entry)}")
+                        print(f"  [{num}] {tags}: {CYAN}{format_entry(c.entry)}{RESET}")
                     valid_digits = [str(i) for i in range(1, len(all_cands) + 1)]
-                    print(f"  Select candidate ({'/'.join(valid_digits)}) or [N]ot same / [S]kip: ", end="", flush=True)
+                    print(f"  Select candidate ({'/'.join(valid_digits)}) or [I]ncoming / [N]ot same / [S]kip / [X]it: ", end="", flush=True)
                     while True:
                         ch = getch().upper()
-                        if ch in valid_digits or ch in "NS\x03":
+                        if ch in valid_digits or ch in "INSX\x03":
                             print(ch)
                             break
-                    if ch == "\x03":
+                    if ch in ("X", "\x03"):
                         print("\nAborted.")
                         aborted = True
                         break
                     if ch in valid_digits:
                         chosen_entry = all_cands[int(ch) - 1].entry
-                        print(f"  [M] use Master  → \"{chosen_entry.full_name}\"")
-                        print(f"  [I] Incoming is canonical")
-                        print(f"  [N] Not same athlete")
-                        print(f"  [S] Skip")
-                        print(f"  Choice: ", end="", flush=True)
+                        pending_corrections[name] = chosen_entry.full_name
+                        print(f"  → will rename \"{CYAN}{name}{RESET}\" → \"{CYAN}{chosen_entry.full_name}{RESET}\"")
+                    elif ch == "I":
+                        print(f"  Which candidate to flag? ({'/'.join(valid_digits)}) or [A]ll: ", end="", flush=True)
                         while True:
-                            ch = getch().upper()
-                            if ch in "MINS\x03":
-                                print(ch)
+                            ic = getch().upper()
+                            if ic in valid_digits or ic == "A":
+                                print(ic)
                                 break
-                        if ch == "\x03":
-                            print("\nAborted.")
-                            aborted = True
-                            break
+                        if ic == "A":
+                            for c in all_cands:
+                                pending_master_flags.append((name, c.entry.full_name))
+                        else:
+                            chosen_entry = all_cands[int(ic) - 1].entry
+                            pending_master_flags.append((name, chosen_entry.full_name))
+                        print(f"  → flagged for master update")
+                        continue  # to next variation
                     else:
-                        # ch is N or S — skip the M/I recording below
+                        # ch is N or S — skip recording below
                         continue  # to next variation
 
                 if ch == "M" and chosen_entry:
@@ -580,7 +587,7 @@ def main():
         print(f"\nWrote {len(pending_corrections)} correction(s) to {INPUT_FILE.name}.")
 
     if args.interactive and pending_master_flags:
-        master_corr_file = INPUT_FILE.parent / "master-corrections.txt"
+        master_corr_file = INPUT_FILE.parent / ("master-corrections-female.txt" if args.female else "master-corrections-male.txt")
         with open(master_corr_file, "a", encoding="utf-8") as f:
             for incoming, master in pending_master_flags:
                 f.write(f"{incoming}  →  {master}\n")

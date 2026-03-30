@@ -7,8 +7,8 @@
 #   ./run_format.sh --force                 # reprocess all files, overwriting existing .out
 #   ./run_format.sh --force 2025_olympia-ifbb-male  # reprocess one file
 
-INCOMING=~/workspace/musmem/incoming
-FORMATTED=~/workspace/musmem/formatted
+INCOMING=~/workspace/musmem/2-normalize-athletes
+FORMATTED=~/workspace/musmem/3-formatted
 FORMAT_PHP=~/workspace/skills/musmemSkills/musmem-contests/php/format.php
 
 mkdir -p "$FORMATTED"

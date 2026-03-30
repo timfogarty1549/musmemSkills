@@ -9,14 +9,20 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 
 ## Quick Reference
 
-| Phase | What Claude does | Output | Alias |
-|-------|------------------|--------|-------|
-| 1 — Discovery | Fetch DB + scrape org site → report missing contests | — | |
-| 2 — Results | Scrape individual contest pages → write flat file | `incoming/` | |
-| 3 — Format | Run flat files through format.php → write `.out` files | `formatted/` | musmemFormat |
-| 4 — Review | Interactively resolve `<<<<` flagged names in `.out` files | `formatted/` | musmemReview |
-| 5 — Complete | Verify new athlete names against master, write corrected `.out` | `completed/` | musmemComplete |
-| 6 — Append | Append files from `completed/` to master, move to `appended/` | `appended/` | musmemAppend |
+| Phase | What Claude does | Reads from | Writes to |
+|-------|------------------|------------|-----------|
+| 1 — Discovery | Fetch DB + scrape org site → report missing contests | — | — |
+| 2 — Results | Scrape individual contest pages → write flat file | — | `1-incoming/` |
+| 2a — Normalize Contest Names | Rename files + `t` lines to canonical MuscleMemory titles | `1-incoming/` | `1-incoming/` (in-place) |
+| 3 — Normalize Athletes | Normalize athlete names (Last, First / East Asian format) | `1-incoming/` | `2-normalize-athletes/` |
+| 4 — Format | Run flat files through format.php → write `.out` files | `2-normalize-athletes/` | `3-formatted/` |
+| 5 — Review | Interactively resolve `<<<<` flagged names in `.out` files | `3-formatted/` | `4-reviewed/` |
+| 6 — Complete | Verify athlete names against master, write corrected `.out` | `4-reviewed/` | `5-completed/` |
+| 7 — Append | Append files to gender staging `.dat` files | `5-completed/` | `6-appended/` |
+
+**`0-later/`** — holding area for files that can't be processed yet (missing data, illegible scans, etc.)
+
+**Files are never deleted or moved from a source folder.** Each step reads from N-1 and writes to N.
 
 ---
 
@@ -151,7 +157,7 @@ Common mappings for npcnewsonline.com:
 | | | Figure 55+ | `f5` |
 | | | Figure 60+ | `F6` |
 
-**One file per contest.** Save each to `~/workspace/musmem/incoming/`.
+**One file per contest.** Save each to `~/workspace/musmem/1-incoming/`.
 
 **Male/female split:** When a contest has both male and female divisions, write two separate files — one per gender. Division codes are the same across genders; separate files prevent collisions (e.g., both Men's and Women's Physique use `Pa`–`Ph`).
 
@@ -174,20 +180,83 @@ Examples:
 | NPC Nationals 2025 (female) | `2025_national_championships-npc-female.txt` |
 | Cancun Naturals - NPC Worldwide (2025, male) | `2025_cancun_naturals-npc_worldwide-male.txt` |
 
-**Create the directory if it doesn't exist:** `mkdir -p ~/workspace/musmem/incoming`
+**Create the directory if it doesn't exist:** `mkdir -p ~/workspace/musmem/1-incoming`
 
 Report to the user: list of files written and total competitors captured per file.
 
 ---
 
-## Phase 3: Format
+## Phase 2a: Normalize Contest Names
 
-Run the flat files through `format.php` to produce import-ready `.out` files.
+Rename flat files in `1-incoming/` so that the filename and `t` line use the canonical MuscleMemory contest title. The mapping is defined in `contest-title-normalization-audit.md`.
+
+### Run the script
+
+```bash
+# Normalize all files
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py --all
+
+# Normalize specific files (with or without .txt)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py 2022_arnold_amateur-ifbb-male.txt
+
+# Glob pattern (quote to prevent shell expansion)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py '*arnold*'
+```
+
+For each file that needs a title change, shows the current title, the canonical title, and the new filename. Prompts `[y]es / [n]o / [a]ll / [x]exit` before applying.
+
+### What it changes
+
+- The `t` line in the file is updated to the canonical title
+- The filename is renamed to match (e.g. `2022_arnold_amateur-ifbb-male.txt` → `2022_arnold_amateur-npc_worldwide-male.txt`)
+- Files already using the canonical title are skipped silently
+
+The mapping is sourced from `contest-title-normalization-audit.md` — entries of the form `- YEAR - Source Title` under a `## Canonical Title` heading.
+
+---
+
+## Phase 3: Normalize Athletes
+
+Normalize athlete names in flat files so that `format.php` can split them correctly.
+
+### Run the script
+
+```bash
+# All files (writes sibling "-1" copies by default — review before using --src-root/--dst-root)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_athlete_names.py \
+  --src-root ~/workspace/musmem/1-incoming \
+  --dst-root ~/workspace/musmem/2-normalize-athletes \
+  ~/workspace/musmem/1-incoming/*.txt
+
+# Specific files
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_athlete_names.py \
+  --src-root ~/workspace/musmem/1-incoming \
+  --dst-root ~/workspace/musmem/2-normalize-athletes \
+  ~/workspace/musmem/1-incoming/2025_olympia-ifbb-male.txt
+```
+
+Input: `~/workspace/musmem/1-incoming/*.txt`
+Output: `~/workspace/musmem/2-normalize-athletes/*.txt`
+
+### What it does
+
+- Western names: `1 First Last` → `n Last, First` (where `n` is the placing number)
+- East Asian names: `1 Family Given` → `@n Family Given`
+- Preserves all non-athlete lines (`y`, `t`, `c`, `----`) unchanged
+- Already-normalized lines (e.g. `1 Last, First`) are preserved as-is
+
+See `name-normalization-skill.md` for full rules on East Asian name detection and ambiguous cases.
+
+---
+
+## Phase 4: Format
+
+Run the normalized flat files through `format.php` to produce import-ready `.out` files.
 
 ### Run the formatter
 
 ```bash
-# Format all unprocessed files (no .out yet in formatted/)
+# Format all unprocessed files (no .out yet in 3-formatted/)
 ~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh
 
 # Format a specific file (with or without .txt extension)
@@ -200,8 +269,8 @@ Run the flat files through `format.php` to produce import-ready `.out` files.
 ~/workspace/skills/musmemSkills/musmem-contests/php/run_format.sh --force 2025_olympia-ifbb-male
 ```
 
-Input: `~/workspace/musmem/incoming/*.txt`
-Output: `~/workspace/musmem/formatted/*.out`
+Input: `~/workspace/musmem/2-normalize-athletes/*.txt`
+Output: `~/workspace/musmem/3-formatted/*.out`
 
 ### What format.php does
 
@@ -229,9 +298,9 @@ Check stdout for:
 
 ---
 
-## Phase 4: Review Flagged Names
+## Phase 5: Review Flagged Names
 
-Interactively resolve all `<<<<` lines in `.out` files. Run the script via Claude (opens a Terminal window) or directly in your terminal.
+Interactively resolve all `<<<<` lines in `.out` files. Reads from `3-formatted/`, writes resolved files to `4-reviewed/`. Run the script via Claude (opens a Terminal window) or directly in your terminal.
 
 ### Run the script
 
@@ -274,9 +343,9 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.py 2
 
 ---
 
-## Phase 5: Complete
+## Phase 6: Complete
 
-Verify new athlete names against the master files, resolve conflicts interactively, then write the corrected `.out` file to `completed/`. **Does not modify the master.**
+Verify new athlete names against the master files, resolve conflicts interactively, then write the corrected `.out` file to `5-completed/`. **Does not modify the master.**
 
 ### Run the script
 
@@ -288,9 +357,9 @@ Verify new athlete names against the master files, resolve conflicts interactive
 ~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_complete.sh 2025_arnold_classic-ifbb-male
 ```
 
-Input: `~/workspace/musmem/formatted/*.out`
+Input: `~/workspace/musmem/4-reviewed/*.out`
 Master files: read-only reference for conflict detection
-After completion: corrected file written to `~/workspace/musmem/completed/`, original removed from `formatted/`
+After completion: corrected file written to `~/workspace/musmem/5-completed/`
 
 Gender inferred from filename (`-male` / `-female`).
 
@@ -300,7 +369,7 @@ Gender inferred from filename (`-male` / `-female`).
 2. For each unique name in the `.out` file, run the candidate-matching pipeline (see below)
 3. **Auto-accept** names with exactly one exact match and temporal gap ≤ `--max-gap` — no user input
 4. Iterate remaining conflicts interactively — corrections held in memory
-5. On approval: apply corrections → write corrected file to `completed/` → remove original from `formatted/`
+5. On approval: apply corrections → write corrected file to `5-completed/`
 
 If no conflicts require review, prompts to write immediately.
 
@@ -362,40 +431,39 @@ Incoming `.out` files use plain names (no `[n]`). The master may have multiple a
 
 ---
 
-## Phase 6: Append
+## Phase 7: Append
 
-Append corrected `.out` files from `completed/` to the master `.dat` files, then move each file to `archive/`.
+Append corrected `.out` files from `5-completed/` to gender-specific staging `.dat` files in `6-appended/`. Files in `5-completed/` are never moved or deleted.
 
 ### Run the script
 
 ```bash
-# Process all files in completed/
+# Process all files in 5-completed/
 ~/workspace/skills/musmemSkills/musmem-contests/python/append_to_master.sh
 
 # Process a specific file (with or without .out extension)
 ~/workspace/skills/musmemSkills/musmem-contests/python/append_to_master.sh 2025_arnold_classic-ifbb-male
 ```
 
-Input: `~/workspace/musmem/completed/*.out`
-Master files: `~/workspace/musmem/data/bb_male.dat`, `~/workspace/musmem/data/bb_female.dat`
-After append: file moved to `~/workspace/musmem/appended/`
+Input: `~/workspace/musmem/5-completed/*.out`
+Output: `~/workspace/musmem/6-appended/append-male.dat` or `append-female.dat`
 
 Gender inferred from filename (`-male` / `-female`).
 
 ### Per-file workflow
 
 For each file, shows:
-- Contest name, year, and whether it already exists in master (duplicate warning)
+- Contest name, year, and whether it already exists in the staging `.dat` (duplicate warning)
 - Number of records to append
 
-Prompts Y/N/X before appending. On Y: appends records to master, moves file to `archive/`.
+Prompts Y/N/X before appending. On Y: appends records to `append-{gender}.dat`.
 
 ### Keys (single keypress — no RETURN)
 
 | Key | Action |
 |-----|--------|
-| `Y` | Append to master and move to `appended/` |
-| `N` | Skip — leave file in `completed/` |
+| `Y` | Append to `6-appended/append-{gender}.dat` |
+| `N` | Skip — leave file in `5-completed/` |
 | `X` | Exit — stop processing remaining files |
 
 ---
