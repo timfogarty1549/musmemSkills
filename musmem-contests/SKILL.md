@@ -116,6 +116,118 @@ c CL
 - Wellness (all age groups)
 - Fitness (all age groups)
 - Novice (all categories)
+- Beginner (all categories)
+- True Novice (all categories)
+- First Timer (all categories)
+
+**Unknown sub-class slug → stop and report an error:**
+When processing a division that has sub-classes (multiple `data-slug` entries), every sub-class slug must map to a known division code or be explicitly in the exclusion list. If a slug is encountered that is neither mappable nor excluded, **stop immediately and report the unknown slug with its division context** — e.g. `"masters-class-a" in MEN'S BODYBUILDING — unknown slug, cannot continue`. The user will then decide whether to add a new code to en.json/divs.php or add the slug to the exclusion list. Never silently skip or fall back to the parent code.
+
+**Explicitly excluded slugs** (skip, write nothing):
+- `overall-winner*`, `earned*`, `comparison` — structural markers (overall winner extracted separately)
+- `novice`, `novice-*`, `*-novice`, `true-novice*`, `beginner`, `beginner-*`, `begginer*` (typo variant) — excluded beginner/novice categories
+- `first-timer*`, `first-timers*` — excluded categories
+- `regional`, `regional-*`, `*-regional` — regional-tier slugs (only pro-qualifier tier is included)
+- `natural`, `natural-*` — natural/tested division variants (not tracked)
+- `local`, `local-*` — local-level subdivisions
+- `star-category`, `armed-forces`, `first-responder` — specialty divisions not tracked
+- `mr-*` — historical title slugs (e.g. `mr-universe`)
+- Digit-only slugs (e.g. `1`, `2`) — data errors on source page
+
+**`open` slug — context-dependent mapping:**
+The slug `open` is handled before the exclusion list:
+- In **Men's Bodybuilding (OP)**: if the page also has an Under 212/208/202 section → use `OP`; otherwise (only one class) → use `BB`
+- In all other divisions (CL, PH, FI, BB) → use the outer code as-is
+
+**`pro-qualifier-*` prefix — strip and treat as bare slug:**
+Strip the `pro-qualifier-` prefix, then map the remainder normally:
+- `pro-qualifier-heavyweight` → `heavyweight` → weight code lookup
+- `pro-qualifier-class-a` → `class-a` → maps normally
+- `pro-qualifier` bare → maps to outer code
+
+**Bare letter slugs `a`–`h` — treat as `class-a` through `class-h`:**
+Single-letter slugs are shorthand for class slugs (e.g. bare `a` = `class-a`).
+
+**`senior` → `MA`:** The slug `senior` maps to Masters Bodybuilding Open (`MA`), same as bare `masters` in Bodybuilding.
+
+**`unique` / `Única` / `class` bare → outer code:** These appear on some pages as an alternative name for the open class.
+
+**`adaptive` / `special` → `Hs` (Physically Challenged Standing).**
+
+**`wheelchair` / `wheel-chair` → `WC` (Wheelchair).**
+
+**Single primary sub-division → collapse to outer code:**
+If a major division (OP, BB, CL, PH, FI) has exactly one "primary" sub-division — meaning one height/weight class sub-division, excluding masters, junior, and teen — replace that sub-division code with the outer division code and print a flag.
+
+- Primary sub-division codes: `Ba`–`Bg` (OP/BB height), `SW`/`HW`/`LH`/`MW`/`WW`/`BW`/`LW`/`ULW` (OP/BB weight), `Pa`–`Ph` (PH), `Ca`–`Ch` (CL), `Fa`–`Fh` (FI)
+- Example: Women's Bodybuilding with only `class-b` → write `c BB` not `c Bb`
+- Example: Physique with only `class-c` (but also masters/junior sections) → write `c PH` not `c Pc`
+- If an overall winner entry already occupies the outer code, flag it and leave both as-is.
+
+**Overall winners — extract in Phase 2, not deferred:**
+Overall winner entries must be written directly into the Phase 2 flat file. Do not defer them to a separate fix_subdivisions pass.
+
+On npcnewsonline.com, overall winners appear as `<a data-parent="overall-winner-*" data-person="yes">` links immediately after the `<div data-slug="overall-winner-*">` element. They have an empty `<span>` (no placing number). Write them as `c {parent-code}` + `0 {Name}`:
+
+```
+c OP
+0 M Sarhan
+```
+
+The parent code is the division's outer code: `OP` for Men's Bodybuilding, `BB` for Women's Bodybuilding, `CL` for Classic Physique, `PH` for Men's Physique, `FI` for Figure, etc.
+
+**`junior` and `teen` slugs — context-dependent codes:**
+
+| Division | `junior` → | `teen` / `teenage` / `teenager` → |
+|----------|-----------|----------------------------------|
+| Bodybuilding (OP/BB) | `JR` | `TE` |
+| Classic Physique (CL) | `CJ` | `ct` |
+| Men's/Women's Physique (PH) | `PJ` | `PT` |
+| Figure (FI) | `FJ` | `FT` |
+
+**Junior weight sub-classes** — `junior-{weight}` slugs:
+
+| Slug | Code | | Slug | Code |
+|------|------|-|------|------|
+| `junior-heavyweight` | `JH` | | `junior-lightweight` | `JL` |
+| `junior-light-heavyweight` | `Jl` | | `junior-bantamweight` | `JB` |
+| `junior-middleweight` | `JM` | | `junior-flyweight` | `JF` |
+| `junior-welterweight` | `JW` | | `junior-light-flyweight` | `Jf` |
+| `junior-tall` | `Jt` | | `junior-medium` | `Jm` |
+| | | | `junior-short` | `Js` |
+
+**Junior class letters** — `junior-class-a` through `junior-class-d` (also `junior-a` through `junior-d`):
+
+| Division | `-class-a` | `-class-b` | `-class-c` | `-class-d` |
+|----------|-----------|-----------|-----------|-----------|
+| Classic Physique (CL) | `CJa` | `CJb` | `CJc` | `CJd` |
+| Men's Physique (PH) | `PJa` | `PJb` | `PJc` | `PJd` |
+| Figure (FI) | `FJa` | `FJb` | `FJc` | `FJd` |
+
+**Masters age codes** — base code by division and age:
+
+| Age | OP / BB | Classic (CL) | Physique (PH) | Figure (FI) |
+|-----|---------|--------------|---------------|-------------|
+| 30+ | — | — | `P3` | — |
+| 35+ | `M3` | `c3` | `P35` | `f3` |
+| 40+ | `M4` | `c4` | `P4` | `F4` |
+| 45+ | `45` | `c45` | `P45` | `f4` |
+| 50+ | `M5` | `c5` | `P5` | `F5` |
+| 55+ | `55` | `c55` | `P55` | `f5` |
+| 60+ | `M6` | `c6` | `P6` | `F6` |
+| 65+ | `m6` | — | — | `F65` |
+| 70+ | `M7` | `c7` | `P7` | `F65` |
+| 80+ | `M8` | — | — | — |
+| 90+ | `M9` | — | — | — |
+
+**Masters age + class/weight combos** — valid and common. The code is derived by combining the base age code with the class letter or weight suffix:
+
+- `masters-[over-]40-class-a` in PH → base `P4` + letter `a` = `P4a`
+- `masters-[over-]35-class-b` in CL → base `c3` + letter `b` = `c3b`
+- `masters-[over-]40-class-c` in FI → base `F4` + letter `c` = `F4c`
+- `masters-[over-]45-heavyweight` in OP → age prefix `45` + `H` = `45H`
+- `masters-[over-]40-tall` in OP → age prefix `4` + `t` = `4t`
+- Bare letter suffix works same as `class-X`: `masters-40-a` in CL = `masters-40-class-a` → `c4a`
 
 **Did not place → placing 98:**
 When the highest placing number repeats within a division (e.g., multiple athletes all listed as 16th), replace ALL of those tied entries with placing `98`.
@@ -136,6 +248,65 @@ Source of truth for all codes: `~/workspace/angular/musmem-ui/src/assets/i18n/en
 
 Common mappings for npcnewsonline.com:
 
+**Bodybuilding height classes** — Some NPC Worldwide amateur contests (especially European regionals) use height classes instead of weight classes for Men's Bodybuilding. On npcnewsonline.com, these appear as slugs `class-a` through `class-g` under the Men's Bodybuilding division. Map them as:
+
+| Slug | Code | | Slug | Code |
+|------|------|-|------|------|
+| `class-a` | `Ba` | | `class-e` | `Be` |
+| `class-b` | `Bb` | | `class-f` | `Bf` |
+| `class-c` | `Bc` | | `class-g` | `Bg` |
+| `class-d` | `Bd` | | `class-h`+ | **error — stop and report** |
+
+Note: `class-a/b/c/d` in Classic Physique and Men's Physique map to `Ca/Cb/Cc/Cd` and `Pa/Pb/Pc/Pd` respectively — those are different from Bodybuilding height classes.
+
+**Masters Bodybuilding height classes** — `masters-class-a/b/c/d` slugs (masters competing in height classes, without an age number) map to:
+
+| Slug | Code |
+|------|------|
+| `masters-class-a` | `MAa` |
+| `masters-class-b` | `MAb` |
+| `masters-class-c` | `MAc` |
+| `masters-class-d` | `MAd` |
+
+**Bare `masters` slug** (no age number) — maps to the Masters Open for that division:
+
+| Division | `masters` slug → |
+|----------|-----------------|
+| Bodybuilding (OP / BB) | `MA` |
+| Classic Physique (CL) | `mc` |
+| Men's / Women's Physique (PH) | `MP` |
+| Figure (FI) | `FM` |
+
+**Masters Physique class letters** (no age, by class):
+
+| Slug | Code | | Slug | Code |
+|------|------|-|------|------|
+| `masters-class-a` in PH | `MPa` | | `masters-class-a` in OP/BB | `MAa` |
+| `masters-class-b` in PH | `MPb` | | `masters-class-b` in OP/BB | `MAb` |
+| `masters-class-c` in PH | `MPc` | | `masters-class-c` in OP/BB | `MAc` |
+| `masters-class-d` in PH | `MPd` | | `masters-class-d` in OP/BB | `MAd` |
+
+**Kilogram weight classes** — appear in some international and European NPC Worldwide contests:
+
+| Slug | Code | | Slug | Code |
+|------|------|-|------|------|
+| `55kg` | `55kg` | | `85kg` | `85kg` |
+| `60kg` | `60kg` | | `90kg` | `90kg` |
+| `65kg` | `65kg` | | `95kg` | `95kg` |
+| `70kg` | `70kg` | | `100kg` | `100kg` |
+| `75kg` | `75kg` | | `over-100kg` | `o100kg` |
+| `80kg` | `80kg` | | | |
+
+Range slugs take the upper value: `90-95kg` → `95kg`, `95-100kg` → `100kg`, `over-102kg` → `HW`.
+Descriptor slugs: `under-85kg` → `LW`, `over-85kg` → `MW`, `lightweight-up-to-75kg` → `LW`, etc.
+
+**Classic Physique height sub-classes** (some European contests):
+
+| Slug | Code |
+|------|------|
+| `a-under175cm` | `Ca` |
+| `b-over175cm` | `Cb` |
+
 | Division | Code | Division | Code |
 |----------|------|----------|------|
 | Bodybuilding Open | `OP` | Classic Physique Open | `CL` |
@@ -144,18 +315,25 @@ Common mappings for npcnewsonline.com:
 | Under 208 | `U208` | Classic Masters 50+ | `c5` |
 | Masters 40+ | `M4` | Classic Masters 55+ | `c55` |
 | Masters 45+ | `45` | Classic Masters 60+ | `c6` |
-| Masters 50+ | `M5` | Physique Open | `PH` |
-| Masters 55+ | `55` | Masters Physique 40+ | `P4` |
-| Masters 60+ | `M6` | Masters Physique 45+ | `P45` |
-| Overall | `OV` | Masters Physique 50+ | `P5` |
-| Teen | `TE` | Masters Physique 55+ | `P55` |
-| Junior | `JR` | Masters Physique 60+ | `P6` |
-| Wheelchair | `WC` | Figure Open | `FI` |
-| | | Figure 40+ | `F4` |
-| | | Figure 45+ | `f4` |
-| | | Figure 50+ | `F5` |
-| | | Figure 55+ | `f5` |
-| | | Figure 60+ | `F6` |
+| Masters 50+ | `M5` | Classic Masters 70+ | `c7` |
+| Masters 55+ | `55` | Physique Open | `PH` |
+| Masters 60+ | `M6` | Masters Physique 40+ | `P4` |
+| Masters 65+ | `m6` | Masters Physique 45+ | `P45` |
+| Masters 70+ | `M7` | Masters Physique 50+ | `P5` |
+| Masters 80+ | `M8` | Masters Physique 55+ | `P55` |
+| Masters 90+ | `M9` | Masters Physique 60+ | `P6` |
+| Masters Open (BB) | `MA` | Masters Physique 70+ | `P7` |
+| Overall | `OV` | Masters Physique Open | `MP` |
+| Teen | `TE` | Figure Open | `FI` |
+| Bodybuilding Junior | `JR` | Figure 40+ | `F4` |
+| Physique Junior | `PJ` | Figure 45+ | `f4` |
+| Classic Physique Junior | `CJ` | Figure 50+ | `F5` |
+| Figure Junior | `FJ` | Figure 55+ | `f5` |
+| Wheelchair | `WC` | Figure 60+ | `F6` |
+| Phys. Challenged Standing | `Hs` | Figure 65+ / 70+ | `F65` |
+| Phys. Challenged | `HC` | Masters Figure Open | `FM` |
+| Junior Heavyweight | `JH` | Classic Masters Open | `mc` |
+| Junior Light-Heavyweight | `Jl` | Kg classes | `55kg`–`100kg`, `o100kg` |
 
 **One file per contest.** Save each to `~/workspace/musmem/1-incoming/`.
 
@@ -183,6 +361,26 @@ Examples:
 **Create the directory if it doesn't exist:** `mkdir -p ~/workspace/musmem/1-incoming`
 
 Report to the user: list of files written and total competitors captured per file.
+
+### Bulk Phase 2 re-scraper
+
+To re-scrape all contests that already have files in `2-normalize-athletes/` (e.g. after slug mapping updates), use:
+
+```bash
+# All contests (reads 2-normalize-athletes/ to find slugs/orgs)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scrape_all_phase2.py
+
+# Glob filter (quote to prevent shell expansion)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scrape_all_phase2.py '*2019*'
+
+# Resume from offset N (skip first N contests)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scrape_all_phase2.py --start 50
+```
+
+- Excludes NAC contests automatically
+- Stops with exit code 1 on any unknown slug — fix `fix_subdivisions.py` and restart with `--start N`
+- Only writes gender files that already exist in `2-normalize-athletes/` (male and/or female)
+- Prints `FLAG` lines when single primary sub-divisions are collapsed to outer code
 
 ---
 

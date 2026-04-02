@@ -190,3 +190,49 @@ Before finishing:
 - confirm athlete lines were transformed consistently
 - confirm East Asian `@` lines are normalized into likely family-name-first order
 - confirm westernized East Asian diaspora names are not incorrectly left in source order
+
+## Iterative Cleanup Workflow
+
+Use this when the files have already been normalized once and you are doing cross-file cleanup so the same athlete appears under one canonical name everywhere.
+
+Goal:
+
+- unify each athlete's full contest history under one canonical name
+- prefer cross-file consistency over preserving a mistaken source ordering
+- use cultural naming judgment to decide which form is most likely correct
+
+Workflow:
+
+1. Scan the current live files for inconsistent name clusters.
+2. Group likely duplicates by token overlap, reversed order, punctuation drift, casing drift, and surname-particle drift.
+3. Propose only a reasonably safe batch of changes.
+4. Get approval on the proposed batch when the cleanup is judgment-heavy.
+5. Apply the approved mappings across all live normalized files.
+6. Verify that the old forms are gone from the live files.
+7. Repeat from the current live scan.
+
+Important:
+
+- Trust the current live scan over memory.
+- If a conflict appears again in the live scan, it is still unresolved, even if you thought it was fixed earlier.
+- Do not say a cluster is already handled if the current files still contain both forms.
+
+Canonical output rules for iterative cleanup:
+
+- East Asian names should converge on `@n Family Given`.
+- Western and non-East-Asian names should converge on `n Last, First`.
+- If the same athlete appears in multiple orders, choose one canonical form and use it everywhere.
+- For database/history purposes, consistency across all appearances matters more than preserving every source file's exact order.
+
+Common signals:
+
+- `Kim`, `Lee`, and `Park` are very often Korean family names.
+- Other common East Asian surnames such as `Choi`, `Jung`, `Kang`, `Seo`, `Ahn`, `Yoon`, `Chen`, `Wang`, `Liu`, `Yang`, `Zhou`, `Chan`, `Chua`, `Tan`, `Leung`, and `Ng` should be treated with similar suspicion when order varies.
+- Particles such as `Al`, `De`, `Da`, `Di`, `Du`, `Van`, and `Von` often belong with the family name.
+- When the user has a style preference for capitalization of particles, apply it consistently across all files.
+
+Current working helper:
+
+- iterative cleanup in this project has been using `/Users/timfogarty/workspace/node/musmem/tmp_apply_agreed_name_fixes.py`
+- that helper should be treated as disposable working state, not the source of truth
+- the durable source of truth is this skill plus the user's explicit approvals on canonical forms
