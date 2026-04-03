@@ -126,6 +126,7 @@ def main():
         description="Normalize contest titles in 1-incoming/ flat files."
     )
     parser.add_argument("--all", action="store_true", help="Process all files")
+    parser.add_argument("--yes", action="store_true", help="Apply all changes without prompting")
     parser.add_argument("files", nargs="*", help="Filenames or glob patterns")
     args = parser.parse_args()
 
@@ -171,7 +172,7 @@ def main():
 
     print(f"Found {len(work)} file(s) with titles to normalize.\n")
 
-    yes_all = False
+    yes_all = args.yes
     for path, lines, current_title, canonical in work:
         year   = extract_year(lines)
         gender = extract_gender(path.name)

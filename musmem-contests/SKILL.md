@@ -83,6 +83,18 @@ See `sources-reference.md` for each source's individual contest URL pattern and 
 
 Each page shows divisions with numbered placings. See `sources-reference.md` for source-specific notes (name order, country availability, etc.).
 
+**Name cleaning rules** (applied to every athlete name extracted from HTML):
+
+1. **Strip HTML and unescape entities** — remove all tags, unescape `&amp;` etc.
+2. **Repair mojibake UTF-8** — cp1252 bytes misread as Unicode → translate via `_CP1252_TO_LAT1` table, then encode as latin-1 and decode as UTF-8. On failure (non-Latin script), keep original.
+3. **Normalize curly quotes/apostrophes** — `'` / `'` → `'`; `"` / `"` → `"`
+4. **Strip periods** — remove all `.` characters (e.g. `Jr.` → `Jr`, `D.J.` → `DJ`)
+5. **Uppercase Roman numerals** — trailing `II`, `III`, `IV`, `VI`, `VII`, `VIII`, `IX`, `XI`, `XII` are uppercased (e.g. `John Doe iii` → `John Doe III`)
+6. **NFC normalization** — compose decomposed diacritics (NFD n + U+0303 → ñ)
+7. **Collapse whitespace** — multiple spaces → single space, strip leading/trailing
+
+These rules are implemented in `clean_name()` in `scrape_all_phase2.py`.
+
 ### 3. Write the flat file
 
 Output format for `format.php` — one contest per file:
@@ -382,6 +394,21 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scrape_all_phase2
 - Only writes gender files that already exist in `2-normalize-athletes/` (male and/or female)
 - Prints `FLAG` lines when single primary sub-divisions are collapsed to outer code
 
+### Diagnostic scripts
+
+**Scan for unknown slugs** (before running the full scraper):
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scan_slugs.py
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scan_slugs.py --no-cache  # force re-fetch
+```
+Reports unknown slugs grouped by contest. Zero unknowns = safe to run the full scraper.
+
+**Find non-Latin athlete names** (after Phase 2 scrape, to spot encoding issues):
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/find_nonlatin.py
+```
+Scans `1-incoming/` and groups names by script (Cyrillic, CJK, Arabic, etc.). Latin diacritics are excluded.
+
 ---
 
 ## Phase 2a: Normalize Contest Names
@@ -391,8 +418,11 @@ Rename flat files in `1-incoming/` so that the filename and `t` line use the can
 ### Run the script
 
 ```bash
-# Normalize all files
+# Normalize all files (interactive — prompts per file)
 python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py --all
+
+# Normalize all files non-interactively (accept all)
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py --all --yes
 
 # Normalize specific files (with or without .txt)
 python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py 2022_arnold_amateur-ifbb-male.txt
@@ -401,7 +431,7 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest
 python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_contest_names.py '*arnold*'
 ```
 
-For each file that needs a title change, shows the current title, the canonical title, and the new filename. Prompts `[y]es / [n]o / [a]ll / [x]exit` before applying.
+For each file that needs a title change, shows the current title, the canonical title, and the new filename. Prompts `[y]es / [n]o / [a]ll / [x]exit` before applying. Use `--yes` for non-interactive batch normalization.
 
 ### What it changes
 

@@ -11,21 +11,22 @@ Usage:
 
 Stops immediately and exits non-zero on any unknown slug.
 """
-import sys, os, re, gzip, html as h, urllib.request, urllib.error, glob as glob_module
+import sys, os, re, gzip, html as h, unicodedata, urllib.request, urllib.error, glob as glob_module
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fix_subdivisions import slug_to_code, SKIP_SLUG_RE
 
-SRC  = os.path.expanduser('~/workspace/musmem/2-normalize-athletes')
-OUT  = os.path.expanduser('~/workspace/musmem/1-incoming')
-BASE = 'https://contests.npcnewsonline.com/contests'
-UA   = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
+SRC   = os.path.expanduser('~/workspace/musmem/2-normalize-athletes')
+OUT   = os.path.expanduser('~/workspace/musmem/1-incoming')
+CACHE = os.path.expanduser('~/workspace/musmem/.page_cache')
+BASE  = 'https://contests.npcnewsonline.com/contests'
+UA    = ('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+         'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36')
 
 # ── Division title → (code, gender) ──────────────────────────────────────────
 DIV_TITLE_MAP = [
-    (r'under.?212|212.?bodybuilding',       'U212', 'male'),
-    (r'under.?208|208.?bodybuilding',       'U208', 'male'),
+    (r'under.?212|212.?bodybuilding|^212$',  'U212', 'male'),
+    (r'under.?208|208.?bodybuilding|^208$',  'U208', 'male'),
     (r"women.?s.?bodybuilding",             'BB',   'female'),
     (r"men.?s.?bodybuilding|^bodybuilding", 'OP',   'male'),
     (r"men.?s.?classic|classic.?physique",  'CL',   'male'),
@@ -59,13 +60,30 @@ LISTING_SLUG = {
 
 # ── HTTP helpers ──────────────────────────────────────────────────────────────
 
+def _cache_path(url):
+    """Derive a cache file path from a URL."""
+    # Use the URL path (strip leading slash, replace / with __)
+    path = url.replace('https://contests.npcnewsonline.com/contests/', '')
+    safe = re.sub(r'[^a-zA-Z0-9_\-]', '_', path)
+    return os.path.join(CACHE, safe + '.html')
+
+
 def fetch(url):
+    """Fetch URL, reading from disk cache if available, writing to cache on miss."""
+    os.makedirs(CACHE, exist_ok=True)
+    cpath = _cache_path(url)
+    if os.path.exists(cpath):
+        with open(cpath, encoding='utf-8') as f:
+            return f.read()
     req = urllib.request.Request(
         url, headers={'User-Agent': UA, 'Accept-Encoding': 'gzip, deflate'})
     with urllib.request.urlopen(req, timeout=20) as resp:
         raw = resp.read()
         enc = resp.headers.get('Content-Encoding', '')
-    return (gzip.decompress(raw) if enc == 'gzip' else raw).decode('utf-8', errors='replace')
+    page = (gzip.decompress(raw) if enc == 'gzip' else raw).decode('utf-8', errors='replace')
+    with open(cpath, 'w', encoding='utf-8') as f:
+        f.write(page)
+    return page
 
 
 def try_fetch(url):
@@ -79,8 +97,69 @@ def try_fetch(url):
 
 # ── HTML helpers ──────────────────────────────────────────────────────────────
 
+# Roman numeral suffix: II, III, IV, VI, VII, VIII, IX, X, XI, XII etc.
+# Only matches at end of string, preceded by whitespace.
+_ROMAN_RE = re.compile(
+    r'(\s+)(X{0,3}(?:IX|IV|VIII|VII|VI|V|III|II|I))$',
+    re.IGNORECASE
+)
+
+# cp1252 characters in the 0x80-0x9F range that don't exist in Latin-1.
+# Translating them back to their Latin-1 control-char equivalents (same byte value)
+# lets us then encode the whole string as Latin-1 and decode as UTF-8 to repair mojibake.
+_CP1252_TO_LAT1 = str.maketrans({
+    '\u20ac': '\x80', '\u201a': '\x82', '\u0192': '\x83', '\u201e': '\x84',
+    '\u2026': '\x85', '\u2020': '\x86', '\u2021': '\x87', '\u02c6': '\x88',
+    '\u2030': '\x89', '\u0160': '\x8a', '\u2039': '\x8b', '\u0152': '\x8c',
+    '\u017d': '\x8e', '\u2018': '\x91', '\u2019': '\x92', '\u201c': '\x93',
+    '\u201d': '\x94', '\u2022': '\x95', '\u2013': '\x96', '\u2014': '\x97',
+    '\u02dc': '\x98', '\u2122': '\x99', '\u0161': '\x9a', '\u203a': '\x9b',
+    '\u0153': '\x9c', '\u017e': '\x9e', '\u0178': '\x9f',
+})
+
+
 def clean(raw):
     return h.unescape(re.sub(r'<[^>]+>', '', raw)).strip()
+
+
+def clean_name(raw):
+    """Strip HTML/entities from an athlete name, then apply Phase 2 name rules:
+    - Attempt mojibake repair (Latin-1 bytes misread as UTF-8)
+    - Strip periods
+    - Uppercase trailing Roman numeral suffixes
+    Names are NOT reordered (no Last, First conversion).
+    """
+    name = h.unescape(re.sub(r'<[^>]+>', '', raw)).strip()
+
+    # Mojibake repair: cp1252/Latin-1 bytes misread as UTF-8.
+    # Step 1: normalize cp1252 special chars (œ, Œ, ‚, etc.) to their
+    #         Latin-1 control-char equivalents (same underlying byte value).
+    # Step 2: encode as Latin-1 → decode as UTF-8.
+    # Handles Latin diacritics ("Ã±" → "ñ") and Cyrillic/Turkish mojibake.
+    # Fails safely for already-correct text: "José" (é→UnicodeDecodeError),
+    # Cyrillic/CJK (UnicodeEncodeError if chars outside Latin-1+cp1252 range).
+    try:
+        name = name.translate(_CP1252_TO_LAT1).encode('latin-1').decode('utf-8')
+    except (UnicodeEncodeError, UnicodeDecodeError):
+        pass
+
+    # Normalize curly quotes/apostrophes to plain equivalents
+    name = name.replace('\u2019', "'").replace('\u2018', "'")
+    name = name.replace('\u201c', '"').replace('\u201d', '"')
+
+    # Strip periods
+    name = name.replace('.', '')
+
+    # Uppercase trailing Roman numeral (e.g. "John Smith iii" → "John Smith III")
+    name = _ROMAN_RE.sub(lambda m: m.group(1) + m.group(2).upper(), name)
+
+    # Compose decomposed diacritics: n + U+0303 → ñ, etc.
+    name = unicodedata.normalize('NFC', name)
+
+    # Collapse any double spaces introduced by stripping
+    name = re.sub(r'  +', ' ', name).strip()
+
+    return name
 
 
 def map_title(title):
@@ -109,7 +188,7 @@ def extract_athletes(cls_html):
         span_m = re.search(r'<span>\s*(\d*)\s*</span>', inner)
         placing = int(span_m.group(1)) if (span_m and span_m.group(1).strip()) else 0
         name_raw = re.sub(r'<span>[^<]*</span>', '', inner)
-        name = clean(name_raw)
+        name = clean_name(name_raw)
         if name:
             athletes.append((placing, name))
     return athletes
@@ -135,7 +214,7 @@ def make_url(year, slug, org):
     if org == 'npc_worldwide':
         return f"{BASE}/{year}/npc_worldwide_{slug}"
     elif org == 'ifbb':
-        return f"{BASE}/{year}/{slug}"
+        return f"{BASE}/{year}/ifbb_{slug}"
     else:
         raise ValueError(f"Unknown org: {org!r}")
 
@@ -174,10 +253,18 @@ def find_url_from_listing(year, slug, org):
 
 # ── Contest parsing ───────────────────────────────────────────────────────────
 
+def _check_no_placings(athletes, slug, div_title):
+    """Raise ValueError if athletes are listed but none have a placing number."""
+    if athletes and all(p == 0 for p, _ in athletes):
+        raise ValueError(
+            f"Athletes registered but no placings posted "
+            f"(slug='{slug}', division='{div_title}')"
+        )
+
 def page_has_under_division(page):
     """Return True if the page has an Under 212, 208, or 202 bodybuilding section."""
     for title, _ in iter_sections(page):
-        if re.search(r'under.?2(?:02|08|12)', title, re.I):
+        if re.search(r'under.?2(?:02|08|12)|^2(?:02|08|12)$', title, re.I):
             return True
     return False
 
@@ -225,7 +312,9 @@ def parse_contest(page, contest_label):
                     code = 'OP' if has_under else 'BB'
                 else:
                     code = outer_code  # PH, CL, FI, BB
-                athletes = apply_98([(p, n) for p, n in extract_athletes(cls_html) if p != 0])
+                raw_athletes = extract_athletes(cls_html)
+                _check_no_placings(raw_athletes, slug, div_title)
+                athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
                 if athletes:
                     div_sections.append((code, athletes))
                 continue
@@ -237,7 +326,9 @@ def parse_contest(page, contest_label):
             # Map slug → code (raises ValueError on unknown)
             code = slug_to_code(slug, div_code)
 
-            athletes = apply_98([(p, n) for p, n in extract_athletes(cls_html) if p != 0])
+            raw_athletes = extract_athletes(cls_html)
+            _check_no_placings(raw_athletes, slug, div_title)
+            athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
             if athletes:
                 div_sections.append((code, athletes))
 
@@ -395,6 +486,7 @@ def main():
         except ValueError as e:
             print(f"\n  UNKNOWN SLUG — stopping: {e}")
             print(f"  Contest: {contest_label}")
+            print(f"  URL:     {url}")
             sys.exit(1)
 
         # Write

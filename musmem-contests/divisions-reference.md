@@ -145,6 +145,8 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 7L | Masters 70+ LightWeight |
 | **Masters 80+** | |
 | M8 | Masters 80+ |
+| **Masters 90+** | |
+| M9 | Masters 90+ |
 | **Grand/Ultra Masters** | |
 | GM | Grand Masters |
 | GH | GrandMasters HeavyWeight |
@@ -194,6 +196,32 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | JA | Junior Athletic |
 | am | Masters Athletic Physique |
 | AP45 | Masters Athletic Physique 45+ |
+| **Bodybuilding Classes** | |
+| Ba | Bodybuilding Class A |
+| Bb | Bodybuilding Class B |
+| Bc | Bodybuilding Class C |
+| Bd | Bodybuilding Class D |
+| Be | Bodybuilding Class E |
+| Bf | Bodybuilding Class F |
+| Bg | Bodybuilding Class G |
+| **Kg Weight Classes** | |
+| 55kg | 55 kg |
+| 60kg | 60 kg |
+| 65kg | 65 kg |
+| 70kg | 70 kg |
+| 75kg | 75 kg |
+| 80kg | 80 kg |
+| 85kg | 85 kg |
+| 90kg | 90 kg |
+| 95kg | 95 kg |
+| 100kg | 100 kg |
+| 105kg | 105 kg |
+| o100kg | Over 100 kg |
+| **Masters A–D** | |
+| MAa | Masters A |
+| MAb | Masters B |
+| MAc | Masters C |
+| MAd | Masters D |
 | **Classic Physique** | |
 | CL | Classic |
 | Ca | Classic A |
@@ -246,6 +274,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | c6 | Classic Masters 60+ |
 | c6a | Classic Masters 60+ A |
 | c6b | Classic Masters 60+ B |
+| c7 | Classic Masters 70+ |
 | **Physique** | |
 | PH | Physique |
 | Pa | Physique A |
@@ -258,7 +287,15 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | Ph | Physique H |
 | PT | Teen Physique |
 | PJ | Junior Physique |
+| PJa | Junior Physique A |
+| PJb | Junior Physique B |
+| PJc | Junior Physique C |
+| PJd | Junior Physique D |
 | MP | Masters Physique |
+| MPa | Masters Physique A |
+| MPb | Masters Physique B |
+| MPc | Masters Physique C |
+| MPd | Masters Physique D |
 | P3 | Masters Physique 30+ |
 | P3a | Masters Physique 30+ A |
 | P3b | Masters Physique 30+ B |
@@ -309,9 +346,12 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | Fg | Figure G |
 | Fh | Figure H |
 | FM | Figure Masters |
-| ft (mt) | Figure Masters Tall |
-| fm (mm) | Figure Masters Medium |
-| fs (ms) | Figure Masters Short |
+| ft | Figure Masters Tall |
+| mt | Figure Masters Tall (alias) |
+| fm | Figure Masters Medium |
+| mm | Figure Masters Medium (alias) |
+| fs | Figure Masters Short |
+| ms | Figure Masters Short (alias) |
 | fa | Figure Masters A |
 | fb | Figure Masters B |
 | fc | Figure Masters C |
@@ -354,8 +394,13 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | F6 | Figure 60+ |
 | F6a | Figure 60+ A |
 | F6b | Figure 60+ B |
+| F65 | Figure 65+ |
 | FT | Figure Teen |
 | FJ | Figure Junior |
+| FJa | Figure Junior A |
+| FJb | Figure Junior B |
+| FJc | Figure Junior C |
+| FJd | Figure Junior D |
 | js | Figure Junior Short |
 | jt | Figure Junior Tall |
 | EF | Collegiate Figure |

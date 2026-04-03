@@ -40,7 +40,6 @@ MASTERS_AGE_CODES = {
              60: 'P6',  70: 'P7'},
     'FI':   {35: 'f3',  40: 'F4',  45: 'f4',  50: 'F5',  55: 'f5',  60: 'F6',
              65: 'F65', 70: 'F65'},
-    'U212': {40: 'M4',  45: '45',  50: 'M5'},
 }
 
 BB_HEIGHT_CODES = {
@@ -165,6 +164,7 @@ KG_SLUG_CODES = {
     'lightweight-up-to-75kg':  'LW',
     'middleweight-up-to-85kg': 'MW',
     'heavyweight-over-85kg':   'HW',
+    'up-to-60-kg':             '60kg',
 }
 
 
@@ -183,13 +183,22 @@ def slug_to_code(slug, div_code):
     if slug_l.startswith('clas-') and not slug_l.startswith('class-'):
         slug_l = 'class-' + slug_l[5:]
 
-    # Strip 'pro-qualifier-' prefix — treat like the bare sub-class slug
+    # Strip 'pro-qualifier-' or 'ifbb-pro-' prefix — treat like the bare sub-class slug
     if slug_l.startswith('pro-qualifier-'):
         slug_l = slug_l[len('pro-qualifier-'):]
+    elif slug_l.startswith('ifbb-pro-'):
+        slug_l = slug_l[len('ifbb-pro-'):]
 
     # Bare letter slug (a/b/c/d/e/f/g/h) — treat as 'class-{letter}'
     if re.match(r'^[a-h]$', slug_l):
         slug_l = f'class-{slug_l}'
+
+    # '212' or '212-masters-N' → U212 / U212 masters age
+    if slug_l == '212':
+        return 'U212'
+    if slug_l.startswith('212-masters-'):
+        # e.g. '212-masters-40' → treat as masters-40 in U212 context
+        slug_l = 'masters-' + slug_l[len('212-masters-'):]
 
     age_map = MASTERS_AGE_CODES.get(div_code, {})
 
@@ -320,7 +329,7 @@ def slug_to_code(slug, div_code):
         return 'Cb'
 
     # ── Outer-code slugs (pro-qualifier bare, unique/única, class bare) ──────
-    if slug_l in ('pro-qualifier', 'unique', 'única', 'class'):
+    if slug_l in ('pro-qualifier', 'ifbb-pro', 'unique', 'única', 'class'):
         return div_code
 
     # ── Junior with class letter (junior-a, junior-class-a, etc.) ───────────
