@@ -33,12 +33,19 @@ DIV_TITLE_MAP = [
     (r"women.?s.?physique",                 'PH',   'female'),
     (r"men.?s.?physique|^physique",         'PH',   'male'),
     (r"figure",                             'FI',   'female'),
+    (r"wheelchair",                          'WC',   'male'),
 ]
+
+# H2 section titles that are globally excluded — silently skip even if they have athletes.
+# Everything else that doesn't match DIV_TITLE_MAP triggers a sanity warning.
+_EXCLUDED_TITLE_RE = re.compile(
+    r'bikini|wellness|fitness|fit.model', re.IGNORECASE
+)
 
 # Outer code for overall winner lines
 OUTER_CODE = {
     'OP': 'OP', 'BB': 'BB', 'CL': 'CL', 'PH': 'PH',
-    'FI': 'FI', 'U212': 'U212', 'U208': 'U208',
+    'FI': 'FI', 'U212': 'U212', 'U208': 'U208', 'WC': 'WC',
 }
 
 # Regex matching primary (non-masters, non-junior, non-teen) sub-division codes.
@@ -97,12 +104,52 @@ def try_fetch(url):
 
 # ── HTML helpers ──────────────────────────────────────────────────────────────
 
-# Roman numeral suffix: II, III, IV, VI, VII, VIII, IX, X, XI, XII etc.
-# Only matches at end of string, preceded by whitespace.
-_ROMAN_RE = re.compile(
-    r'(\s+)(X{0,3}(?:IX|IV|VIII|VII|VI|V|III|II|I))$',
-    re.IGNORECASE
-)
+# Consonants for initial-pair detection (all letters except vowels a e i o u)
+_CONSONANTS = set('bcdfghjklmnpqrstvwxyz')
+# Two-letter tokens to keep as-is rather than splitting into initials
+_INIT_EXCEPTIONS = {'jr', 'sr'}
+# Tokens at the end of a name that are Roman numerals → uppercase
+_ROMAN_TRAIL = {'ii', 'iii', 'iv'}
+
+
+def _fix_tokens(name):
+    """Per-token normalization applied after basic cleaning:
+    - Title-case each token
+    - Capitalize letter after apostrophe: O'brien → O'Brien
+    - Non-trailing 'ii' → 'Il' (name, not Roman numeral)
+    - Two-consonant token → split into initials: 'DJ' → 'D J' (except Jr, Sr)
+    - Trailing Roman numeral (ii/iii/iv) → uppercase: II / III / IV
+    """
+    tokens = name.split()
+    if not tokens:
+        return name
+    result = []
+    for i, tok in enumerate(tokens):
+        tok_low = tok.lower()
+        is_last = (i == len(tokens) - 1)
+
+        # Trailing Roman numeral → uppercase
+        if is_last and tok_low in _ROMAN_TRAIL:
+            result.append(tok.upper())
+            continue
+
+        # Title case, with post-apostrophe capitalization
+        if "'" in tok:
+            tok = "'".join(p.capitalize() for p in tok.split("'"))
+        else:
+            tok = tok.capitalize()
+
+        # Non-trailing 'ii' → 'Il'
+        if tok_low == 'ii':
+            tok = 'Il'
+        # Two-consonant token → initials (e.g. 'DJ' → 'D J')
+        elif (len(tok_low) == 2
+              and tok_low not in _INIT_EXCEPTIONS
+              and all(c in _CONSONANTS for c in tok_low)):
+            tok = tok_low[0].upper() + ' ' + tok_low[1].upper()
+
+        result.append(tok)
+    return ' '.join(result)
 
 # cp1252 characters in the 0x80-0x9F range that don't exist in Latin-1.
 # Translating them back to their Latin-1 control-char equivalents (same byte value)
@@ -122,11 +169,17 @@ def clean(raw):
     return h.unescape(re.sub(r'<[^>]+>', '', raw)).strip()
 
 
-def clean_name(raw):
-    """Strip HTML/entities from an athlete name, then apply Phase 2 name rules:
-    - Attempt mojibake repair (Latin-1 bytes misread as UTF-8)
-    - Strip periods
-    - Uppercase trailing Roman numeral suffixes
+_NON_LATIN_RE = re.compile(
+    r'[\u0400-\u04FF'   # Cyrillic
+    r'\u0600-\u06FF'    # Arabic
+    r'\u4E00-\u9FFF'    # CJK Unified Ideographs
+    r'\u3040-\u309F'    # Hiragana
+    r'\u30A0-\u30FF]'   # Katakana
+)
+
+
+def clean_name(raw, _warn=True):
+    """Strip HTML/entities from an athlete name, then apply Phase 2 name rules.
     Names are NOT reordered (no Last, First conversion).
     """
     name = h.unescape(re.sub(r'<[^>]+>', '', raw)).strip()
@@ -150,14 +203,28 @@ def clean_name(raw):
     # Strip periods
     name = name.replace('.', '')
 
-    # Uppercase trailing Roman numeral (e.g. "John Smith iii" → "John Smith III")
-    name = _ROMAN_RE.sub(lambda m: m.group(1) + m.group(2).upper(), name)
+    # Normalize em-dash spacing: ' - ' → '-'
+    name = name.replace(' - ', '-')
+
+    # Remove trailing â: stray artifact from NPC website
+    if name.endswith('\u00e2'):
+        name = name[:-1]
+
+    # Remove spaces around apostrophe: "O ' Brien" → "O'Brien"
+    name = name.replace(" ' ", "'")
 
     # Compose decomposed diacritics: n + U+0303 → ñ, etc.
     name = unicodedata.normalize('NFC', name)
 
-    # Collapse any double spaces introduced by stripping
+    # Per-token: title case, apostrophe caps, initials, II→Il, trailing Roman
+    name = _fix_tokens(name)
+
+    # Collapse any double spaces introduced by stripping or initial expansion
     name = re.sub(r'  +', ' ', name).strip()
+
+    # Warn on non-Latin scripts (Cyrillic, Arabic, CJK)
+    if _warn and _NON_LATIN_RE.search(name):
+        print(f'  WARNING: non-Latin script in name: {name!r}')
 
     return name
 
@@ -254,12 +321,9 @@ def find_url_from_listing(year, slug, org):
 # ── Contest parsing ───────────────────────────────────────────────────────────
 
 def _check_no_placings(athletes, slug, div_title):
-    """Raise ValueError if athletes are listed but none have a placing number."""
+    """Print a warning if athletes are listed but none have a placing number (registrations only)."""
     if athletes and all(p == 0 for p, _ in athletes):
-        raise ValueError(
-            f"Athletes registered but no placings posted "
-            f"(slug='{slug}', division='{div_title}')"
-        )
+        print(f"  NOTE: '{div_title}' slug='{slug}' — athletes registered but no placings posted (skipping)")
 
 def page_has_under_division(page):
     """Return True if the page has an Under 212, 208, or 202 bodybuilding section."""
@@ -267,6 +331,29 @@ def page_has_under_division(page):
         if re.search(r'under.?2(?:02|08|12)|^2(?:02|08|12)$', title, re.I):
             return True
     return False
+
+
+def _warn_unrecognized_section(div_title, section):
+    """Warn if an unrecognized h2 section contains placed athletes in non-skip slugs."""
+    slugs_with_athletes = []
+    for m in re.finditer(
+            r'<div class="competitor-class[^"]*" data-slug="([^"]+)">'
+            r'(.*?)(?=<div class="competitor-class|$)',
+            section, re.DOTALL):
+        slug     = m.group(1)
+        cls_html = m.group(2)
+        if re.search(r'^overall', slug, re.I):
+            continue
+        if slug.lower() != 'open' and SKIP_SLUG_RE.search(slug):
+            continue
+        athletes = extract_athletes(cls_html)
+        placed   = [a for a in athletes if a[0] != 0]
+        if placed:
+            slugs_with_athletes.append((slug, len(placed)))
+    if slugs_with_athletes:
+        print(f"  SANITY: unrecognized section '{div_title}' — athletes not captured:")
+        for slug, count in slugs_with_athletes:
+            print(f"    {count} athlete(s) under slug '{slug}'")
 
 
 def parse_contest(page, contest_label):
@@ -284,7 +371,11 @@ def parse_contest(page, contest_label):
     for div_title, section in iter_sections(page):
         div_code, gender = map_title(div_title)
         if not div_code:
-            continue  # Bikini, Wellness, Fitness, Novice, etc. — skip
+            # Silently skip known excluded divisions.
+            # For anything else, warn if athletes are present in non-skip slugs.
+            if not _EXCLUDED_TITLE_RE.search(div_title):
+                _warn_unrecognized_section(div_title, section)
+            continue
 
         outer_code = OUTER_CODE[div_code]
         div_sections = []  # (code, athletes) for this division
@@ -293,6 +384,8 @@ def parse_contest(page, contest_label):
             r'<div class="competitor-class[^"]*" data-slug="([^"]+)">'
             r'(.*?)(?=<div class="competitor-class|$)',
             section, re.DOTALL))
+
+        page_placed = 0   # athletes on page in non-skip, non-overall slugs
 
         for cls_m in cls_blocks:
             slug     = cls_m.group(1)
@@ -315,6 +408,7 @@ def parse_contest(page, contest_label):
                 raw_athletes = extract_athletes(cls_html)
                 _check_no_placings(raw_athletes, slug, div_title)
                 athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
+                page_placed += len(athletes)
                 if athletes:
                     div_sections.append((code, athletes))
                 continue
@@ -329,8 +423,18 @@ def parse_contest(page, contest_label):
             raw_athletes = extract_athletes(cls_html)
             _check_no_placings(raw_athletes, slug, div_title)
             athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
+            page_placed += len(athletes)
             if athletes:
                 div_sections.append((code, athletes))
+
+        # Sanity check: athletes captured should equal athletes on page
+        extracted_placed = sum(
+            sum(1 for p, _ in athletes if p != 0)
+            for _, athletes in div_sections
+        )
+        if extracted_placed != page_placed:
+            print(f"  SANITY: '{div_title}' — {page_placed} placed on page, "
+                  f"{extracted_placed} extracted")
 
         # Collapse single primary sub-division to outer code
         primary_re = PRIMARY_SUB_RE.get(div_code)

@@ -200,6 +200,10 @@ def slug_to_code(slug, div_code):
         # e.g. '212-masters-40' → treat as masters-40 in U212 context
         slug_l = 'masters-' + slug_l[len('212-masters-'):]
 
+    # U212/U208 masters slugs — no sub-codes exist, collapse to parent
+    if div_code in ('U212', 'U208', 'U202') and re.match(r'^masters-', slug_l):
+        return div_code
+
     age_map = MASTERS_AGE_CODES.get(div_code, {})
 
     # ── Open-class letter sub-divisions (class-X) ────────────────────────────

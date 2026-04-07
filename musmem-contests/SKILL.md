@@ -11,14 +11,14 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 
 | Phase | What Claude does | Reads from | Writes to |
 |-------|------------------|------------|-----------|
-| 1 — Discovery | Fetch DB + scrape org site → report missing contests | — | — |
-| 2 — Results | Scrape individual contest pages → write flat file | — | `1-incoming/` |
-| 2a — Normalize Contest Names | Rename files + `t` lines to canonical MuscleMemory titles | `1-incoming/` | `1-incoming/` (in-place) |
+| 1 — Discovery | Fetch DB + scrape listing → identify target contests → fetch individual pages | — | `.page_cache/` |
+| 2 — Extract | Read cached pages → parse results → write flat files | `.page_cache/` | `1-incoming/` |
 | 3 — Normalize Athletes | Normalize athlete names (Last, First / East Asian format) | `1-incoming/` | `2-normalize-athletes/` |
-| 4 — Format | Run flat files through format.php → write `.out` files | `2-normalize-athletes/` | `3-formatted/` |
-| 5 — Review | Interactively resolve `<<<<` flagged names in `.out` files | `3-formatted/` | `4-reviewed/` |
-| 6 — Complete | Verify athlete names against master, write corrected `.out` | `4-reviewed/` | `5-completed/` |
-| 7 — Append | Append files to gender staging `.dat` files | `5-completed/` | `6-appended/` |
+| 4 — Normalize Contest Names | Rename files + `t` lines to canonical MuscleMemory titles | `2-normalize-athletes/` | `2-normalize-athletes/` (in-place) |
+| 5 — Format | Run flat files through format.php → write `.out` files | `2-normalize-athletes/` | `3-formatted/` |
+| 6 — Review | Interactively resolve `<<<<` flagged names in `.out` files | `3-formatted/` | `4-reviewed/` |
+| 7 — Complete | Verify athlete names against master, write corrected `.out` | `4-reviewed/` | `5-completed/` |
+| 8 — Append | Append files to gender staging `.dat` files | `5-completed/` | `6-appended/` |
 
 **`0-later/`** — holding area for files that can't be processed yet (missing data, illegible scans, etc.)
 
@@ -29,6 +29,12 @@ Checks bodybuilding org websites for contests missing from the MuscleMemory data
 ## Phase 1: Discovery
 
 > **Python scripting rule:** Never use `python3 -c "..."` or `python3 - <<'PYEOF'` heredocs. Always write scripts to `/tmp/script.py` using the Write tool, then run `python3 /tmp/script.py`. This applies to all curl-piped processing and any other Python work in this phase.
+
+**Goal:** Identify which contest pages need to be fetched, then fetch and cache them. No extraction happens in this phase — output is pages in `.page_cache/` only.
+
+**This phase is triggered in two ways:**
+- *"Check website X for ORG contests for years Y1–Y2 that are not already in the MuscleMemory database"* — target contests are those on the listing page but absent from the DB.
+- *"Check website X for ORG contests for years Y1–Y2 for missing divisions"* — target contests are those already in the DB for those years; their pages are cached so Extract can compare DB divisions against what's on the page.
 
 ### 1. Fetch the MuscleMemory DB for the target year(s)
 
@@ -45,39 +51,39 @@ If checking multiple years, call once per year.
 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
 ```
 
-### 2. Scrape listing pages
+### 2. Scrape listing pages and identify target contests
+
+Listing pages are lightweight and do not need to be cached.
 
 See `sources-reference.md` for each source's listing URLs, org slugs, User-Agent, and name normalization rules.
 
-### 3. Normalize names to MuscleMemory format
-
 Each source has its own normalization rule — see `sources-reference.md`. For npcnewsonline.com: strip the leading org prefix, append ` - {ORG}` (e.g., `IFBB Arnold Classic` → `Arnold Classic - IFBB`).
 
-### 4. Compare and report
+- **Missing contests trigger:** find contest names (normalized) that appear on the listing page but **not** in the DB for those years.
+- **Missing divisions trigger:** find contests in the DB for those years (listing page used only to get their individual page URLs).
 
-Find contest names (normalized) that appear on npcnewsonline.com but **not** in the DB for that year. Present as a numbered list grouped by org:
+### 3. Fetch individual contest pages → store in `.page_cache/`
 
-```
-Missing from MuscleMemory (2025):
+For each target contest, fetch its individual results page and store it in the local page cache. See `sources-reference.md` for individual contest URL patterns.
 
-IFBB (3 missing):
-  1. Arnold Classic Europe - IFBB
-  2. Tampa Pro - IFBB
-  3. Toronto Pro - IFBB
+**Cache location:** `~/workspace/musmem/.page_cache/`  
+If a page is already cached, skip the fetch (do not re-fetch).
 
-NPC (12 missing):
-  ...
-```
+### 4. Report
 
-Ask the user: "Which contests should I fetch full results for?"
+List the contests whose pages were cached (newly fetched vs. already cached), and note any fetch failures.
 
 ---
 
-## Phase 2: Results
+## Phase 2: Extract
 
-### 1. Fetch individual contest pages
+**Goal:** Parse contest pages from `.page_cache/` and write flat files to `1-incoming/`. No HTTP requests — all pages must already be cached by Phase 1.
 
-See `sources-reference.md` for each source's individual contest URL pattern and User-Agent.
+This is where most of the interactive work happens: slug mappings, division structure, and name cleaning require iteration. Because extraction reads from cache, fixes can be applied and re-run without re-hitting the web.
+
+### 1. Read pages from cache
+
+Pages are read from `~/workspace/musmem/.page_cache/`. If a page is missing from cache, report it and stop — do not fetch it. Run Phase 1 first to populate the cache.
 
 ### 2. Extract results
 
@@ -89,9 +95,18 @@ Each page shows divisions with numbered placings. See `sources-reference.md` for
 2. **Repair mojibake UTF-8** — cp1252 bytes misread as Unicode → translate via `_CP1252_TO_LAT1` table, then encode as latin-1 and decode as UTF-8. On failure (non-Latin script), keep original.
 3. **Normalize curly quotes/apostrophes** — `'` / `'` → `'`; `"` / `"` → `"`
 4. **Strip periods** — remove all `.` characters (e.g. `Jr.` → `Jr`, `D.J.` → `DJ`)
-5. **Uppercase Roman numerals** — trailing `II`, `III`, `IV`, `VI`, `VII`, `VIII`, `IX`, `XI`, `XII` are uppercased (e.g. `John Doe iii` → `John Doe III`)
-6. **NFC normalization** — compose decomposed diacritics (NFD n + U+0303 → ñ)
-7. **Collapse whitespace** — multiple spaces → single space, strip leading/trailing
+5. **Normalize em-dash spacing** — ` - ` (space-hyphen-space) → `-`
+6. **Strip trailing â** — a name ending with `â` is a stray artifact from the NPC website; remove it
+7. **Remove spaces around apostrophe** — `" ' "` → `"'"` (e.g. `O ' Brien` → `O'Brien`)
+8. **NFC normalization** — compose decomposed diacritics (NFD n + U+0303 → ñ)
+9. **Per-token normalization** (applied to each whitespace-separated token):
+   - Title-case each token
+   - Capitalize the letter after `'` — e.g. `O'brien` → `O'Brien`
+   - Non-trailing `II` → `Il` (middle-name position is a name, not a Roman numeral)
+   - Two-letter token where both letters are consonants → split into initials — e.g. `DJ` → `D J` (exceptions: `Jr`, `Sr`)
+   - Trailing token that is `II`, `III`, or `IV` (case-insensitive) → uppercase Roman numeral; higher values not uppercased (`Xi`, `Vi`, etc. are valid Chinese given names)
+10. **Collapse whitespace** — multiple spaces → single space, strip leading/trailing
+11. **Report non-Latin scripts** — if the name contains Cyrillic, Arabic, or CJK characters, print a warning (do not modify the name)
 
 These rules are implemented in `clean_name()` in `scrape_all_phase2.py`.
 
@@ -374,9 +389,9 @@ Examples:
 
 Report to the user: list of files written and total competitors captured per file.
 
-### Bulk Phase 2 re-scraper
+### Bulk Extract script
 
-To re-scrape all contests that already have files in `2-normalize-athletes/` (e.g. after slug mapping updates), use:
+To re-extract all contests that already have files in `2-normalize-athletes/` (e.g. after slug mapping updates), use:
 
 ```bash
 # All contests (reads 2-normalize-athletes/ to find slugs/orgs)
@@ -393,6 +408,24 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scrape_all_phase2
 - Stops with exit code 1 on any unknown slug — fix `fix_subdivisions.py` and restart with `--start N`
 - Only writes gender files that already exist in `2-normalize-athletes/` (male and/or female)
 - Prints `FLAG` lines when single primary sub-divisions are collapsed to outer code
+
+### Page cache
+
+All HTTP fetches go through a local disk cache at `~/workspace/musmem/.page_cache/`. The workflow is two logical steps:
+
+1. **Fetch** — each contest page URL is checked against the cache. On a miss, the page is fetched from the web and written to disk. On a hit, the cached file is read directly — no HTTP request is made.
+2. **Extract** — athlete placings are parsed from the cached HTML and written to `1-incoming/`.
+
+This means re-running the scraper (e.g. after fixing a slug mapping) replays extraction against already-cached pages, without re-hitting the web.
+
+**Cache location:** `~/workspace/musmem/.page_cache/`  
+**Cache key:** derived from the URL path (slashes replaced with `_`, `.html` extension)  
+**To force a re-fetch:** delete the relevant `.html` file(s) from `.page_cache/`, or delete the whole directory.
+
+The `scan_slugs.py` diagnostic script also uses this cache. Pass `--no-cache` to force fresh fetches:
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/scan_slugs.py --no-cache
+```
 
 ### Diagnostic scripts
 
@@ -411,9 +444,58 @@ Scans `1-incoming/` and groups names by script (Cyrillic, CJK, Arabic, etc.). La
 
 ---
 
-## Phase 2a: Normalize Contest Names
+## Phase 3: Normalize Athletes
 
-Rename flat files in `1-incoming/` so that the filename and `t` line use the canonical MuscleMemory contest title. The mapping is defined in `contest-title-normalization-audit.md`.
+Convert raw scraped names in `1-incoming/` to canonical `Last, First` or `@n Family Given` form, writing results to `2-normalize-athletes/`.
+
+Canonical forms and normalization rules are documented in `~/workspace/musmem/working-docs/normalization_playbook.md`.
+
+### Step 1 — Apply TSV (auto-replay known corrections)
+
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/apply_canonical_names.py
+```
+
+Reads `~/workspace/musmem/working_data/raw_to_canonical.tsv` and applies all known `raw → canonical` mappings to every file in `1-incoming/`, writing results to `2-normalize-athletes/`. Names not found in the TSV are written as-is (still raw).
+
+- TSV has ~5,200 entries covering the bulk of previously seen names
+- NPC Worldwide placing-98 lines are skipped (not written to output)
+- Run this first — it handles the majority of names automatically
+
+### Step 2 — Agent bulk normalization (remaining unnormalized names)
+
+For names not covered by the TSV, use an interactive agent session:
+
+1. Identify unnormalized names remaining in `2-normalize-athletes/` (lines without a comma and without `@`)
+2. Find structural patterns (e.g. all `a b c d` four-token names, names with particles like `Van`/`De`/`Bin`, Arabic blocks, East Asian names)
+3. For each pattern, propose canonical forms following `normalization_playbook.md`
+4. Review proposed batch in chat, approve, then apply directly to `2-normalize-athletes/` files
+
+After agent work, rebuild the TSV to absorb new corrections:
+
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-contests/python/build_raw_to_canonical_tsv.py
+```
+
+This re-derives `raw_to_canonical.tsv` by comparing `1-incoming/` against the updated `2-normalize-athletes/`. Future runs of Step 1 will automatically apply the new corrections.
+
+### What "normalized" means
+
+A name line is considered normalized if:
+- it contains a comma: `1 Smith, John`
+- or it starts with `@`: `@2 Kim Sungyeob`
+
+Non-athlete lines (`y`, `t`, `c`, `----`) are always passed through unchanged.
+
+### Note on `normalize_athlete_names.py`
+
+This script (algorithmic heuristics only, no TSV) is superseded by the two-step workflow above. It may still be useful for a quick pass on 1–2 new contests where no TSV entries exist yet, but should not be used for bulk processing.
+
+---
+
+## Phase 4: Normalize Contest Names
+
+Rename flat files in `2-normalize-athletes/` so that the filename and `t` line use the canonical MuscleMemory contest title. The mapping is defined in `contest-title-normalization-audit.md`.
 
 ### Run the script
 
@@ -443,41 +525,7 @@ The mapping is sourced from `contest-title-normalization-audit.md` — entries o
 
 ---
 
-## Phase 3: Normalize Athletes
-
-Normalize athlete names in flat files so that `format.php` can split them correctly.
-
-### Run the script
-
-```bash
-# All files (writes sibling "-1" copies by default — review before using --src-root/--dst-root)
-python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_athlete_names.py \
-  --src-root ~/workspace/musmem/1-incoming \
-  --dst-root ~/workspace/musmem/2-normalize-athletes \
-  ~/workspace/musmem/1-incoming/*.txt
-
-# Specific files
-python3 ~/workspace/skills/musmemSkills/musmem-contests/python/normalize_athlete_names.py \
-  --src-root ~/workspace/musmem/1-incoming \
-  --dst-root ~/workspace/musmem/2-normalize-athletes \
-  ~/workspace/musmem/1-incoming/2025_olympia-ifbb-male.txt
-```
-
-Input: `~/workspace/musmem/1-incoming/*.txt`
-Output: `~/workspace/musmem/2-normalize-athletes/*.txt`
-
-### What it does
-
-- Western names: `1 First Last` → `n Last, First` (where `n` is the placing number)
-- East Asian names: `1 Family Given` → `@n Family Given`
-- Preserves all non-athlete lines (`y`, `t`, `c`, `----`) unchanged
-- Already-normalized lines (e.g. `1 Last, First`) are preserved as-is
-
-See `name-normalization-skill.md` for full rules on East Asian name detection and ambiguous cases.
-
----
-
-## Phase 4: Format
+## Phase 5: Format
 
 Run the normalized flat files through `format.php` to produce import-ready `.out` files.
 
@@ -526,9 +574,11 @@ Check stdout for:
 
 ---
 
-## Phase 5: Review Flagged Names
+## Phase 6: Review Flagged Names
 
 Interactively resolve all `<<<<` lines in `.out` files. Reads from `3-formatted/`, writes resolved files to `4-reviewed/`. Run the script via Claude (opens a Terminal window) or directly in your terminal.
+
+> **TODO:** `review_flags.py` currently uses `~/workspace/musmem/working_data/review-athlete-names.dat` as its `--accept-dict` persistence file (colon-delimited `original:chosen`). This should be modified to use `~/workspace/musmem/working_data/raw_to_canonical.tsv` instead — the same TSV used in Phase 3 — so that name decisions are shared across both phases and the TSV remains the single source of truth for all raw→canonical mappings.
 
 ### Run the script
 
@@ -571,7 +621,7 @@ python3 ~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.py 2
 
 ---
 
-## Phase 6: Complete
+## Phase 7: Complete
 
 Verify new athlete names against the master files, resolve conflicts interactively, then write the corrected `.out` file to `5-completed/`. **Does not modify the master.**
 
@@ -659,7 +709,7 @@ Incoming `.out` files use plain names (no `[n]`). The master may have multiple a
 
 ---
 
-## Phase 7: Append
+## Phase 8: Append
 
 Append corrected `.out` files from `5-completed/` to gender-specific staging `.dat` files in `6-appended/`. Files in `5-completed/` are never moved or deleted.
 
