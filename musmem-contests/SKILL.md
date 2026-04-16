@@ -132,7 +132,7 @@ c CL
 **Format rules:**
 - `y {year}` — set year
 - `t {Contest Name - ORG}` — set contest title (MuscleMemory format)
-- `c {code}` — division code from `en.json` DIVISIONS (see `divisions-reference.md`)
+- `c {code}` — division code from `en.json` DIVISIONS (see `../docs/divisions-reference.md`)
 - `----` — separator between divisions
 - Competitor lines: `{placing} {First Last}` (no prefix character)
 - Names are "First Last" order (npcnewsonline.com format) — do NOT set `l 1`
@@ -267,9 +267,9 @@ When the highest placing number repeats within a division (e.g., multiple athlet
 98 Chenglong Shen
 ```
 
-**Division codes** — full reference: `divisions-reference.md` in this skill's directory.
+**Division codes** — full reference: `../docs/divisions-reference.md`.
 
-Division codes are universal — not specific to any org. All codes may appear across IFBB, NPC, CPA, and other orgs. When a division name is unfamiliar, read `divisions-reference.md` rather than inventing a code.
+Division codes are universal — not specific to any org. All codes may appear across IFBB, NPC, CPA, and other orgs. When a division name is unfamiliar, read `../docs/divisions-reference.md` rather than inventing a code.
 
 Source of truth for all codes: `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVISIONS`.
 
@@ -495,7 +495,7 @@ This script (algorithmic heuristics only, no TSV) is superseded by the two-step 
 
 ## Phase 4: Normalize Contest Names
 
-Rename flat files in `2-normalize-athletes/` so that the filename and `t` line use the canonical MuscleMemory contest title. The mapping is defined in `contest-title-normalization-audit.md`.
+Rename flat files in `2-normalize-athletes/` so that the filename and `t` line use the canonical MuscleMemory contest title. The mapping is defined in `../docs/contest-title-normalization-audit.md`.
 
 ### Run the script
 
@@ -521,7 +521,7 @@ For each file that needs a title change, shows the current title, the canonical 
 - The filename is renamed to match (e.g. `2022_arnold_amateur-ifbb-male.txt` → `2022_arnold_amateur-npc_worldwide-male.txt`)
 - Files already using the canonical title are skipped silently
 
-The mapping is sourced from `contest-title-normalization-audit.md` — entries of the form `- YEAR - Source Title` under a `## Canonical Title` heading.
+The mapping is sourced from `../docs/contest-title-normalization-audit.md` — entries of the form `- YEAR - Source Title` under a `## Canonical Title` heading.
 
 ---
 
@@ -658,7 +658,7 @@ Strategies are run in order. All matches across all strategies are collected, de
 | Step | Strategy | Examples caught |
 |------|----------|-----------------|
 | 1 | **Exact + variants** | `Smith, John` → also finds `Smith, John [2]`, `Smith, John Jr`, `Smith, John III` |
-| 2 | **Diacritic normalization** | `Pena` ↔ `Pen~a` ↔ `Peña`; uses internal special-char codes — see `special-chars-reference.md` |
+| 2 | **Diacritic normalization** | `Pena` ↔ `Pen~a` ↔ `Peña`; uses internal special-char codes — see `../docs/special-chars-reference.md` |
 | 3 | **Name part subset/superset** | `Smith, Lisa` ↔ `Smith, Lisa Marie`; partial Latin surnames |
 | 4 | **Space normalization** | `Shu Xiao Fan` ↔ `Shu Xiaofan` ↔ `ShuXiaofan` |
 | 5 | **Eastern format** | `Xiaofan Shu` (no comma) ↔ `Shu, Xiaofan` |
