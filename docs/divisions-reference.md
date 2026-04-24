@@ -1,6 +1,6 @@
 # Division Code Reference
 
-All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVISIONS`. Codes are universal — not specific to any org.
+All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVISIONS`. Codes are universal - not specific to any org.
 
 | Code | Division |
 |------|----------|
@@ -23,6 +23,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | LF | Light-FlyWeight |
 | U212 | Under 212 |
 | U208 | Under 208 |
+| U202 | Under 202 |
 | **Height classes** | |
 | XT | Extra-Tall |
 | TA | Tall |
@@ -69,6 +70,21 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | EF | Collegiate Figure |
 | **Masters (general)** | |
 | MA | Masters |
+| **Masters A–D** | |
+| MAa | Masters A |
+| MAb | Masters B |
+| MAc | Masters C |
+| MAd | Masters D |
+| **Masters Under 212** | |
+| M212 | Masters Under 212 |
+| M208 | Masters Under 208 |
+| M202 | Masters Under 202 |
+| M3212 | Masters 35+ Under 212 |
+| M4212 | Masters 40+ Under 212 |
+| M5212 | Masters 50+ Under 212 |
+| M6212 | Masters 60+ Under 212 |
+| M7212 | Masters 70+ Under 212 |
+| **Master By Weight** | |
 | MS | Masters Super-HeavyWeight |
 | MH | Masters HeavyWeight |
 | Ml | Masters Light-HeavyWeight |
@@ -80,6 +96,9 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | Ms | Masters Short |
 | **Masters 35+** | |
 | M3 | Masters 35+ |
+| M3a | Masters 35+ A |
+| M3b | Masters 35+ B |
+| M3c | Masters 35+ C |
 | 3S | Masters 35+ Super-HeavyWeight |
 | 3H | Masters 35+ HeavyWeight |
 | 3l | Masters 35+ Light-HeavyWeight |
@@ -92,6 +111,9 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 3s | Masters 35+ Short |
 | **Masters 40+** | |
 | M4 | Masters 40+ |
+| M4a | Masters 40+ A |
+| M4b | Masters 40+ B |
+| M4c | Masters 40+ C |
 | 4S | Masters 40+ Super-HeavyWeight |
 | 4H | Masters 40+ HeavyWeight |
 | 4l | Masters 40+ Light-HeavyWeight |
@@ -104,10 +126,12 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 4s | Masters 40+ Short |
 | **Masters 45+** | |
 | 45 | Masters 45+ |
+| 45S | Masters 45+ Super-HeavyWeight |
 | 45H | Masters 45+ HeavyWeight |
 | 45l | Masters 45+ Light-Heavyweight |
 | 45M | Masters 45+ MiddleWeight |
 | 45L | Masters 45+ LightWeight |
+| 45B | Masters 45+ BantamWeight |
 | t4 | Masters 45+ Tall |
 | s4 | Masters 45+ Short |
 | **Masters 50+** | |
@@ -196,7 +220,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | JA | Junior Athletic |
 | am | Masters Athletic Physique |
 | AP45 | Masters Athletic Physique 45+ |
-| **Bodybuilding Classes** | |
+| **Generic Bodybuilding Classes** | |
 | Ba | Bodybuilding Class A |
 | Bb | Bodybuilding Class B |
 | Bc | Bodybuilding Class C |
@@ -217,11 +241,6 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 100kg | 100 kg |
 | 105kg | 105 kg |
 | o100kg | Over 100 kg |
-| **Masters A–D** | |
-| MAa | Masters A |
-| MAb | Masters B |
-| MAc | Masters C |
-| MAd | Masters D |
 | **Classic Physique** | |
 | CL | Classic |
 | Ca | Classic A |
@@ -308,11 +327,14 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | P35c | Masters Physique 35+ C |
 | P35d | Masters Physique 35+ D |
 | P35e | Masters Physique 35+ E |
+| P35f | Masters Physique 35+ F |
 | P4 | Masters Physique 40+ |
 | P4a | Masters Physique 40+ A |
 | P4b | Masters Physique 40+ B |
 | P4c | Masters Physique 40+ C |
 | P4d | Masters Physique 40+ D |
+| P4e | Masters Physique 40+ E |
+| P4f | Masters Physique 40+ F |
 | P45 | Masters Physique 45+ |
 | P45a | Masters Physique 45+ A |
 | P45b | Masters Physique 45+ B |

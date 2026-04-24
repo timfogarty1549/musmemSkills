@@ -231,8 +231,50 @@ Common signals:
 - Particles such as `Al`, `De`, `Da`, `Di`, `Du`, `Van`, and `Von` often belong with the family name.
 - When the user has a style preference for capitalization of particles, apply it consistently across all files.
 
+## Workspace Audit Shortcut
+
+When resuming cleanup work in `2-normalize-athletes`, first estimate the remaining surface area.
+
+Working definition for this project:
+
+- treat an athlete line as still unnormalized if it matches `^\d+\s+NAME...`
+- and the name body does not contain a comma
+- and the line is not using the East Asian `@n Family Given` format
+
+Examples still counted as unnormalized:
+
+```text
+1 Anna Vitkalova
+2 Shu Xiaofan
+0 Loujen Saldo
+```
+
+Examples not counted by this quick audit:
+
+```text
+1 Vitkalova, Anna
+@2 Zhou Xinkai
+```
+
+Important:
+
+- this is only a quick surface-area count
+- it does not catch wrongly normalized lines that already contain commas
+- it does not prove an `@` line is correct, only that it is no longer in raw source order format
+
+Snapshot from April 18, 2026:
+
+- `2-normalize-athletes` contained `7,852` unique still-unnormalized names
+- `14,995` total still-unnormalized athlete-line occurrences
+- `1,227` files with at least one still-unnormalized athlete line
+
+Use this snapshot only as historical context. Recount from the live files at the start of a new session.
+
 Current working helper:
 
 - iterative cleanup in this project has been using `/Users/timfogarty/workspace/node/musmem/tmp_apply_agreed_name_fixes.py`
 - that helper should be treated as disposable working state, not the source of truth
 - the durable source of truth is this skill plus the user's explicit approvals on canonical forms
+
+
+Put any temporary Python scripts in /Users/timfogarty/workspace/musmem/working-scripts
