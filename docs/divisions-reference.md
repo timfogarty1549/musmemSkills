@@ -416,6 +416,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | F6 | Figure 60+ |
 | F6a | Figure 60+ A |
 | F6b | Figure 60+ B |
+| f6 | Figure 65+ |
 | F65 | Figure 65+ |
 | FT | Figure Teen |
 | FJ | Figure Junior |

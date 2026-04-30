@@ -7,10 +7,9 @@ Strategy:
   raw name in the corresponding 1-incoming file (same division + place, highest
   token similarity).  Non-normalized names are skipped entirely.
 
-Output columns: raw, canonical, note, div_place, file
-  - Matched pair:    raw_name  canonical_name  ""           (3 cols)
-  - No candidate:    ___TBD___  canonical_name  div-place  filename  (4 cols)
-  - Low similarity:  raw_name  canonical_name  "<<<<"  div-place  filename  (5 cols)
+Output columns: raw, canonical, note
+  - Matched pair:  raw_name  canonical_name  (note empty)
+  - No match:      ___TBD___  canonical_name  filename
 
 Rows are sorted and deduplicated on (raw, canonical) at the end.
 """
@@ -142,21 +141,17 @@ def build_index(rows: list[Row]) -> dict[tuple[str, str], list[Row]]:
     return idx
 
 
-def find_raw(norm_row: Row, inc_index: dict[tuple[str, str], list[Row]]) -> tuple["Row | None", str]:
+def find_raw(norm_row: Row, inc_index: dict[tuple[str, str], list[Row]]) -> Row | None:
     """
     Find the best-matching raw row for a normalized row.
     Looks in the same (division, place) bucket, picks by token similarity.
-
-    Returns (row, status) where status is:
-      "match"    — candidate found and similarity meets threshold
-      "low_sim"  — candidate(s) exist but best similarity is below threshold
-      "none"     — no candidates at this (division, place) at all
+    Returns None if no candidate meets the threshold.
     """
     key = (index_key(norm_row.division), norm_row.place)
     candidates = inc_index.get(key, [])
 
     if not candidates:
-        return None, "none"
+        return None
 
     can_name = canonical_name(norm_row)
     threshold = UNIQUE_SIM_MIN if len(candidates) == 1 else MULTI_SIM_MIN
@@ -167,22 +162,18 @@ def find_raw(norm_row: Row, inc_index: dict[tuple[str, str], list[Row]]) -> tupl
         if sim > best_sim:
             best_sim, best_row = sim, cand
 
-    if best_sim >= threshold:
-        return best_row, "match"
-    if best_row is not None:
-        return best_row, "low_sim"
-    return None, "none"
+    return best_row if best_sim >= threshold else None
 
 
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
-TSVRow = list[str]
+Triplet = tuple[str, str, str]   # (raw, canonical, note)
 
 
-def build() -> tuple[list[TSVRow], list[str], Counter]:
-    rows: list[TSVRow] = []
+def build() -> tuple[list[Triplet], list[str]]:
+    triplets: list[Triplet] = []
     issues: list[str] = []
     stats: Counter = Counter()
 
@@ -204,76 +195,64 @@ def build() -> tuple[list[TSVRow], list[str], Counter]:
 
             stats["normalized_names"] += 1
             canon = canonical_name(nr)
-            div_place = f"{nr.division}-{nr.place}"
-            raw_row, status = find_raw(nr, inc_index)
+            raw_row = find_raw(nr, inc_index)
 
-            if status == "match":
-                rows.append([raw_row.name, canon, ""])
+            if raw_row is not None:
+                triplets.append((raw_row.name, canon, ""))
                 stats["matched"] += 1
-            elif status == "low_sim":
-                rows.append([raw_row.name, canon, "<<<<", div_place, norm_path.name])
-                stats["tbd_low_sim"] += 1
-            else:  # "none"
-                rows.append([TBD, canon, div_place, norm_path.name])
-                stats["tbd_no_candidate"] += 1
+            else:
+                triplets.append((TBD, canon, norm_path.name))
+                stats["tbd"] += 1
 
-    return rows, issues, stats
+    return triplets, issues, stats
 
 
-def write_tsv(path: Path, rows: list[TSVRow]) -> int:
+def write_tsv(path: Path, triplets: list[Triplet]) -> int:
     # Dedup on (raw, canonical) — keep first occurrence when sorted
     seen: set[tuple[str, str]] = set()
-    unique: list[TSVRow] = []
-    for r in sorted(rows):
-        key = (r[0], r[1])
+    unique: list[Triplet] = []
+    for t in sorted(triplets):
+        key = (t[0], t[1])
         if key not in seen:
             seen.add(key)
-            unique.append(r)
+            unique.append(t)
 
     with path.open("w", newline="") as f:
         w = csv.writer(f, delimiter="\t")
-        w.writerow(["raw", "canonical", "note", "div_place", "file"])
+        w.writerow(["raw", "canonical", "note"])
         w.writerows(unique)
 
     return len(unique)
 
 
 def main() -> None:
-    rows, issues, stats = build()
-    n = write_tsv(OUTPUT_TSV, rows)
+    triplets, issues, stats = build()
+    n = write_tsv(OUTPUT_TSV, triplets)
 
-    tbd_rows     = [r for r in rows if r[0] == TBD]
-    low_sim_rows = [r for r in rows if len(r) >= 3 and r[2] == "<<<<"]
+    tbd_rows = [t for t in triplets if t[0] == TBD]
+    # Dedup TBD on canonical for reporting
+    tbd_unique_can = sorted({t[1] for t in tbd_rows})
 
-    print(f"files_compared:      {stats['files']}")
-    print(f"missing_incoming:    {stats['missing_incoming']}")
-    print(f"normalized_names:    {stats['normalized_names']}")
-    print(f"matched:             {stats['matched']}")
-    print(f"tbd_no_candidate:    {stats['tbd_no_candidate']}")
-    print(f"tbd_low_sim:         {stats['tbd_low_sim']}")
-    print(f"unique_rows_tsv:     {n}")
+    print(f"files_compared:    {stats['files']}")
+    print(f"missing_incoming:  {stats['missing_incoming']}")
+    print(f"normalized_names:  {stats['normalized_names']}")
+    print(f"matched:           {stats['matched']}")
+    print(f"tbd:               {stats['tbd']}")
+    print(f"unique_rows_tsv:   {n}")
 
-    matched_rows = [r for r in rows if r[0] != TBD and r[2] != "<<<<"]
-    at_count    = sum(1 for r in matched_rows if r[1].startswith("@"))
-    comma_count = sum(1 for r in matched_rows if "," in r[1])
-    print(f"  east_asian (@):    {at_count}")
-    print(f"  last_first (,):    {comma_count}")
+    at_count     = sum(1 for t in triplets if t[0] != TBD and t[1].startswith("@"))
+    comma_count  = sum(1 for t in triplets if t[0] != TBD and "," in t[1])
+    print(f"  east_asian (@):  {at_count}")
+    print(f"  last_first (,):  {comma_count}")
 
-    if tbd_rows:
-        tbd_unique_can = sorted({r[1] for r in tbd_rows})
-        print(f"\nTBD (no candidate) names ({len(tbd_unique_can)} unique canonicals):")
+    if tbd_unique_can:
+        print(f"\nTBD names ({len(tbd_unique_can)} unique canonicals):")
         for name in tbd_unique_can[:30]:
-            r = next(x for x in tbd_rows if x[1] == name)
-            print(f"  {name!r:45s}  {r[2]}  [{r[3]}]")
+            # find a file that reported this TBD
+            file_ = next(t[2] for t in tbd_rows if t[1] == name)
+            print(f"  {name!r:45s}  [{file_}]")
         if len(tbd_unique_can) > 30:
             print(f"  ... and {len(tbd_unique_can) - 30} more")
-
-    if low_sim_rows:
-        print(f"\nLow-similarity rows ({len(low_sim_rows)}):")
-        for r in low_sim_rows[:30]:
-            print(f"  {r[0]!r:40s}  →  {r[1]!r:40s}  {r[3]}  [{r[4]}]")
-        if len(low_sim_rows) > 30:
-            print(f"  ... and {len(low_sim_rows) - 30} more")
 
 
 if __name__ == "__main__":
