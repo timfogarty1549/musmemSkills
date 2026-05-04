@@ -1,0 +1,143 @@
+{
+  "generated_at": "2026-04-02",
+  "purpose": "Reference data for re-running athlete-name normalization after scraper fixes.",
+  "primary_artifacts": [
+    {
+      "path": "/Users/timfogarty/workspace/node/musmem/canonical-athlete-names-2026-04-02.jsonl",
+      "description": "Snapshot of all unique athlete names currently present in 2-normalize-athletes, intended as the main canonical-name lookup source."
+    },
+    {
+      "path": "/Users/timfogarty/workspace/node/musmem/canonical-athlete-names-2026-04-02.meta.json",
+      "description": "Metadata for the canonical athlete name snapshot."
+    }
+  ],
+  "source_dirs": [
+    "/Users/timfogarty/workspace/musmem/2-normalize-athletes",
+    "/Users/timfogarty/workspace/node/musmem",
+    "/Users/timfogarty/workspace/skills/musmemSkills/musmem-contests/name-normalization-skill.md"
+  ],
+  "format_rules": {
+    "western_default": "<placing> Last, First",
+    "east_asian_default": "@<placing> Family Given",
+    "east_asian_with_western_given_name": "Family Asian-Given, Western-Given",
+    "no_titles": true,
+    "remove_periods": true,
+    "capitalize_particles": [
+      "De",
+      "Da",
+      "Di",
+      "Du",
+      "Van",
+      "Von"
+    ],
+    "o_prefix_rule": "O xxx, yyy -> O'xxx, yyy",
+    "suffix_rule": "Last, First Jr|Sr|II|III|IV with no periods",
+    "live_scan_rule": "If a conflict appears in a fresh scan, treat it as unresolved regardless of prior memory."
+  },
+  "scraper_assumptions_for_next_pass": {
+    "scraper_now_preserves_token_order": true,
+    "scraper_should_correct_broken_utf": true,
+    "scraper_should_preserve_or_correct_diacritics": true,
+    "scraper_should_convert_curly_quotes_and_apostrophes": true,
+    "scraper_should_recognize_and_capitalize_roman_numerals": true,
+    "scraper_should_remove_periods": true,
+    "implication": "Variant-to-canonical mappings from the old pipeline may be less reusable than the canonical-name snapshot itself."
+  },
+  "workflow_rules": {
+    "when_placing_is_zero": "A 0-placing overall winner should match an existing 1-placing name in the same file whenever possible.",
+    "overall_winner_propagation_rule": "When a 0-placing athlete matches a 1-placing athlete in the same file, rewrite the 0 line to exactly mirror the normalized 1 name.",
+    "unmatched_zero_rule": "If a 0-placing athlete cannot be matched to a 1-placing athlete in the same file after smart normalization-aware comparison, flag it for manual review."
+  },
+  "audit_and_helper_files": [
+    "/Users/timfogarty/workspace/node/musmem/athlete-name-typo-audit-plan.md",
+    "/Users/timfogarty/workspace/node/musmem/overall-winner-name-format-audit.md",
+    "/Users/timfogarty/workspace/node/musmem/zero-vs-one-name-audit.md",
+    "/Users/timfogarty/workspace/node/musmem/zero-vs-one-smart-audit.md",
+    "/Users/timfogarty/workspace/node/musmem/tmp_apply_agreed_name_fixes.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_audit_athlete_name_typos.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_audit_zero_vs_one_same_file.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_audit_zero_vs_one_smart.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_initial_wrapped_names.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_korean_i_surname.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_overall_winner_name_format.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_remaining_name_issues.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_repeated_name_artifacts.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_short_east_asian_names.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_short_east_asian_names_v2.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_specific_short_surnames.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_fix_suffix_in_surname.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_reconcile_east_asian_names.py",
+    "/Users/timfogarty/workspace/node/musmem/tmp_rewrite_zero_one_audit_grouped.py"
+  ],
+  "explicit_name_decisions": [
+    {
+      "canonical_name": "Cheng Man Ho, Mark",
+      "notes": "East Asian name plus appended western given name uses comma before western name and no @ prefix."
+    },
+    {
+      "canonical_name": "McMurtre, Toni",
+      "variants": [
+        "McMurte, Toni"
+      ]
+    },
+    {
+      "canonical_name": "McGann, Carlos",
+      "notes": "Confirmed by social media; do not merge with Mchan, Carlos."
+    },
+    {
+      "canonical_name": "Mchan, Carlos",
+      "notes": "Do not force into Mc... capitalization rules."
+    },
+    {
+      "canonical_name": "McWilliams, Jessica",
+      "variants": [
+        "McWillams, Jessica"
+      ]
+    },
+    {
+      "canonical_name": "McKenzie, Michael Sr",
+      "notes": "User confirmed this spelling; an earlier 'McKenzi' mention was a typo."
+    },
+    {
+      "canonical_name": "Joo Hosoo",
+      "notes": "Preferred East Asian format; earlier Hosoo/Joo reversal normalized here."
+    },
+    {
+      "canonical_name": "Khang, Tran",
+      "notes": "Confirmed by social media as the correct order."
+    },
+    {
+      "canonical_name": "Ken, Mervey Milongo",
+      "notes": "User indicated this form is correct as-is."
+    },
+    {
+      "canonical_name": "Kanto, Fabio",
+      "notes": "Keep in western format, not @ east Asian format."
+    },
+    {
+      "canonical_name": "Kawafuchi, Ken",
+      "notes": "Keep in western format, not @ east Asian format."
+    },
+    {
+      "canonical_name": "Mizuno, Ken",
+      "notes": "Keep in western format, not @ east Asian format."
+    },
+    {
+      "canonical_name": "Kurita, Fabio",
+      "notes": "Keep in western format, not @ east Asian format."
+    },
+    {
+      "canonical_name": "Lee, Felix",
+      "notes": "Keep in western format, not @ east Asian format."
+    }
+  ],
+  "notes": [
+    "The canonical snapshot is more important than the old variant list because the scraper behavior changed.",
+    "A future reprocessing pass should use canonical-athlete-names-2026-04-02.jsonl as a candidate lookup table, not as automatic ground truth.",
+    "The files in 2-normalize-athletes contain a mixture of vetted and unvetted names.",
+    "Only names that were part of reviewed conflict clusters were fully vetted during the prior cleanup process.",
+    "Names that never appeared in a cluster were not necessarily reviewed and should not be assumed canonical just because they appear in the snapshot.",
+    "Because the scraper has changed and now includes previously missed results while excluding some prior bad results, cluster membership may differ in the new dataset.",
+    "Some earlier normalized files may still contain stale or incorrect records from scraper bugs; the snapshot is a strong starting point, not infallible ground truth."
+  ]
+}

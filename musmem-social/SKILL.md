@@ -1,17 +1,17 @@
 ---
 name: musmem-social
-description: Use when looking up or validating social media handles for bodybuilding athletes in a given contest and year, to populate social_media.json.
+description: Use when looking up or validating social media handles for bodybuilding athletes in a given contest and year, to populate the social-media folder.
 ---
 
 # MuscleMemory Social Media Lookup
 
-Fetches athletes from a contest, checks `social_media.json` for existing entries, and searches the web to find missing handles for the specified platform.
+Fetches athletes from a contest, checks the social-media folder for existing entries, and searches the web to find missing handles for the specified platform.
 
 ## Quick Reference
 
 | Config | Key |
 |--------|-----|
-| `config/paths.json` | `social_media` — path to JSON file |
+| `config/paths.json` | `social_media` — path to the social-media **folder** |
 | `config/apis.json` | `endpoints.contest_event`, `musclememory_net`, `user_agent_api` |
 
 **Platform abbreviations:**
@@ -30,6 +30,28 @@ Fetches athletes from a contest, checks `social_media.json` for existing entries
 
 ---
 
+## Data Format
+
+The social-media folder contains multiple JSON files. Each file name ends in `-male.json` or `-female.json`. Each file is a JSON array of records:
+
+```json
+[
+  { "name": "Last, First", "ig": "handle" },
+  { "name": "Banya, Parnelli", "fb": "patbanya1", "ig": "patbanya", "tw": "patbanya" }
+]
+```
+
+| Field | Notes |
+|-------|-------|
+| `name` | `Last, First` format — matches `completeName` from API |
+| `ig` | Instagram handle, no `@`, no URL |
+| `fb` | Facebook handle |
+| `tw` | Twitter/X handle |
+
+Omit platform keys that are not known — do not store `null`.
+
+---
+
 ## Mode 1: Lookup (default)
 
 ### Step 1 — Fetch contest athletes
@@ -44,18 +66,15 @@ Response: `data.results[]` — each entry has `completeName` (`Last, First`) and
 
 **Deduplicate** by `completeName` before proceeding.
 
-### Step 2 — Load social_media.json
+### Step 2 — Load existing social media data
 
-Path: `config/paths.json` → `social_media`
+Path: `config/paths.json` → `social_media` (a folder)
 
-```json
-{
-  "male":   { "Last, First": { "ig": "handle", "fb": "handle", "tw": "handle" } },
-  "female": { "Last, First": { "ig": "handle" } }
-}
-```
+1. List all `*-male.json` and `*-female.json` files in the folder, sorted alphabetically.
+2. For each file, parse as a JSON array and merge records into an in-memory map keyed by `name`, split by gender (inferred from filename suffix).
+3. On conflict (same name and same platform key in two files): last file wins (alphabetical order).
 
-For each athlete, check `data[gender][completeName][platform_key]`. If the key exists → **skip** (even if `--validate` is not set — lookup mode only finds missing entries).
+For each contest athlete, check `mergedMap[gender][completeName][platform_key]`. If the key exists → **skip** (even without `--validate`).
 
 ### Step 3 — Search for handle
 
@@ -77,13 +96,19 @@ Extract the handle from the URL or page (`instagram.com/{handle}`) — store wit
 
 ### Step 4 — Write results
 
-Write directly to `data[gender][completeName]`, adding only the new platform key. Do not overwrite existing keys for other platforms.
+Write newly found handles to a **new file** in the social-media folder. Name it after the contest and year:
 
-Save `social_media.json` after each new entry.
+```
+{social_media}/{contest-slug}-{year}-{gender}.json
+```
+
+Example: `~/workspace/musmem/data/social-media/2020-olympia-male.json`
+
+The file contains only the handles found in this session as a JSON array. Do not append to existing files.
 
 ```python
 with open(path, 'w', encoding='utf-8') as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
+    json.dump(records, f, ensure_ascii=False, indent=2)
 ```
 
 ### Step 5 — Report
@@ -102,7 +127,7 @@ Checks existing handles for the specified platform. Can be run alone or after a 
 
 ### Step 1 — Collect handles to validate
 
-Gather all athletes in `data["male"]` and `data["female"]` who have the platform key — regardless of which contest was specified. (Validation is global, not contest-scoped.)
+Load and merge all files in the folder (as in Step 2 above). Gather all athletes in the merged male and female maps who have the platform key — regardless of which contest was specified. (Validation is global, not contest-scoped.)
 
 ### Step 2 — Check each handle
 
@@ -129,24 +154,27 @@ Suspect handles (identity unclear):
 Ask: Remove dead handles? Review suspects individually?
 ```
 
-Only modify `social_media.json` after explicit user confirmation.
+Only modify files after explicit user confirmation. Write corrections to a new file named after the session (e.g., `corrections-YYYY-MM-DD-{gender}.json`) rather than editing existing files.
 
 ---
 
-## File Format
+## File Format Rules
 
-- JSON, UTF-8
-- Keys: `completeName` from API (`Last, First` format)
+- JSON array, UTF-8
+- Keys: `name` in `Last, First` format (matches `completeName` from API)
 - Handle values: username only, no `@` prefix, no full URL
 - Omit platform key entirely if not found — do not store `null`
+- One file per session/batch — do not append to existing files
 
 ## Common Mistakes
 
 | Mistake | Fix |
 |---------|-----|
-| Adding `"ig": null` for not-found athletes | Omit the key entirely — absence means not yet found or not found |
-| Overwriting existing platform keys during lookup | Only add missing keys — never overwrite |
+| Adding `"ig": null` for not-found athletes | Omit the key entirely |
+| Editing an existing file instead of creating a new one | Always write a new file per session |
+| Overwriting existing platform keys during lookup | New file only contains newly found handles — merging happens at read time |
 | Storing full URL instead of handle | Extract handle only: `instagram.com/{handle}` → store `{handle}` |
 | Searching `Last, First` on the web | Use `displayName` (First Last) for web searches |
-| Auto-removing dead/suspect handles | Always report and confirm with user before modifying existing entries |
-| Validating only contest athletes | Validation is global — check all entries in the file, not just the specified contest |
+| Auto-removing dead/suspect handles | Always report and confirm with user before modifying |
+| Validating only contest athletes | Validation is global — check all entries across all files, not just the specified contest |
+| Reading only one file | Always load and merge ALL files in the folder before checking for existing entries |

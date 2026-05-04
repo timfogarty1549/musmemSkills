@@ -2,7 +2,7 @@
   "master_male":   "~/workspace/musmem/data/bb_male.dat",
   "master_female": "~/workspace/musmem/data/bb_female.dat",
   "athletes_localized": "~/workspace/musmem/data/athletes_localized.json",
-  "social_media": "~/workspace/musmem/data/social_media.json",
+  "social_media": "~/workspace/musmem/data/social-media",
   "bio_male": "~/workspace/musmem/data/bio_male.dat",
   "bio_female": "~/workspace/musmem/data/bio_female.dat",
   "alias": "~/workspace/musmem/data/alias.dat",
