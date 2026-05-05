@@ -1,0 +1,6 @@
+interface:
+  display_name: "MusMem Athlete Extractor"
+  short_description: "Extract and compare athlete names"
+  default_prompt: "Use $musmem-extract-distinct-athletes to extract distinct athlete names and generate candidate variant groups."
+policy:
+  allow_implicit_invocation: true

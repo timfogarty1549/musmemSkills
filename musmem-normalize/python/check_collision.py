@@ -16,8 +16,7 @@ import argparse, sys
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument('--name', required=True)
-    p.add_argument('--file1', required=True)
-    p.add_argument('--file2', required=True)
+    p.add_argument('--files', nargs='+', required=True)
     return p.parse_args()
 
 def name_exists_in_file(dat_path, name):
@@ -30,11 +29,8 @@ def name_exists_in_file(dat_path, name):
 
 def main():
     args = parse_args()
-    found = []
-    if name_exists_in_file(args.file1, args.name):
-        found.append('file1')
-    if name_exists_in_file(args.file2, args.name):
-        found.append('file2')
+    found = [f'f{i+1}' for i, f in enumerate(args.files)
+             if name_exists_in_file(f, args.name)]
 
     if found:
         print(f"WARNING: '{args.name}' already exists in {', '.join(found)}")

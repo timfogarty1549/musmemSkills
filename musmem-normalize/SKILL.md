@@ -9,19 +9,31 @@ Interactive Python tool for reviewing candidate name variant groups and deciding
 
 ## Setup (start of every session)
 
-Copy all scripts from the skill directory to `/tmp/`, then run `normalize.py`:
+Run via the shell alias (defined in `~/.bash_profile`):
 
 ```bash
-cp /Users/timfogarty/workspace/skills/musmemSkills/.claude/skills/musmem-normalize/python/*.py /tmp/
+musmemNormalize
+```
+
+Or directly:
+
+```bash
+python3 ~/workspace/skills/musmemSkills/musmem-normalize/python/normalize.py
+```
+
+When invoking via Claude's Bash tool, copy to `/tmp/` first (required by permission rules):
+
+```bash
+cp ~/workspace/skills/musmemSkills/musmem-normalize/python/*.py /tmp/
 python3 /tmp/normalize.py
 ```
 
-The script prompts for the three file paths on startup (press Enter to accept defaults):
+The script prompts for file paths on startup (press Enter to accept defaults, or type a filename to resolve under the default root):
 
 ```
 File 1 [~/workspace/musmem/data/bb_male.dat]:
-File 2 [~/workspace/musmem/data/prelim/covid-male.dat]:
-TSV    [~/workspace/musmem/data/prelim/bb2010-covid-male-variant-groups.tsv]:
+File 2 (blank to finish):
+TSV    (~/workspace/musmem/distinct/):
 ```
 
 After confirming paths, the script enters the interactive loop automatically.
@@ -75,7 +87,7 @@ Variants not mentioned in an expression are left untouched.
 | 2 | `name` | A name variant in this group |
 | 3 | `count_file1` | Occurrences in file1 |
 | 4 | `count_file2` | Occurrences in file2 |
-| 5 | `expression` | Decision: blank / defer / skip / expression string |
+| 5 | `canonical` | Per-row decision: blank = pending; `defer` = revisit later; `skip` = no change (whole group); `-` = no rename for this row; any other value = rename this row's name to that value |
 | 6 | `applied` | ISO timestamp when corrections were written; blank if not yet applied |
 
 ## Session Resumption

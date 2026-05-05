@@ -36,8 +36,10 @@ def load_tsv(path):
     return rows
 
 def group_is_pending(group_rows):
-    expr = group_rows[0]['expression']
-    return expr == '' or expr == 'defer'
+    exprs = [r['expression'] for r in group_rows]
+    if any(e == 'defer' for e in exprs):
+        return True
+    return all(e == '' for e in exprs)
 
 def find_next_group(rows, target_id=None):
     groups = {}

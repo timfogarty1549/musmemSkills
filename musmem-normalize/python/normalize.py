@@ -18,23 +18,110 @@ import fetch_group as fg
 import check_collision as col_check
 import apply_corrections as ac
 
-DEFAULTS = {
-    'file1': '~/workspace/musmem/data/bb_male.dat',
-    'file2': '~/workspace/musmem/data/prelim/covid-male.dat',
-    'tsv':   '~/workspace/musmem/data/prelim/bb2010-covid-male-variant-groups.tsv',
-}
+ROOT     = os.path.expanduser('~/workspace/musmem/data')
+TSV_ROOT = os.path.expanduser('~/workspace/musmem/distinct')
 
-WIDE  = '═' * 58
-THIN  = '─' * 58
+FILE_DEFAULTS = [
+    'bb_male.dat',
+]
+
+WIDE = '═' * 58
+THIN = '─' * 58
+
+
+def resolve_path(raw, root=None):
+    if raw.startswith('/') or raw.startswith('~'):
+        return os.path.expanduser(raw)
+    return os.path.join(root or ROOT, raw)
 
 
 def prompt_paths():
-    paths = {}
-    for key, label in [('file1', 'File 1'), ('file2', 'File 2'), ('tsv', 'TSV   ')]:
-        default = DEFAULTS[key]
-        raw = input(f'{label} [{default}]: ').strip()
-        paths[key] = os.path.expanduser(raw if raw else default)
-    return paths['file1'], paths['file2'], paths['tsv']
+    files = []
+    for i, default in enumerate(FILE_DEFAULTS, 1):
+        full_default = resolve_path(default)
+        raw = input(f'File {i} [{full_default}]: ').strip()
+        files.append(resolve_path(raw) if raw else full_default)
+
+    n = len(FILE_DEFAULTS) + 1
+    while True:
+        raw = input(f'File {n} (blank to finish): ').strip()
+        if not raw:
+            break
+        files.append(resolve_path(raw))
+        n += 1
+
+    tsv_files = sorted(
+        f for f in os.listdir(TSV_ROOT) if f.endswith('.tsv')
+    ) if os.path.isdir(TSV_ROOT) else []
+
+    if tsv_files:
+        print(f'TSV files in {TSV_ROOT}/:')
+        for i, name in enumerate(tsv_files, 1):
+            print(f'  {i}. {name}')
+
+    while True:
+        raw = input(f'TSV    ({TSV_ROOT}/): ').strip()
+        if not raw:
+            continue
+        if tsv_files and raw.isdigit():
+            idx = int(raw) - 1
+            if 0 <= idx < len(tsv_files):
+                tsv = os.path.join(TSV_ROOT, tsv_files[idx])
+                break
+            print(f'  Enter a number between 1 and {len(tsv_files)}.')
+        else:
+            tsv = resolve_path(raw, TSV_ROOT)
+            break
+
+    return files, tsv
+
+
+# ── expression parsing ─────────────────────────────────────────────────────────
+
+def _split_expressions(expr):
+    parts, current, depth, in_quote = [], [], 0, False
+    for ch in expr:
+        if ch == '"':
+            in_quote = not in_quote
+        elif ch == '[' and not in_quote:
+            depth += 1
+        elif ch == ']' and not in_quote:
+            depth -= 1
+        elif ch == ',' and depth == 0 and not in_quote:
+            parts.append(''.join(current).strip())
+            current = []
+            continue
+        current.append(ch)
+    if current:
+        parts.append(''.join(current).strip())
+    return [p for p in parts if p]
+
+
+def _resolve_target(raw, label_map):
+    raw = raw.strip()
+    if raw.startswith('"') and raw.endswith('"'):
+        return raw[1:-1]
+    return label_map.get(raw)
+
+
+def _parse_renames(expr, label_map):
+    renames = {}
+    for part in _split_expressions(expr):
+        m = re.match(r'^\[([^\]]+)\]\s*=\s*(.+)$', part)
+        if m:
+            labels = [l.strip() for l in m.group(1).split(',')]
+            target = _resolve_target(m.group(2), label_map)
+            if target:
+                for lbl in labels:
+                    if lbl in label_map:
+                        renames[label_map[lbl]] = target
+            continue
+        m2 = re.match(r'^([a-z])\s*=\s*(.+)$', part)
+        if m2:
+            target = _resolve_target(m2.group(2), label_map)
+            if target and m2.group(1) in label_map:
+                renames[label_map[m2.group(1)]] = target
+    return renames
 
 
 # ── display helpers ────────────────────────────────────────────────────────────
@@ -90,12 +177,39 @@ def _parse_countries(records):
     return ', '.join(result)
 
 
-def _fmt_counts(f1, f2):
-    parts = []
-    if f1:
-        parts.append(f'f1:{f1}')
-    if f2:
-        parts.append(f'f2:{f2}')
+FILE_COLORS = [
+    '\033[32m',   # f1: green
+    '\033[33m',   # f2: yellow
+    '\033[35m',   # f3: magenta
+    '\033[36m',   # f4: cyan
+    '\033[34m',   # f5+: blue
+]
+RESET = '\033[0m'
+
+
+def expand_group(data):
+    all_records = []
+    for v in data['variants']:
+        for r in v['records']:
+            all_records.append((r['file'], r['line']))
+    def _sort_key(rec):
+        parts = rec[1].split(';')
+        year    = parts[1].strip() if len(parts) > 1 else ''
+        contest = parts[2].strip() if len(parts) > 2 else ''
+        return (year, contest)
+
+    all_records.sort(key=_sort_key)
+
+    print()
+    for file_tag, line in all_records:
+        fi = int(file_tag[1:]) - 1  # 'f1' -> 0, 'f2' -> 1, etc.
+        color = FILE_COLORS[min(fi, len(FILE_COLORS) - 1)]
+        print(f'{color}[{file_tag}] {line}{RESET}')
+    print()
+
+
+def _fmt_counts(counts):
+    parts = [f'f{i+1}:{n}' for i, n in enumerate(counts) if n > 0]
     return '[' + ', '.join(parts) + ']'
 
 
@@ -103,7 +217,7 @@ def display_group(data):
     gid      = data['group_id']
     variants = data['variants']
     pending  = data['pending_remaining']
-    total    = sum(v['count_file1'] + v['count_file2'] for v in variants)
+    total    = sum(sum(v['counts']) for v in variants)
     n        = len(variants)
 
     print()
@@ -111,10 +225,9 @@ def display_group(data):
     print(f'Group {gid}  ({n} variant{"s" if n != 1 else ""}, {total} record{"s" if total != 1 else ""})   [{pending} pending]')
     print(WIDE)
 
-    rows = []
-    max_cnt = 0
+    rows, max_cnt = [], 0
     for v in variants:
-        counts = _fmt_counts(v['count_file1'], v['count_file2'])
+        counts = _fmt_counts(v['counts'])
         rows.append((
             v['label'], v['name'], counts,
             _parse_years(v['records']),
@@ -136,8 +249,7 @@ def display_group(data):
 
 # ── data loading ───────────────────────────────────────────────────────────────
 
-def load_group(tsv, file1, file2):
-    """Return group data dict, or None if no pending groups remain."""
+def load_group(tsv, files):
     rows = fg.load_tsv(tsv)
     gid, group_rows = fg.find_next_group(rows)
     if gid is None:
@@ -145,22 +257,22 @@ def load_group(tsv, file1, file2):
 
     pending = fg.count_pending(rows)
     names   = sorted(set(r['name'] for r in group_rows))
-    f1_recs = fg.fetch_records(file1, names)
-    f2_recs = fg.fetch_records(file2, names)
+    recs_per_file = [fg.fetch_records(f, names) for f in files]
 
     variants = []
     for i, name in enumerate(names):
         label   = chr(ord('a') + i)
-        records = (
-            [{'file': 'file1', 'line': ln} for ln in f1_recs[name]] +
-            [{'file': 'file2', 'line': ln} for ln in f2_recs[name]]
-        )
+        records = []
+        counts  = []
+        for fi, recs in enumerate(recs_per_file):
+            file_records = recs[name]
+            records += [{'file': f'f{fi+1}', 'line': ln} for ln in file_records]
+            counts.append(len(file_records))
         variants.append({
-            'label':      label,
-            'name':       name,
-            'count_file1': len(f1_recs[name]),
-            'count_file2': len(f2_recs[name]),
-            'records':    records,
+            'label':   label,
+            'name':    name,
+            'counts':  counts,
+            'records': records,
         })
 
     return {'group_id': gid, 'pending_remaining': pending, 'variants': variants}
@@ -172,56 +284,60 @@ def count_queued(tsv):
 
 # ── decision recording ─────────────────────────────────────────────────────────
 
-def record_decision(tsv, group_id, expression):
+def record_decision(tsv, group_id, rename_dict_or_special, all_names):
     with open(tsv, encoding='utf-8') as f:
         lines = f.read().splitlines(keepends=True)
+
     out = [lines[0]]
     for line in lines[1:]:
         cols = line.rstrip('\n').split('\t')
         while len(cols) < 6:
             cols.append('')
         if cols[0].strip() and int(cols[0]) == group_id:
-            cols[4] = expression
+            name = cols[1]
+            if isinstance(rename_dict_or_special, str):
+                cols[4] = rename_dict_or_special
+            elif name in rename_dict_or_special:
+                cols[4] = rename_dict_or_special[name]
+            else:
+                cols[4] = '-'
         out.append('\t'.join(cols) + '\n')
+
     with open(tsv, 'w', encoding='utf-8') as f:
         f.writelines(out)
 
 
 # ── collision check ────────────────────────────────────────────────────────────
 
-def _collisions_in_expr(expr, file1, file2):
+def _collisions_in_expr(expr, files):
     result = []
     for name in re.findall(r'"([^"]+)"', expr):
-        found = []
-        if col_check.name_exists_in_file(file1, name):
-            found.append('file1')
-        if col_check.name_exists_in_file(file2, name):
-            found.append('file2')
+        found = [f'f{i+1}' for i, f in enumerate(files)
+                 if col_check.name_exists_in_file(f, name)]
         if found:
             result.append((name, found))
     return result
 
 
-def resolve_expression(expr, file1, file2):
-    """Return the final expression, or None if the user aborts."""
+def resolve_expression(expr, files):
     while True:
-        collisions = _collisions_in_expr(expr, file1, file2)
+        collisions = _collisions_in_expr(expr, files)
         if not collisions:
             return expr
-        for name, files in collisions:
-            print(f"WARNING: '{name}' already exists in {', '.join(files)}")
+        for name, found in collisions:
+            print(f"WARNING: '{name}' already exists in {', '.join(found)}")
         resp = input('Proceed anyway? (yes / enter new expression): ').strip()
         if resp.lower() == 'yes':
             return expr
         if resp:
             expr = resp
         else:
-            return None  # user entered nothing — abort
+            return None
 
 
 # ── apply corrections ──────────────────────────────────────────────────────────
 
-def run_apply(tsv, file1, file2):
+def run_apply(tsv, files):
     rows   = ac.load_tsv(tsv)
     queued = ac.get_queued_groups(rows)
 
@@ -234,24 +350,25 @@ def run_apply(tsv, file1, file2):
     for src, tgt in sorted(rename_map.items()):
         print(f"  '{src}' → '{tgt}'")
 
-    file1_names = ac.find_names_in_file(file1)
-    file2_names = ac.find_names_in_file(file2)
-    src_names   = {gid: set(r['name'] for r in grows) for gid, grows in queued.items()}
-    warnings    = ac.check_collisions(rename_map, src_names, file1_names, file2_names)
+    file_names_list = [ac.find_names_in_file(f) for f in files]
+    src_names = {gid: set(r['name'] for r in grows) for gid, grows in queued.items()}
+    warnings  = ac.check_collisions(rename_map, src_names, file_names_list)
     if warnings:
         print("\nWARNINGS:")
         for w in warnings:
             print(w)
 
     epoch = int(time.time())
-    for path in (file1, file2):
+    for path in files:
         backup = f'{path}.{epoch}'
         shutil.copy2(path, backup)
         print(f"Backup: {backup}")
 
-    f1 = ac.apply_to_file(file1, rename_map, dry_run=False)
-    f2 = ac.apply_to_file(file2, rename_map, dry_run=False)
-    print(f"\nApplied: {f1} lines changed in file1, {f2} in file2")
+    changed = []
+    for i, path in enumerate(files):
+        n = ac.apply_to_file(path, rename_map, dry_run=False)
+        changed.append(f'f{i+1}: {n}')
+    print(f"\nApplied: {', '.join(changed)} lines changed")
 
     ts = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
     ac.stamp_applied(tsv, set(queued.keys()), ts)
@@ -260,14 +377,14 @@ def run_apply(tsv, file1, file2):
 
 # ── main loop ──────────────────────────────────────────────────────────────────
 
-PROMPT = 'Expression (skip / defer / process / quit / expand <label>): '
+PROMPT = 'Expression (s)kip / defer / process / (q)uit / (e)xpand: '
 
 
 def main():
-    file1, file2, tsv = prompt_paths()
+    files, tsv = prompt_paths()
 
     while True:
-        data = load_group(tsv, file1, file2)
+        data = load_group(tsv, files)
 
         if data is None:
             queued = count_queued(tsv)
@@ -277,7 +394,7 @@ def main():
             while True:
                 cmd = input('> ').strip().lower()
                 if cmd == 'process':
-                    run_apply(tsv, file1, file2)
+                    run_apply(tsv, files)
                     break
                 elif cmd in ('quit', 'exit'):
                     return
@@ -286,6 +403,8 @@ def main():
             continue
 
         display_group(data)
+        all_names = [v['name'] for v in data['variants']]
+        label_map = {v['label']: v['name'] for v in data['variants']}
 
         while True:
             raw = input(PROMPT).strip()
@@ -293,41 +412,42 @@ def main():
                 continue
             lo = raw.lower()
 
-            if lo == 'skip':
-                record_decision(tsv, data['group_id'], 'skip')
+            if lo in ('skip', 's'):
+                record_decision(tsv, data['group_id'], 'skip', all_names)
                 break
 
             elif lo == 'defer':
-                record_decision(tsv, data['group_id'], 'defer')
+                record_decision(tsv, data['group_id'], 'defer', all_names)
                 break
 
-            elif lo in ('quit', 'exit'):
+            elif lo in ('quit', 'exit', 'q'):
                 queued = count_queued(tsv)
                 print(f'{queued} queued correction(s) not yet applied.')
                 return
 
             elif lo == 'process':
-                run_apply(tsv, file1, file2)
+                run_apply(tsv, files)
                 break
 
-            elif lo.startswith('expand '):
-                label = raw[7:].strip()
-                for v in data['variants']:
-                    if v['label'] == label:
-                        print()
-                        for r in v['records']:
-                            print(f'  [{r["file"]}] {r["line"]}')
-                        break
-                else:
-                    print(f'  Unknown label: {label!r}')
+            elif lo in ('expand', 'e'):
+                expand_group(data)
                 display_group(data)
 
             else:
-                expr = resolve_expression(raw, file1, file2)
-                if expr is not None:
-                    record_decision(tsv, data['group_id'], expr)
-                    break
+                expr = resolve_expression(raw, files)
+                if expr is None:
+                    continue
+                rename_dict = _parse_renames(expr, label_map)
+                if not rename_dict:
+                    print('  Could not parse expression. Try again.')
+                    continue
+                record_decision(tsv, data['group_id'], rename_dict, all_names)
+                break
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print()
+        sys.exit(0)
