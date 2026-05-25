@@ -102,9 +102,11 @@ Each page shows divisions with numbered placings. See `sources-reference.md` for
 9. **Per-token normalization** (applied to each whitespace-separated token):
    - Title-case each token
    - Capitalize the letter after `'` — e.g. `O'brien` → `O'Brien`
-   - Non-trailing `II` → `Il` (middle-name position is a name, not a Roman numeral)
+   - Capitalize the letter at index 2 for tokens starting with `Mc` — e.g. `Mcmillan` → `McMillan`, `Mcdonald` → `McDonald`
+   - Non-trailing `II` → `Il` (middle-name position is more likely an OCR error for the name "Il")
    - Two-letter token where both letters are consonants → split into initials — e.g. `DJ` → `D J` (exceptions: `Jr`, `Sr`)
    - Trailing token that is `II`, `III`, or `IV` (case-insensitive) → uppercase Roman numeral; higher values not uppercased (`Xi`, `Vi`, etc. are valid Chinese given names)
+   - First token `Dr` (case-insensitive) → remove it (honorifics are not recorded in the database)
 10. **Collapse whitespace** — multiple spaces → single space, strip leading/trailing
 11. **Report non-Latin scripts** — if the name contains Cyrillic, Arabic, or CJK characters, print a warning (do not modify the name)
 
@@ -202,6 +204,12 @@ c OP
 ```
 
 The parent code is the division's outer code: `OP` for Men's Bodybuilding, `BB` for Women's Bodybuilding, `CL` for Classic Physique, `PH` for Men's Physique, `FI` for Figure, etc.
+
+**Overall rounds in scored competitions (IFBB Amateur, etc.):** When a contest has a separate Overall round with full judged placings (e.g. Men's Physique Overall, Classic Bodybuilding Overall), only the **1st place finisher** is recorded. Write as `c {parent-code}` + `0 {Name}`. Height/weight/height-class codes (Pa, Pb, Ca, Cb, 70kg, etc.) roll up to the top-level division code for the overall entry:
+- Men's Physique Overall → `c PH` + `0 {name}`
+- Classic Physique/Bodybuilding Overall → `c CL` + `0 {name}`
+- Figure Overall → `c FI` + `0 {name}`
+- Men's/Women's Bodybuilding Overall → `c OP` / `c BB` + `0 {name}`
 
 **`junior` and `teen` slugs — context-dependent codes:**
 

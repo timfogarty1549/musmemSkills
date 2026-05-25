@@ -112,10 +112,24 @@ _INIT_EXCEPTIONS = {'jr', 'sr'}
 _ROMAN_TRAIL = {'ii', 'iii', 'iv'}
 
 
+def _cap_part(p):
+    """Capitalize one non-hyphenated part of a token, applying apostrophe and Mc rules."""
+    if "'" in p:
+        p = "'".join(s.capitalize() for s in p.split("'"))
+    else:
+        p = p.capitalize()
+    # Mc fix: Mcalister → McAlister, Mcdonald → McDonald
+    if len(p) > 2 and p[:2].lower() == 'mc':
+        p = p[:2] + p[2].upper() + p[3:]
+    return p
+
+
 def _fix_tokens(name):
     """Per-token normalization applied after basic cleaning:
-    - Title-case each token
+    - Title-case each token (per-hyphen-part for hyphenated tokens)
     - Capitalize letter after apostrophe: O'brien → O'Brien
+    - Mc fix: Mcalister → McAlister, Mcdonald → McDonald
+    - Capitalize letter after hyphen: Smith-jones → Smith-Jones
     - Non-trailing 'ii' → 'Il' (name, not Roman numeral)
     - Two-consonant token → split into initials: 'DJ' → 'D J' (except Jr, Sr)
     - Trailing Roman numeral (ii/iii/iv) → uppercase: II / III / IV
@@ -133,11 +147,11 @@ def _fix_tokens(name):
             result.append(tok.upper())
             continue
 
-        # Title case, with post-apostrophe capitalization
-        if "'" in tok:
-            tok = "'".join(p.capitalize() for p in tok.split("'"))
+        # Title case with apostrophe, Mc, and hyphen handling
+        if '-' in tok:
+            tok = '-'.join(_cap_part(part) for part in tok.split('-'))
         else:
-            tok = tok.capitalize()
+            tok = _cap_part(tok)
 
         # Non-trailing 'ii' → 'Il'
         if tok_low == 'ii':

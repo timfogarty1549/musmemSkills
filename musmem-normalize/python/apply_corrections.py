@@ -31,13 +31,13 @@ def load_tsv(path):
         if not line.strip():
             continue
         cols = line.split('\t')
-        while len(cols) < 6:
+        while len(cols) < 4:
             cols.append('')
         rows.append({
             'group_id':   int(cols[0]),
             'name':       cols[1],
-            'expression': cols[4].strip(),
-            'applied':    cols[5].strip(),
+            'expression': cols[2].strip(),
+            'applied':    cols[3].strip(),
         })
     return rows
 
@@ -128,10 +128,10 @@ def stamp_applied(tsv_path, group_ids, timestamp):
     out_lines = [lines[0]]
     for line in lines[1:]:
         cols = line.rstrip('\n').split('\t')
-        while len(cols) < 6:
+        while len(cols) < 4:
             cols.append('')
         if int(cols[0]) in group_ids:
-            cols[5] = timestamp
+            cols[3] = timestamp
         out_lines.append('\t'.join(cols) + '\n')
 
     with open(tsv_path, 'w', encoding='utf-8') as f:

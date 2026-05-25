@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+import sys
+import os
+import re
+import glob
+
+def strip_non_alpha(s):
+    return re.sub(r'[^a-zA-Z]', '', s).lower()
+
+def main():
+    if len(sys.argv) != 3:
+        print(f"Usage: {os.path.basename(sys.argv[0])} <gender> <name>")
+        sys.exit(1)
+
+    gender = sys.argv[1].lower()
+    name = sys.argv[2]
+    needle = strip_non_alpha(name)
+
+    data_dir = os.path.expanduser('~/workspace/musmem/data')
+    files = [os.path.join(data_dir, f'bb_{gender}.dat')]
+    files += glob.glob(os.path.join(data_dir, 'prelim', f'*-{gender}.dat'))
+
+    found_any = False
+    seen = set()
+    for filepath in sorted(files):
+        if not os.path.exists(filepath):
+            continue
+        filename = os.path.basename(filepath)
+        with open(filepath, encoding='utf-8', errors='replace') as f:
+            for line in f:
+                parts = line.rstrip('\n').split(';')
+                if not parts:
+                    continue
+                col1 = parts[0]
+                if needle in strip_non_alpha(col1):
+                    key = (filename, col1)
+                    if key not in seen:
+                        seen.add(key)
+                        print(f"{col1}\t{filename}")
+                        found_any = True
+
+    if not found_any:
+        print(f"No matches found for '{name}' in {gender} files.")
+
+if __name__ == '__main__':
+    main()

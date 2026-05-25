@@ -19,3 +19,16 @@ Returns a list of years for which results exist for the given contest name.
 GET https://musclememory.org/api/contest?name={contest-name}&year={year}
 ```
 Returns results for a specific contest and year.
+
+## Rate Limiting
+
+The server enforces two rate limits:
+
+| Limit | Window | Cap |
+|-------|--------|-----|
+| Short-term | 10 seconds | 30 requests |
+| Long-term | 1 hour | 1,000 requests |
+
+**Bypass header:** Include `X-Rate-Limit-Bypass: {secret}` to skip the long-term hourly limit. The short-term limit is always enforced.  
+
+Secret defined in musmem .env  `RATE_LIMIT_BYPASS_SECRET`

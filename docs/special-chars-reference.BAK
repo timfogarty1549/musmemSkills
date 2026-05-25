@@ -3,7 +3,21 @@
 The MuscleMemory master `.dat` files use ASCII-safe codes for characters with diacritics,
 because the files were first created in 1997 before Unicode was practical.
 
-Source of truth: `~/workspace/node/musmem/src/utils/SpecialChars.ts` (`replaceUtf` mapping).
+## Files to update when adding a new character
+
+Four locations must be updated together:
+
+1. **`~/workspace/node/musmem/src/utils/specialChars.ts`** — source of truth
+   - `replaceOld` map: add `'X^': "&#NNN;"` (HTML entity decimal)
+   - `replaceUtf` map: add `'X^': "Ẋ"` (UTF-8 character)
+   - `keys` array: add `'X^'` and `'x^'` in alphabetical order (longer keys like `'D---'` must come before shorter ones like `'D--'` to match correctly)
+
+2. **`~/workspace/musmem/php/format.php`** — `cleanUTF()` function (line ~40)
+   - Add the UTF-8 character to the first array and its internal code to the second array
+
+3. **This file** — add a row to the appropriate `### Letter` section in the Full mapping table below
+
+---
 
 The `verify_and_complete.py` matching pipeline (step 2) normalizes both directions —
 internal codes and Unicode — to plain ASCII for comparison. All three forms of a name
@@ -46,6 +60,7 @@ A code is a base letter followed by a punctuation suffix:
 | `A@` | Å | `a@` | å |
 | `A*` | Ă | `a*` | ă |
 | `A_` | Ā | `a_` | ā |
+| `A--` | Ą | `a--` | ą |
 
 ### C
 | Code | Character | Code | Character |
@@ -69,6 +84,7 @@ A code is a base letter followed by a punctuation suffix:
 | `e^` | ě | | |
 | `E.` | Ė | `e.` | ė |
 | `E_` | Ē | `e_` | ē |
+| `E--` | Ę | `e--` | ę |
 
 ### G
 | Code | Character |
@@ -80,21 +96,21 @@ A code is a base letter followed by a punctuation suffix:
 |------|-----------|------|-----------|
 | `I'` | Í | `i'` | í |
 | `` I` `` | Ì | `` i` `` | ì |
-| `I.` | İ | | |
+| `I.` | İ | `i.` | ı |
 | `I_` | Ī | `i_` | ī |
 
 ### L
-| Code | Character |
-|------|-----------|
-| `L/` | Ł |
-| `l/` | ł |
+| Code | Character | Code | Character |
+|------|-----------|------|-----------|
+| `L/` | Ł | `l/` | ł |
+| `L''` | Ľ    | l`''` | ľ |
 
 ### N
 | Code | Character | Code | Character |
 |------|-----------|------|-----------|
 | `N~` | Ñ | `n~` | ñ |
 | `N^` | Ň | `n^` | ň |
-| `n'` | ń | | |
+| | | `n'` | ń | | |
 
 ### O
 | Code | Character | Code | Character |
@@ -119,6 +135,11 @@ A code is a base letter followed by a punctuation suffix:
 | `S--` | Ş | `s--` | ş |
 | `s*` | ß | | |
 
+### T
+| Code | Character | Code | Character |
+|------|-----------|------|-----------|
+| `T^` | Ť | `t^` | ť |
+
 ### U
 | Code | Character | Code | Character |
 |------|-----------|------|-----------|
@@ -138,6 +159,8 @@ A code is a base letter followed by a punctuation suffix:
 | Code | Character | Code | Character |
 |------|-----------|------|-----------|
 | `Z^` | Ž | `z^` | ž |
+| `Z.` | Ż | `z.` | ż |
+| | | `z'` | ź |
 
 ---
 

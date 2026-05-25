@@ -63,11 +63,12 @@ def prompt_paths():
         raw = input(f'TSV    ({TSV_ROOT}/): ').strip()
         if not raw:
             continue
-        if tsv_files and raw.isdigit():
-            idx = int(raw) - 1
-            if 0 <= idx < len(tsv_files):
-                tsv = os.path.join(TSV_ROOT, tsv_files[idx])
-                break
+        if tsv_files:
+            if raw.isdigit():
+                idx = int(raw) - 1
+                if 0 <= idx < len(tsv_files):
+                    tsv = os.path.join(TSV_ROOT, tsv_files[idx])
+                    break
             print(f'  Enter a number between 1 and {len(tsv_files)}.')
         else:
             tsv = resolve_path(raw, TSV_ROOT)
@@ -291,16 +292,16 @@ def record_decision(tsv, group_id, rename_dict_or_special, all_names):
     out = [lines[0]]
     for line in lines[1:]:
         cols = line.rstrip('\n').split('\t')
-        while len(cols) < 6:
+        while len(cols) < 4:
             cols.append('')
         if cols[0].strip() and int(cols[0]) == group_id:
             name = cols[1]
             if isinstance(rename_dict_or_special, str):
-                cols[4] = rename_dict_or_special
+                cols[2] = rename_dict_or_special
             elif name in rename_dict_or_special:
-                cols[4] = rename_dict_or_special[name]
+                cols[2] = rename_dict_or_special[name]
             else:
-                cols[4] = '-'
+                cols[2] = '-'
         out.append('\t'.join(cols) + '\n')
 
     with open(tsv, 'w', encoding='utf-8') as f:

@@ -19,7 +19,7 @@ python3 /Users/timfogarty/workspace/skills/musmemSkills/musmem-extract-distinct-
 
 The alias `musmemDistinct` has been added to `.bash_profile` for this command.
 
-2. Answer prompts for one or two input files.
+2. Answer prompts for each input file. Enter a blank path when done.
    - `Input data file path` means the MusMem `.dat` file to process.
    - Input files must be semicolon-delimited.
    - Input file paths may be absolute, `~`-relative, or relative to `/Users/timfogarty/workspace/musmem/data`.
@@ -34,18 +34,6 @@ The alias `musmemDistinct` has been added to `.bash_profile` for this command.
    - one count column per source, named `count_<label>`
 
 The default folder for candidate-group TSV files is `/Users/timfogarty/workspace/musmem/distinct`.
-
-## Defaults
-
-For the common current task, use:
-
-- Source 1 file: `bb_male.dat`
-- Source 1 label: `bb_male`
-- Source 1 minimum year: `2010`
-- Source 2 file: `prelim/covid-male.dat`
-- Source 2 label: `covid_male`
-- Source 2 minimum year: blank
-- Candidate group output: `/Users/timfogarty/workspace/musmem/distinct/bb_male-covid_male-variant-groups.tsv`
 
 ## Review Guidance
 
@@ -73,4 +61,4 @@ Candidate pair rules:
 - **Same given name; surname typo/transposition**: pairs names with the same normalized given name when the compact surnames are within a small Damerau-Levenshtein edit distance.
 - **Full name typo candidate**: pairs names in the same surname/given initial bucket when the full normalized name is within a small edit distance.
 
-For two-source comparisons, the final TSV only includes groups that contain at least one name from each source. For one-source runs, all generated candidate groups are written.
+For multi-source runs, the final TSV only includes groups that contain at least one name from at least two different sources. For single-source runs, all generated candidate groups are written.

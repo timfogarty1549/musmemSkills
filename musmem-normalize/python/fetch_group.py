@@ -25,13 +25,13 @@ def load_tsv(path):
         if not line.strip():
             continue
         cols = line.split('\t')
-        while len(cols) < 6:
+        while len(cols) < 4:
             cols.append('')
         rows.append({
             'group_id': int(cols[0]),
             'name': cols[1],
-            'expression': cols[4].strip(),
-            'applied': cols[5].strip(),
+            'expression': cols[2].strip(),
+            'applied': cols[3].strip(),
         })
     return rows
 

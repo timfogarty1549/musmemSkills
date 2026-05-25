@@ -189,6 +189,10 @@ def slug_to_code(slug, div_code):
     elif slug_l.startswith('ifbb-pro-'):
         slug_l = slug_l[len('ifbb-pro-'):]
 
+    # 'open-class-X' → treat as 'class-X' (e.g. Figure "Open Class A" → Fa)
+    if re.match(r'^open-class-[a-h]$', slug_l):
+        slug_l = slug_l[len('open-'):]
+
     # Bare letter slug (a/b/c/d/e/f/g/h) — treat as 'class-{letter}'
     if re.match(r'^[a-h]$', slug_l):
         slug_l = f'class-{slug_l}'

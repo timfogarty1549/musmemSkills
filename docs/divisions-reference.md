@@ -22,7 +22,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | FW | FlyWeight |
 | LF | Light-FlyWeight |
 | U212 | Under 212 |
-| U208 | Under 208 |
+| U210 | Under 210 |
 | U202 | Under 202 |
 | **Height classes** | |
 | XT | Extra-Tall |
@@ -77,10 +77,10 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | MAd | Masters D |
 | **Masters Under 212** | |
 | M212 | Masters Under 212 |
-| M208 | Masters Under 208 |
 | M202 | Masters Under 202 |
-| M3212 | Masters 35+ Under 212 |
+| m3212 | Masters 35+ Under 212 |
 | M4212 | Masters 40+ Under 212 |
+| m4212 | Masters 45+ Under 212 |
 | M5212 | Masters 50+ Under 212 |
 | M6212 | Masters 60+ Under 212 |
 | M7212 | Masters 70+ Under 212 |
@@ -240,7 +240,29 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 95kg | 95 kg |
 | 100kg | 100 kg |
 | 105kg | 105 kg |
+| o80kg | Over 80 kg (when no higher divisions) |
 | o100kg | Over 100 kg |
+| **Classic Bodybuilding** | **amateur ifbb only** |
+| CB | Classic Bodybuilding |
+| CBa | Classic Bodybuilding A |
+| CBb | Classic Bodybuilding B |
+| CBc | Classic Bodybuilding C |
+| CBd | Classic Bodybuilding D |
+| CBe | Classic Bodybuilding E |
+| CBT | Classic Bodybuilding Teen |
+| CBJ | Classic Bodybuilding Junior |
+| CBJa | Classic Bodybuilding Junior A |
+| CBJb | Classic Bodybuilding Junior B |
+| CBM | Classic Bodybuilding Masters |
+| CB3 | Classic Bodybuilding 35+ |
+| CB4 | Classic Bodybuilding 40+ |
+| CB45 | Classic Bodybuilding 45+ |
+| CB5 | Classic Bodybuilding 50+ |
+| CB55 | Classic Bodybuilding 55+ |
+| CB6 | Classic Bodybuilding 60+ |
+| MUP | Muscular Physique |
+| MUPa | Muscular Physique A |
+| MUPb | Muscular Physique B |
 | **Classic Physique** | |
 | CL | Classic |
 | Ca | Classic A |

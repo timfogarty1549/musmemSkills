@@ -79,6 +79,10 @@ class NameRecord:
     full_key: str
     given_tokens: tuple[str, ...]
     all_tokens: tuple[str, ...]
+    given_compact: str
+    surname_compact: str
+    original_compact: str
+    all_tokens_set: frozenset
 
 
 def prompt(text: str, default: str | None = None) -> str:
@@ -111,10 +115,6 @@ def resolve_data_path(value: str) -> Path:
     return DATA_ROOT / path
 
 
-def resolve_output_path(value: str) -> Path:
-    return Path(value).expanduser()
-
-
 def strip_accents(text: str) -> str:
     return "".join(ch for ch in unicodedata.normalize("NFKD", text) if not unicodedata.combining(ch))
 
@@ -141,6 +141,7 @@ def parse_name(name: str) -> NameRecord:
     given = given.strip()
     surname_key = clean_text(surname)
     given_key = clean_text(given)
+    all_tokens = tuple(clean_text(name).split())
     return NameRecord(
         original=name,
         surname=surname,
@@ -149,7 +150,11 @@ def parse_name(name: str) -> NameRecord:
         given_key=given_key,
         full_key=clean_text(f"{surname} {given}"),
         given_tokens=tuple(given_key.split()),
-        all_tokens=tuple(clean_text(name).split()),
+        all_tokens=all_tokens,
+        given_compact=compact_key(given),
+        surname_compact=compact_key(surname),
+        original_compact=compact_key(name),
+        all_tokens_set=frozenset(all_tokens),
     )
 
 
@@ -264,15 +269,15 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
     by_three_token_combo: dict[tuple[str, ...], list[NameRecord]] = defaultdict(list)
 
     for record in records:
-        by_full_compact[compact_key(record.original)].append(record)
+        by_full_compact[record.original_compact].append(record)
         by_surname[record.surname_key].append(record)
         by_given[record.given_key].append(record)
         by_surname_initial[(record.surname_key[:1], record.given_key[:1])].append(record)
         token_key = tuple(sorted(record.all_tokens))
         if len(token_key) >= 2:
             by_sorted_tokens[token_key].append(record)
-        if len(set(record.all_tokens)) >= 3:
-            for combo in combinations(sorted(set(record.all_tokens)), 3):
+        if len(record.all_tokens_set) >= 3:
+            for combo in combinations(sorted(record.all_tokens_set), 3):
                 by_three_token_combo[combo].append(record)
 
     pairs: dict[tuple[str, str], set[str]] = defaultdict(set)
@@ -287,9 +292,9 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
         if len(bucket) < 2 or len(bucket) > 100:
             continue
         for i, left in enumerate(bucket):
-            left_tokens = set(left.all_tokens)
+            left_tokens = left.all_tokens_set
             for right in bucket[i + 1 :]:
-                right_tokens = set(right.all_tokens)
+                right_tokens = right.all_tokens_set
                 if max(len(left_tokens), len(right_tokens)) < 4:
                     continue
                 if min(len(left_tokens), len(right_tokens)) < 3:
@@ -311,14 +316,14 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
                 add_pair(pairs, left, right, "punctuation/spacing/accent only")
 
     for bucket in by_surname.values():
-        bucket = sorted(bucket, key=lambda r: r.given_key)
-        for i, left in enumerate(bucket):
-            for right in bucket[i + 1 :]:
+        sorted_bucket = sorted(bucket, key=lambda r: r.given_key)
+        for i, left in enumerate(sorted_bucket):
+            for right in sorted_bucket[i + 1 :]:
                 if left.given_key == right.given_key:
                     continue
                 if nickname_match(left.given_tokens, right.given_tokens):
                     add_pair(pairs, left, right, "same surname; common given-name variant")
-                elif close_spelling(compact_key(left.given), compact_key(right.given)):
+                elif close_spelling(left.given_compact, right.given_compact):
                     add_pair(pairs, left, right, "same surname; given-name typo/transposition")
                 elif initials_match(left.given_tokens, right.given_tokens) or initials_match(right.given_tokens, left.given_tokens):
                     add_pair(pairs, left, right, "same surname; initial/expanded given-name")
@@ -328,7 +333,7 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
             for right in bucket[i + 1 :]:
                 if left.surname_key == right.surname_key:
                     continue
-                if close_spelling(compact_key(left.surname), compact_key(right.surname)):
+                if close_spelling(left.surname_compact, right.surname_compact):
                     add_pair(pairs, left, right, "same given name; surname typo/transposition")
 
     for bucket in by_surname_initial.values():
@@ -345,32 +350,27 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
 
 
 def collect_sources() -> list[Source]:
-    while True:
-        count_text = prompt("How many source files? Enter 1 or 2", "2")
-        if count_text in {"1", "2"}:
-            source_count = int(count_text)
-            break
-        print("Please enter 1 or 2.")
-
     sources: list[Source] = []
-    for idx in range(1, source_count + 1):
-        print(f"\nSource {idx}")
-        while True:
-            path = resolve_data_path(prompt("Input data file path"))
-            if path.is_file():
-                break
+    while True:
+        print(f"\nSource {len(sources) + 1}")
+        raw = prompt("Input data file path (blank to finish)").strip()
+        if not raw:
+            if not sources:
+                print("Please enter at least one source file.")
+                continue
+            break
+        path = resolve_data_path(raw)
+        if not path.is_file():
             print(f"File not found: {path}")
-        label_default = safe_label(path.stem)
-        label = safe_label(prompt("Label for output/count column", label_default))
+            continue
+        label = safe_label(path.stem)
         min_year = prompt_int("Minimum year from column 2, blank for none")
         sources.append(Source(label=label, path=path, min_year=min_year))
     return sources
 
 
 def default_groups_out(sources: list[Source]) -> Path:
-    if len(sources) == 1:
-        return DISTINCT_ROOT / f"{sources[0].label}-variant-groups.tsv"
-    return DISTINCT_ROOT / f"{sources[0].label}-{sources[1].label}-variant-groups.tsv"
+    return DISTINCT_ROOT / f"{'-'.join(s.label for s in sources)}-variant-groups.tsv"
 
 
 def write_outputs(sources: list[Source], counts_by_label: dict[str, dict[str, int]], groups_out: Path) -> None:
@@ -388,10 +388,10 @@ def write_outputs(sources: list[Source], counts_by_label: dict[str, dict[str, in
     groups_out.parent.mkdir(parents=True, exist_ok=True)
     with groups_out.open("w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f, delimiter="\t", lineterminator="\n")
-        writer.writerow(["group_id", "name", *[f"count_{source.label}" for source in sources]])
+        writer.writerow(["group_id", "name"])
         for idx, group in enumerate(groups, 1):
             for name in group:
-                writer.writerow([idx, name, *[counts_by_label[source.label].get(name, 0) for source in sources]])
+                writer.writerow([idx, name])
 
     print(f"Wrote {len(groups)} candidate groups to {groups_out}")
 
@@ -407,7 +407,16 @@ def main() -> int:
         print(f"Read {sum(counts.values())} rows{year_text} from {source.path}")
         print(f"Found {len(counts)} distinct names")
 
-    groups_out = resolve_output_path(prompt("Candidate group TSV output path", str(default_groups_out(sources))))
+    while True:
+        raw = prompt("Candidate group TSV output path", str(default_groups_out(sources)))
+        p = Path(raw).expanduser()
+        if p.suffix == '':
+            p = p.with_suffix('.tsv')
+        elif p.suffix != '.tsv':
+            print("Output file must have a .tsv extension.")
+            continue
+        groups_out = p if p.is_absolute() else DISTINCT_ROOT / p
+        break
     write_outputs(sources, counts_by_label, groups_out)
     return 0
 

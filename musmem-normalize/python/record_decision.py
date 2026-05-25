@@ -26,10 +26,10 @@ def main():
 
     for line in lines[1:]:
         cols = line.rstrip('\n').split('\t')
-        while len(cols) < 6:
+        while len(cols) < 4:
             cols.append('')
         if int(cols[0]) == args.group_id:
-            cols[4] = args.expression
+            cols[2] = args.expression
             updated += 1
         out_lines.append('\t'.join(cols) + '\n')
 

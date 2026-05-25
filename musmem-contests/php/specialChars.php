@@ -1,10 +1,6 @@
 <?php
 class SpecialChars {
     private static $mapping = [
-        "Jeniffer PeÃ±a Rueda" => "Jeniffer Johana Pen~a Rueda",
-        "Jeniffer Johana en~a Rueda" => "Jeniffer Johana Pen~a Rueda",
-        "Jeniffer JohanaÂ PeÃ±a Rueda" => "Jeniffer Johana Pen~a Rueda",
-        "Jeniffer Johana Pena Rueda" => "Jeniffer Johana Pen~a Rueda",
         '’' => "'",
         "“" => '(',
         "”" => ')',
@@ -97,11 +93,14 @@ class SpecialChars {
     "Í"=>"I'",    // acute
     "í"=>"i'",
     "İ"=>"I.",
+    "ı"=>'i.',
     "ī"=>'i_',
     "Ī"=>'I_',
     "ï"=>'i:',
     "Ł"=>"L/",
     "ł"=>"l/",
+    "Ľ"=>"L''",
+    "ľ"=>"l''",
     "Ñ"=>'N~',
     "ñ"=>'n~',
     "ń"=>"n'",    // acute (Polish ń)
@@ -126,6 +125,8 @@ class SpecialChars {
     "Š"=>'S^',
     "š"=>'s^',
     "ß"=>'s*',    // german s-set
+    "Ť"=>'T^',
+    "ť"=>'t^',
     "Û"=>'U^',
     "û"=>'u^', 
     "Ü"=>'U:', 
