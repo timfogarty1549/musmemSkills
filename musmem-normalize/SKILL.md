@@ -28,13 +28,16 @@ cp ~/workspace/skills/musmemSkills/musmem-normalize/python/*.py /tmp/
 python3 /tmp/normalize.py
 ```
 
-The script prompts for file paths on startup (press Enter to accept defaults, or type a filename to resolve under the default root):
+The script prompts for the TSV on startup. If the TSV was produced by `musmem-extract-distinct-athletes`, the source `.dat` file paths are embedded in the TSV and loaded automatically — no further input needed:
 
 ```
-File 1 [~/workspace/musmem/data/bb_male.dat]:
-File 2 (blank to finish):
-TSV    (~/workspace/musmem/distinct/):
+TSV files in ~/workspace/musmem/distinct/:
+  1. bb_male-covid_male-variant-groups.tsv
+TSV    (~/workspace/musmem/distinct/): 1
+Source files: ~/workspace/musmem/data/bb_male.dat, ~/workspace/musmem/data/covid-male.dat
 ```
+
+For TSVs that predate this feature (no embedded source paths), the script falls back to prompting for file paths manually.
 
 After confirming paths, the script enters the interactive loop automatically.
 
@@ -85,10 +88,8 @@ Variants not mentioned in an expression are left untouched.
 |-----|------|-------|
 | 1 | `group_id` | Integer group identifier |
 | 2 | `name` | A name variant in this group |
-| 3 | `count_file1` | Occurrences in file1 |
-| 4 | `count_file2` | Occurrences in file2 |
-| 5 | `canonical` | Per-row decision: blank = pending; `defer` = revisit later; `skip` = no change (whole group); `-` = no rename for this row; any other value = rename this row's name to that value |
-| 6 | `applied` | ISO timestamp when corrections were written; blank if not yet applied |
+| 3 | `expression` | Per-row decision: blank = pending; `defer` = revisit later; `skip` = no change (whole group); `-` = no rename for this row; any other value = rename this row's name to that value |
+| 4 | `applied` | ISO timestamp when corrections were written; blank if not yet applied |
 
 ## Session Resumption
 

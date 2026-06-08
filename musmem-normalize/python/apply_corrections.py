@@ -27,7 +27,8 @@ def load_tsv(path):
     rows = []
     with open(path, encoding='utf-8') as f:
         lines = f.read().splitlines()
-    for line in lines[1:]:
+    data_lines = [l for l in lines if not l.startswith('#')]
+    for line in data_lines[1:]:
         if not line.strip():
             continue
         cols = line.split('\t')
@@ -125,12 +126,18 @@ def stamp_applied(tsv_path, group_ids, timestamp):
     with open(tsv_path, encoding='utf-8') as f:
         lines = f.read().splitlines(keepends=True)
 
-    out_lines = [lines[0]]
-    for line in lines[1:]:
+    out_lines = []
+    header_done = False
+    for line in lines:
+        if not header_done:
+            out_lines.append(line)
+            if not line.startswith('#'):
+                header_done = True
+            continue
         cols = line.rstrip('\n').split('\t')
         while len(cols) < 4:
             cols.append('')
-        if int(cols[0]) in group_ids:
+        if cols[0].strip() and int(cols[0]) in group_ids:
             cols[3] = timestamp
         out_lines.append('\t'.join(cols) + '\n')
 

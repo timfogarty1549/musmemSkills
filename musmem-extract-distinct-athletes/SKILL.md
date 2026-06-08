@@ -28,12 +28,18 @@ The alias `musmemDistinct` has been added to `.bash_profile` for this command.
 
 3. For each source, the script tracks distinct names and occurrence counts in memory.
 
-4. The script writes a candidate-group TSV. Columns are:
+4. The script writes a candidate-group TSV. The file begins with comment lines recording the full path of each source file:
+
+   ```
+   # source: /Users/timfogarty/workspace/musmem/data/bb_male.dat
+   # source: /Users/timfogarty/workspace/musmem/data/covid-male.dat
+   ```
+
+   Columns are:
    - `group_id`
    - `name`
-   - one count column per source, named `count_<label>`
 
-The default folder for candidate-group TSV files is `/Users/timfogarty/workspace/musmem/distinct`.
+   The default folder for candidate-group TSV files is `/Users/timfogarty/workspace/musmem/distinct`. These embedded source paths are read automatically by `musmem-normalize`, so you only need to supply the TSV path when normalizing.
 
 ## Review Guidance
 

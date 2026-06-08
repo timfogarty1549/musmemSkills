@@ -36,20 +36,6 @@ def resolve_path(raw, root=None):
 
 
 def prompt_paths():
-    files = []
-    for i, default in enumerate(FILE_DEFAULTS, 1):
-        full_default = resolve_path(default)
-        raw = input(f'File {i} [{full_default}]: ').strip()
-        files.append(resolve_path(raw) if raw else full_default)
-
-    n = len(FILE_DEFAULTS) + 1
-    while True:
-        raw = input(f'File {n} (blank to finish): ').strip()
-        if not raw:
-            break
-        files.append(resolve_path(raw))
-        n += 1
-
     tsv_files = sorted(
         f for f in os.listdir(TSV_ROOT) if f.endswith('.tsv')
     ) if os.path.isdir(TSV_ROOT) else []
@@ -63,16 +49,42 @@ def prompt_paths():
         raw = input(f'TSV    ({TSV_ROOT}/): ').strip()
         if not raw:
             continue
-        if tsv_files:
-            if raw.isdigit():
-                idx = int(raw) - 1
-                if 0 <= idx < len(tsv_files):
-                    tsv = os.path.join(TSV_ROOT, tsv_files[idx])
-                    break
+        if tsv_files and raw.isdigit():
+            idx = int(raw) - 1
+            if 0 <= idx < len(tsv_files):
+                tsv = os.path.join(TSV_ROOT, tsv_files[idx])
+                break
             print(f'  Enter a number between 1 and {len(tsv_files)}.')
-        else:
-            tsv = resolve_path(raw, TSV_ROOT)
+            continue
+        tsv = resolve_path(raw, TSV_ROOT)
+        if os.path.isfile(tsv):
             break
+        print(f'  File not found: {tsv}')
+
+    source_paths = fg.read_source_paths(tsv)
+    if source_paths:
+        missing = [p for p in source_paths if not os.path.isfile(p)]
+        if missing:
+            print(f'WARNING: source file(s) not found: {", ".join(missing)}')
+        files = [p for p in source_paths if os.path.isfile(p)]
+        if files:
+            print(f'Source files: {", ".join(files)}')
+            return files, tsv
+
+    # Fallback: prompt for files (TSVs without embedded source paths)
+    files = []
+    for i, default in enumerate(FILE_DEFAULTS, 1):
+        full_default = resolve_path(default)
+        raw = input(f'File {i} [{full_default}]: ').strip()
+        files.append(resolve_path(raw) if raw else full_default)
+
+    n = len(FILE_DEFAULTS) + 1
+    while True:
+        raw = input(f'File {n} (blank to finish): ').strip()
+        if not raw:
+            break
+        files.append(resolve_path(raw))
+        n += 1
 
     return files, tsv
 
@@ -289,8 +301,14 @@ def record_decision(tsv, group_id, rename_dict_or_special, all_names):
     with open(tsv, encoding='utf-8') as f:
         lines = f.read().splitlines(keepends=True)
 
-    out = [lines[0]]
-    for line in lines[1:]:
+    out = []
+    header_done = False
+    for line in lines:
+        if not header_done:
+            out.append(line)
+            if not line.startswith('#'):
+                header_done = True
+            continue
         cols = line.rstrip('\n').split('\t')
         while len(cols) < 4:
             cols.append('')

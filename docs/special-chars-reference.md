@@ -139,6 +139,8 @@ A code is a base letter followed by a punctuation suffix:
 | Code | Character | Code | Character |
 |------|-----------|------|-----------|
 | `T^` | Ť | `t^` | ť |
+| `T--` | Ţ | `t--` | ţ |
+| `T---` | Ț | `t---` | ț |
 
 ### U
 | Code | Character | Code | Character |

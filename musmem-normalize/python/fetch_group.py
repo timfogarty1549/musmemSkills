@@ -17,11 +17,23 @@ def parse_args():
     p.add_argument('--group-id', type=int, default=None)
     return p.parse_args()
 
+def read_source_paths(path):
+    paths = []
+    with open(path, encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('# source: '):
+                paths.append(line[len('# source: '):].strip())
+            elif not line.startswith('#'):
+                break
+    return paths
+
+
 def load_tsv(path):
     rows = []
     with open(path, encoding='utf-8') as f:
         lines = f.read().splitlines()
-    for line in lines[1:]:
+    data_lines = [l for l in lines if not l.startswith('#')]
+    for line in data_lines[1:]:
         if not line.strip():
             continue
         cols = line.split('\t')
@@ -58,8 +70,14 @@ def find_next_group(rows, target_id=None):
         return None, None
 
     for gid in order:
-        if group_is_pending(groups[gid]):
+        exprs = [r['expression'] for r in groups[gid]]
+        if all(e == '' for e in exprs):
             return gid, groups[gid]
+
+    for gid in order:
+        if any(r['expression'] == 'defer' for r in groups[gid]):
+            return gid, groups[gid]
+
     return None, None
 
 def count_pending(rows):

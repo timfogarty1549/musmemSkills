@@ -387,6 +387,8 @@ def write_outputs(sources: list[Source], counts_by_label: dict[str, dict[str, in
 
     groups_out.parent.mkdir(parents=True, exist_ok=True)
     with groups_out.open("w", encoding="utf-8", newline="") as f:
+        for source in sources:
+            f.write(f"# source: {source.path}\n")
         writer = csv.writer(f, delimiter="\t", lineterminator="\n")
         writer.writerow(["group_id", "name"])
         for idx, group in enumerate(groups, 1):
