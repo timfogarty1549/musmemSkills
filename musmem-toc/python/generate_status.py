@@ -28,7 +28,7 @@ from html import escape
 TOC_DIR  = os.path.expanduser('~/workspace/musmem/toc')
 PDF_BASE = os.path.expanduser('~/workspace/s3/musmem/magPdfs')
 OUT_FILE = os.path.join(TOC_DIR, 'TOC_STATUS.html')
-API_BASE = 'https://musclememory.org/api/mags'
+API_BASE = 'http://localhost:3000/api/mags'  # public API requires a signed request
 
 YEAR_MONTH_MAGS = {'sh', 'mb', 'mma', 'mtis', 'rpj'}
 

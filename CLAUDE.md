@@ -8,7 +8,10 @@
 
 ## MuscleMemory API
 
-See [musclememory-api.md](musclememory-api.md) for available API endpoints.
+See [docs/musclememory-api.md](docs/musclememory-api.md) for available API endpoints.
+
+- **Never call musclememory.org/.net `/api/*` directly.** The public API requires a signed request (anti-scraping) that Claude cannot generate. All database checks go to the local server at `http://localhost:3000/api/...`, which serves the same endpoints unsigned.
+- **If nothing is running on port 3000, ask the user to start the local musmem server.** Don't start it yourself or fall back to the public site.
 
 ## Skills
 

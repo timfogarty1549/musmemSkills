@@ -23,12 +23,21 @@ The alias `musmemDistinct` has been added to `.bash_profile` for this command.
    - `Input data file path` means the MusMem `.dat` file to process.
    - Input files must be semicolon-delimited.
    - Input file paths may be absolute, `~`-relative, or relative to `/Users/timfogarty/workspace/musmem/data`.
+   - Entering `all male` or `all female` (case-insensitive) expands to `bb_<gender>.dat` plus every `prelim/*-<gender>.dat` file, globbed at run time — the file list isn't hardcoded, so newly added prelim files are picked up automatically. Each expanded file becomes its own labeled source (e.g. `bb_male`, `prelim_male`, `musclemania_male`), so cross-source matching and the focus-label restriction in step 4 still work per-file. You're prompted once for a minimum-year filter that applies to all files in the expansion. Files already added (manually or via a prior `all <gender>`) are skipped automatically.
    - Column 1 is the athlete name.
    - Column 2 is the contest year when using a minimum-year filter.
 
 3. For each source, the script tracks distinct names and occurrence counts in memory.
 
-4. The script writes a candidate-group TSV. The file begins with comment lines recording the full path of each source file:
+4. When 2+ sources are given, the script prompts:
+
+   ```
+   Restrict output to groups containing a name from source(s) (comma-separated labels, blank for no restriction):
+   ```
+
+   Leave blank for the default behavior (all groups spanning 2+ sources). Enter one or more source labels (e.g. a newly added file) to drop any group that doesn't contain at least one name from those source(s) — useful when re-running against a previously-reviewed file pair plus a new file, so already-resolved groups from the old pair don't reappear.
+
+5. The script writes a candidate-group TSV. The file begins with comment lines recording the full path of each source file:
 
    ```
    # source: /Users/timfogarty/workspace/musmem/data/bb_male.dat
@@ -67,4 +76,4 @@ Candidate pair rules:
 - **Same given name; surname typo/transposition**: pairs names with the same normalized given name when the compact surnames are within a small Damerau-Levenshtein edit distance.
 - **Full name typo candidate**: pairs names in the same surname/given initial bucket when the full normalized name is within a small edit distance.
 
-For multi-source runs, the final TSV only includes groups that contain at least one name from at least two different sources. For single-source runs, all generated candidate groups are written.
+For multi-source runs, the final TSV only includes groups that contain at least one name from at least two different sources. For single-source runs, all generated candidate groups are written. If a source-label restriction was entered at the prompt in step 4, groups are further filtered to those containing a name from at least one of the specified sources.

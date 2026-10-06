@@ -4,6 +4,13 @@ class SpecialChars {
         '’' => "'",
         "“" => '(',
         "”" => ')',
+        "\xE2\x80\x90" => '-',   // U+2010 hyphen
+        "\xE2\x80\x91" => '-',   // U+2011 non-breaking hyphen
+        "\xE2\x80\x92" => '-',   // U+2012 figure dash
+        "\xE2\x80\x93" => '-',   // U+2013 en dash
+        "\xE2\x80\x94" => '-',   // U+2014 em dash
+        "\xE2\x80\x95" => '-',   // U+2015 horizontal bar
+        "\xE2\x88\x92" => '-',   // U+2212 minus sign
         'Ã' => "A'",
         'Ã¡' => "a'",
         'Ã©' => "e'",
@@ -53,7 +60,9 @@ class SpecialChars {
     "à"=>"a`",
     "Á"=>"A'",    // acute
     "á"=>"a'",
-    // "Â"=>'A^',
+    // "Â"=>'A^',  // disabled: standalone Â is almost always mojibake (corrupted nbsp etc.,
+                    // see "Â " and "Â" rules above), not a real A-circumflex; enabling this
+                    // would silently miscode leftover mojibake as A^ instead of leaving it visible
     "â"=>'a^',
     "ã"=>'a~',
     "Å"=>'A@', 
@@ -87,7 +96,8 @@ class SpecialChars {
     "Ē"=>'E_',
     'ę'=>'e--',
     'Ę'=>'E--',
-    "ģ"=>"g^",
+    "Ğ"=>"G^",    // turkish soft g
+    "ğ"=>"g^",
     "Ì"=>"I`",    // grave
     "ì"=>"i`",
     "Í"=>"I'",    // acute
@@ -96,6 +106,7 @@ class SpecialChars {
     "ı"=>'i.',
     "ī"=>'i_',
     "Ī"=>'I_',
+    "Ï"=>'I:',
     "ï"=>'i:',
     "Ł"=>"L/",
     "ł"=>"l/",
@@ -117,6 +128,7 @@ class SpecialChars {
     "ö"=>'o:', 
     "Ø"=>'O/', 
     "ø"=>'o/', 
+    "Ř"=>'R^',
     "ř"=>'r^',
     "Ś"=>"S'",
     "ś"=>"s'",

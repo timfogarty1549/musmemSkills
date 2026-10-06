@@ -34,16 +34,13 @@ Workflow: fetch npcnewsonline.com listing pages → parse date+location in bulk 
 ## MuscleMemory API
 
 ```
-GET https://musclememory.net/api/contests                          # all contests across all orgs
-GET https://musclememory.net/api/contests/{year}                   # all contests across all orgs for a year
-GET https://musclememory.net/api/org?name={ORG}                    # all contest names for one org (use to find exact contest name)
-GET https://musclememory.net/api/contest/years?name={contest}      # all years DB has results for a specific contest
+GET http://localhost:3000/api/contests                          # all contests across all orgs
+GET http://localhost:3000/api/contests/{year}                   # all contests across all orgs for a year
+GET http://localhost:3000/api/org?name={ORG}                    # all contest names for one org (use to find exact contest name)
+GET http://localhost:3000/api/contest/years?name={contest}      # all years DB has results for a specific contest
 ```
 
-Use browser User-Agent for all musclememory.net API calls (server blocks bots):
-```
-Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-```
+Use the local musmem server, not musclememory.net/.org — the public API requires a signed request and rejects unsigned calls (the old browser-UA workaround no longer works). Before any API call, check that the local server is up (`curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/contests/2025` → `200`). If nothing is running on port 3000, stop and ask the user to start the local musmem server — do not start it yourself, and never fall back to musclememory.org/.net.
 
 ## JSON Schema
 

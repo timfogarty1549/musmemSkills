@@ -2,6 +2,14 @@
 
 All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVISIONS`. Codes are universal - not specific to any org.
 
+When adding a new division code, update all of the following:
+- `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVISIONS`
+- `~/workspace/node/musmem/src/utils/divisions.ts`
+- `~/workspace/node/musmem/src/utils/seo-divisions.ts` (code → label map used by the SEO renderer; a missing code renders as "undefined" in crawler HTML)
+- This file (`docs/divisions-reference.md`)
+
+**Duplicates and overlapping codes are intentional — do not remove, merge, or flag them.** Legacy contest results depend on them (e.g. `EF` listed in both Collegiate and Figure, `m6`/`65`, `f6`/`F65`, `PBB`/`PB`, and the `mt`/`mm`/`ms` aliases).
+
 | Code | Division |
 |------|----------|
 | UC | (unclassified) |
@@ -34,6 +42,8 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | **Special** | |
 | Mu | Most Muscular |
 | Sy | Most Symmetrical |
+| MuT | Most Muscular - Tall |
+| MuS | Most Muscular - Short |
 | **Teen** | |
 | TE | Teen |
 | TH | Teen HeavyWeight |
@@ -67,6 +77,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | EM | Collegiate MiddleWeight |
 | EL | Collegiate LightWeight |
 | EP | Collegiate Physique |
+| EC | Collegiate Classic Physique |
 | EF | Collegiate Figure |
 | **Masters (general)** | |
 | MA | Masters |
@@ -78,10 +89,11 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | **Masters Under 212** | |
 | M212 | Masters Under 212 |
 | M202 | Masters Under 202 |
-| m3212 | Masters 35+ Under 212 |
+| M3212 | Masters 35+ Under 212 |
 | M4212 | Masters 40+ Under 212 |
 | m4212 | Masters 45+ Under 212 |
 | M5212 | Masters 50+ Under 212 |
+| m5212 | Masters 55+ Under 212 |
 | M6212 | Masters 60+ Under 212 |
 | M7212 | Masters 70+ Under 212 |
 | **Master By Weight** | |
@@ -218,8 +230,12 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | A4 | Athletic Class 4 |
 | A5 | Athletic Class 5 |
 | JA | Junior Athletic |
-| am | Masters Athletic Physique |
+| am | Masters Athletic Physique (being phased out — use `APM`) |
+| APM | Masters Athletic Physique |
+| APM3 | Masters Athletic Physique 30+ |
+| APM4 | Masters Athletic Physique 40+ |
 | AP45 | Masters Athletic Physique 45+ |
+| APM5 | Masters Athletic Physique 50+ |
 | **Generic Bodybuilding Classes** | |
 | Ba | Bodybuilding Class A |
 | Bb | Bodybuilding Class B |
@@ -240,7 +256,11 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | 95kg | 95 kg |
 | 100kg | 100 kg |
 | 105kg | 105 kg |
+| o75kg | Over 75 kg (when no higher divisions) |
 | o80kg | Over 80 kg (when no higher divisions) |
+| o85kg | Over 85 kg (when no higher divisions) |
+| o90kg | Over 90 kg (when no higher divisions) |
+| o95kg | Over 95 kg (when no higher divisions) |
 | o100kg | Over 100 kg |
 | **Classic Bodybuilding** | **amateur ifbb only** |
 | CB | Classic Bodybuilding |
@@ -249,6 +269,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | CBc | Classic Bodybuilding C |
 | CBd | Classic Bodybuilding D |
 | CBe | Classic Bodybuilding E |
+| CBf | Classic Bodybuilding F |
 | CBT | Classic Bodybuilding Teen |
 | CBJ | Classic Bodybuilding Junior |
 | CBJa | Classic Bodybuilding Junior A |
@@ -263,6 +284,9 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | MUP | Muscular Physique |
 | MUPa | Muscular Physique A |
 | MUPb | Muscular Physique B |
+| MUPc | Muscular Physique C |
+| MUPd | Muscular Physique D |
+| MUPM | Muscular Physique Masters |
 | **Classic Physique** | |
 | CL | Classic |
 | Ca | Classic A |
@@ -315,6 +339,7 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | c6 | Classic Masters 60+ |
 | c6a | Classic Masters 60+ A |
 | c6b | Classic Masters 60+ B |
+| c65 | Classic Masters 65+ |
 | c7 | Classic Masters 70+ |
 | **Physique** | |
 | PH | Physique |
@@ -454,16 +479,31 @@ All codes from `~/workspace/angular/musmem-ui/src/assets/i18n/en.json` → `DIVI
 | PR | Professional |
 | PB | Pro Bodybuilding |
 | PRh | Pro HeavyWeight |
+| Plh | Pro LightHeavyWeight |
 | Pmw | Pro MiddleWeight |
 | Pl | Pro LightWeight |
+| Pbw | Pro BantamWeight |
 | Ps | Pro Short |
 | Pm | Pro Medium |
 | Pt | Pro Tall |
 | PM | Pro Masters |
 | PM4 | Pro Masters 40+ |
 | PM5 | Pro Masters 50+ |
+| PM6 | Pro Masters 60+ |
+| PM7 | Pro Masters 70+ |
 | PCL | Pro Classic |
+| PCa | Pro Classic Physique A |
+| PCb | Pro Classic Physique B |
+| PCc | Pro Classic Physique C |
+| PCd | Pro Classic Physique D |
+| PCM | Pro Classic Physique Masters |
 | PP | Pro Physique |
+| PPa | Pro Physique A |
+| PPb | Pro Physique B |
+| PPc | Pro Physique C |
+| PPd | Pro Physique D |
 | PMP | Pro Masters Physique |
 | PF | Pro Figure |
+| PFa | Pro Figure A |
+| PFb | Pro Figure B |
 | PFM | Pro Figure Masters |

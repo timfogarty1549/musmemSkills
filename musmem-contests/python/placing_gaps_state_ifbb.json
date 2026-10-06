@@ -1,0 +1,2186 @@
+[
+  {
+    "year": 2013,
+    "contest": "British Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "M5",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "European Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "OP",
+        "gender": "male",
+        "explanation": "missing [13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "Houston Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "5 (expected >= 7), 6 (expected >= 7) \u2014 actual: [1, 2, 3, 4, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T05:24:53Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "New York Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "5 (expected >= 6) \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "North American Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "F4d",
+        "gender": "female",
+        "explanation": "missing [1, 2, 3, 4, 5, 6] \u2014 actual: [7]",
+        "dateFound": "2026-08-12T02:15:42Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "HW",
+        "gender": "female",
+        "explanation": "missing [8] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "HW",
+        "gender": "male",
+        "explanation": "missing [16] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P35c",
+        "gender": "female",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Pd",
+        "gender": "female",
+        "explanation": "missing [6, 8, 9, 10] \u2014 actual: [1, 2, 3, 4, 5, 7, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "Pittsburgh Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "12 (expected >= 13) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-11T03:07:07Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "Titans Grand Prix Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2013,
+    "contest": "Valenti Gold Cup Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "4 (expected >= 5) \u2014 actual: [1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Arnold Amateur - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "Pa",
+        "gender": "female",
+        "explanation": "missing [9] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Arnold Amateur Europe - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FM",
+        "gender": "female",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FM",
+        "gender": "female",
+        "explanation": "missing [10] \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Emerald Cup Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "3 (expected >= 4) \u2014 actual: [1, 2, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [7] \u2014 actual: [1, 2, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Ferrigno Legacy Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T04:08:58Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "North American Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "P35b",
+        "gender": "female",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T04:19:06Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "P35b",
+        "gender": "female",
+        "explanation": "8 (expected >= 9) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]",
+        "dateFound": "2026-08-12T06:22:46Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": ""
+      },
+      {
+        "type": "irregular",
+        "division": "P35c",
+        "gender": "female",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 13, 14, 15]",
+        "dateFound": "2026-08-12T04:19:06Z",
+        "lastChecked": "2026-08-12T04:19:06Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "P35c",
+        "gender": "female",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "Pb",
+        "gender": "female",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T04:19:06Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "SW",
+        "gender": "male",
+        "explanation": "10 (expected >= 11) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T04:19:06Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "f4d",
+        "gender": "female",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8, 10, 11, 12, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "fd",
+        "gender": "female",
+        "explanation": "6 (expected >= 7) \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 10, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "fd",
+        "gender": "female",
+        "explanation": "6 (expected >= 7) \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-12T04:19:06Z",
+        "lastChecked": "2026-08-12T04:19:06Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "3l",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "4S",
+        "gender": "male",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Fc",
+        "gender": "female",
+        "explanation": "missing [16] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Ff",
+        "gender": "female",
+        "explanation": "missing [5, 12] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P35c",
+        "gender": "female",
+        "explanation": "missing [6, 7] \u2014 actual: [1, 2, 3, 4, 5, 8, 9, 10, 11, 12, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P35d",
+        "gender": "female",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P45a",
+        "gender": "female",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Pc",
+        "gender": "female",
+        "explanation": "missing [5, 10, 13] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "f4d",
+        "gender": "female",
+        "explanation": "missing [9] \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8, 10, 11, 12, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "fd",
+        "gender": "female",
+        "explanation": "missing [9, 13] \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 10, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "fe",
+        "gender": "female",
+        "explanation": "missing [10, 16, 17, 18] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 19]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Omaha Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2014,
+    "contest": "Phoenix Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Amateur Olympia Europe - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "Ft",
+        "gender": "female",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Asian Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "LW",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Atlantic City Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "15 (expected >= 16) \u2014 actual: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [4] \u2014 actual: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "California Governor's Cup Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T04:08:58Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Dallas Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [3] \u2014 actual: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T05:24:53Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Europa Dallas - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "15 (expected >= 16) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "North American Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "4l",
+        "gender": "male",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "LH",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Pd",
+        "gender": "female",
+        "explanation": "missing [7] \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "f3d",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Omaha Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Pittsburgh Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "6 (expected >= 7) \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "npcnews no scorecards"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnews no scorecards"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Pro Grand Prix (Los Angeles) - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "15 (expected >= 16) \u2014 actual: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [3] \u2014 actual: [1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "St Louis Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "15 (expected >= 16) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Tampa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2015,
+    "contest": "Vancouver Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [11] \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Central American and Caribbean Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "M4",
+        "gender": "male",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "M4",
+        "gender": "male",
+        "explanation": "missing [13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Europa Dallas - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "9 (expected >= 10) \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Kentucky Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T05:24:53Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Mexican Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "5M",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "unsure of original source"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Miami Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [8] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "missing [6, 15] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "New York Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "6 (expected >= 7) \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 16, 16, 16, 16, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [15] \u2014 actual: [1, 2, 3, 4, 5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 16, 16, 16, 16, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "North American Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "F4d",
+        "gender": "female",
+        "explanation": "missing [7] \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Fb",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "San Antonio Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "Toronto Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "16 (expected >= 17) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2016,
+    "contest": "World Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "FJ",
+        "gender": "female",
+        "explanation": "missing [7] \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 9]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Arnold Amateur Australia - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T23:10:50Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [9, 13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 14, 15, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Arnold Amateur Brasil - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "LM",
+        "gender": "male",
+        "explanation": "5 (expected >= 6) \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Arnold Classic - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "5 (expected >= 6) \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Arnold Classic Australia - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "13 (expected >= 14) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Europa Dallas - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnews bad scoresheet image"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Golden State Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T05:24:53Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Mile High Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "MP",
+        "gender": "male",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Rising Phoenix Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "MP",
+        "gender": "female",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "San Jose Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "St Louis Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2017,
+    "contest": "Tampa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "mc",
+        "gender": "male",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 5, 6, 6, 7, 8, 9]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "mc",
+        "gender": "male",
+        "explanation": "missing [4] \u2014 actual: [1, 2, 3, 5, 6, 6, 7, 8, 9]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "Asian Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "75kg",
+        "gender": "male",
+        "explanation": "missing [4] \u2014 actual: [1, 2, 3, 5, 6, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "Kentucky Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "Northern California Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "Rising Phoenix Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "15 (expected >= 16) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 14, 15]",
+        "dateFound": "2026-08-10T00:30:00Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "San Antonio Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "MP",
+        "gender": "male",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2018,
+    "contest": "Ultimate Warriors Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnews missing scorecard"
+      }
+    ]
+  },
+  {
+    "year": 2019,
+    "contest": "Baltimore Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "P4",
+        "gender": "male",
+        "explanation": "missing [9] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnew no score sheets"
+      }
+    ]
+  },
+  {
+    "year": 2020,
+    "contest": "Arnold Amateur - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "Fc",
+        "gender": "female",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Ff",
+        "gender": "female",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2020,
+    "contest": "Arnold Classic - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "OP",
+        "gender": "male",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [7] \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 9, 10, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2020,
+    "contest": "MuscleContest Brazil Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [13] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnews missing scorecards"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Legion Sports Fest Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "P4",
+        "gender": "male",
+        "explanation": "9 (expected >= 10) \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "P45",
+        "gender": "male",
+        "explanation": "9 (expected >= 10) \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 8, 9, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P4",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P45",
+        "gender": "male",
+        "explanation": "missing [6, 10] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 8, 9, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Monterrey Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Olympia - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "13 (expected >= 14) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Portugal Mr Big Evolution Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Republic of Texas Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "San Antonio Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-11T07:32:26Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-11T07:32:26Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "Tampa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "11 (expected >= 12) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "P4",
+        "gender": "female",
+        "explanation": "10 (expected >= 11) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 9, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "13 (expected >= 14) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "FI",
+        "gender": "female",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P4",
+        "gender": "female",
+        "explanation": "missing [8] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 9, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2021,
+    "contest": "World Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "45l",
+        "gender": "male",
+        "explanation": "2 (expected >= 3) \u2014 actual: [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-12T03:12:46Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "45M",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T03:12:46Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "45l",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "80kg",
+        "gender": "male",
+        "explanation": "missing [8] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "F4",
+        "gender": "female",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Fd",
+        "gender": "female",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "JR",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "MUP",
+        "gender": "male",
+        "explanation": "missing [9] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P35",
+        "gender": "female",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P4",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Pb",
+        "gender": "male",
+        "explanation": "missing [2, 9, 12] \u2014 actual: [1, 3, 4, 5, 6, 7, 8, 10, 11, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Arnold Amateur - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "HW",
+        "gender": "male",
+        "explanation": "missing [5] \u2014 actual: [1, 2, 3, 4, 6, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "DQed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Arnold Amateur Europe - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "Cc",
+        "gender": "male",
+        "explanation": "missing [4] \u2014 actual: [1, 2, 3, 5, 6, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "DQed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Arnold Classic UK - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "17 (expected >= 18) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnewsonline"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [14] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 16, 16, 17]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnewsonline"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Europa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "BB",
+        "gender": "female",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 3, 4, 5, 6, 6, 7, 8]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "BB",
+        "gender": "female",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6, 6, 7, 8]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T23:10:50Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Masters Pro World - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "P5",
+        "gender": "male",
+        "explanation": "3 (expected >= 4) \u2014 actual: [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "P5",
+        "gender": "male",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Mediterranean Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "95kg",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "DQed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Olympia - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2022,
+    "contest": "Tampa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "OP",
+        "gender": "male",
+        "explanation": "5 (expected >= 6) \u2014 actual: [1, 2, 3, 4, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Argentina Sur Cup Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [13, 14, 15] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-08T20:12:21Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Daytona Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "c3",
+        "gender": "male",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T04:08:58Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Florida Maxfit Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "P45",
+        "gender": "female",
+        "explanation": "missing [2] \u2014 actual: [1, 3]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "npcnews no scorecard"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Korea Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "10 (expected >= 11) \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T04:08:58Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T04:08:58Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Legion Sports Fest Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "8 (expected >= 9) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 7, 8, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "female",
+        "explanation": "missing [9] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 7, 8, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "MuscleContest Brazil Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [10] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "MuscleContest Goiania Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "4 (expected >= 5) \u2014 actual: [1, 2, 3, 3, 4, 5, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 3, 4, 5, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T00:30:00Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Portugal Mr Big Evolution Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [3, 6, 8] \u2014 actual: [1, 2, 4, 5, 7, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Romania Muscle Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "3 (expected >= 4) \u2014 actual: [1, 2, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Sheru Classic Italian Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "10 (expected >= 11) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 10, 10, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 10, 10, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Sheru Classic UK Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "U212",
+        "gender": "male",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8, 9]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T03:07:07Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Tampa Hurricane Pro - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "F5",
+        "gender": "female",
+        "explanation": "13 (expected >= 14) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [11, 12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "CL",
+        "gender": "male",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15]",
+        "dateFound": "2026-08-09T03:08:49Z",
+        "lastChecked": "2026-08-10T04:18:32Z",
+        "resolution": "multiple withdrew"
+      },
+      {
+        "type": "missing",
+        "division": "F5",
+        "gender": "female",
+        "explanation": "missing [11] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 12, 13, 14]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Tampa Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "BB",
+        "gender": "female",
+        "explanation": "14 (expected >= 15) \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "BB",
+        "gender": "female",
+        "explanation": "missing [12] \u2014 actual: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 13, 14, 15]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "Vancouver Pro Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "13 (expected >= 14) \u2014 actual: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "PH",
+        "gender": "male",
+        "explanation": "missing [2] \u2014 actual: [1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 12, 13]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-09T01:52:48Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2023,
+    "contest": "World Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CBJ",
+        "gender": "male",
+        "explanation": "missing [1] \u2014 actual: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": ""
+      }
+    ]
+  },
+  {
+    "year": 2024,
+    "contest": "Asian Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "MUP",
+        "gender": "male",
+        "explanation": "missing [3] \u2014 actual: [1, 2, 4, 5, 6]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "Pb",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2024,
+    "contest": "European Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "irregular",
+        "division": "CBb",
+        "gender": "male",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7, 8, 9, 10, 11]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "CBb",
+        "gender": "male",
+        "explanation": "9 (expected >= 10) \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 8, 9, 9, 11, 12]",
+        "dateFound": "2026-08-12T01:23:33Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "irregular",
+        "division": "Cb",
+        "gender": "male",
+        "explanation": "7 (expected >= 8) \u2014 actual: [1, 2, 3, 4, 5, 6, 6, 7]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-11T07:32:26Z",
+        "resolution": "fixed"
+      },
+      {
+        "type": "missing",
+        "division": "CBb",
+        "gender": "male",
+        "explanation": "missing [7, 10] \u2014 actual: [1, 2, 3, 4, 5, 6, 8, 8, 9, 9, 11, 12]",
+        "dateFound": "2026-08-12T01:23:33Z",
+        "lastChecked": "2026-08-12T01:23:33Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2024,
+    "contest": "West Asian Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "75kg",
+        "gender": "male",
+        "explanation": "missing [6] \u2014 actual: [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T02:15:42Z",
+        "resolution": "fixed"
+      }
+    ]
+  },
+  {
+    "year": 2025,
+    "contest": "Asian Amateur Championships - IFBB",
+    "discrepancy": [
+      {
+        "type": "missing",
+        "division": "CBd",
+        "gender": "male",
+        "explanation": "missing [1] \u2014 actual: [2, 3, 4, 5, 6]",
+        "dateFound": "2026-08-08T20:12:21Z",
+        "lastChecked": "2026-08-12T06:22:46Z",
+        "resolution": "DQed"
+      }
+    ]
+  }
+]

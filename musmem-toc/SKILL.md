@@ -13,8 +13,10 @@ Two phases — run one at a time per user instruction.
 
 | Endpoint | Purpose |
 |----------|---------|
-| `https://musclememory.org/api/mags` | List all magazines (title, code, date range, issue/scan counts) |
-| `https://musclememory.org/api/mags?title={title}&brief=true` | List all issues for a magazine, with `year`, `month`, `volume`, `issue`, `code`, `own` (copies owned), and `toc` (existing TOC data or null) |
+| `http://localhost:3000/api/mags` | List all magazines (title, code, date range, issue/scan counts) |
+| `http://localhost:3000/api/mags?title={title}&brief=true` | List all issues for a magazine, with `year`, `month`, `volume`, `issue`, `code`, `own` (copies owned), and `toc` (existing TOC data or null) |
+
+Use the local musmem server — the public musclememory.org API requires a signed request and will reject these calls. If nothing is running on port 3000, ask the user to start the local musmem server.
 
 The `code` field in the API matches the magazine code used in filenames (e.g., `"im"` → `im.dat`, `~/workspace/musmem/toc/im/`).
 

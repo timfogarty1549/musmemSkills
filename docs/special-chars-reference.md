@@ -47,6 +47,36 @@ A code is a base letter followed by a punctuation suffix:
 
 ---
 
+## Escaping a literal apostrophe
+
+Letters `A C E I S U Y n z` (and lowercase `a c e i s u y`) use a bare `'` suffix to mean an
+accent (see mapping table below), so a literal apostrophe right after one of these letters
+would otherwise be misread as an accent code.
+
+To force a literal apostrophe with no accent, use the universal escape `\'` (backslash +
+apostrophe) after **any** letter:
+
+| Code | Renders as |
+|------|-----------|
+| `y\'` | y' |
+| `a\'` | a' |
+| `n\'` | n' |
+
+This is a single, letter-independent rule — no per-letter table entry is needed. (Letters
+that don't use `'` for an accent, e.g. `L`/`l` and `O`/`o` which use `''` for their acute
+accent, already render a bare apostrophe literally without any escaping.)
+
+**Legacy:** `a''` (two apostrophes, lowercase `a` only) is an older, `a`-specific escape kept
+for backward compatibility with existing data. New data should use `\'` instead.
+
+Implemented in `specialChars.ts` as `replaceOld["\\'"]`, `replaceUtf["\\'"]`, and `"\\'"` in
+the `keys` array. Because the token has no letter prefix, it doesn't need the
+alphabetical/length ordering the other keys require — just needs to be present in `keys`.
+`removeInternal()`'s stripped-character class also includes the backslash, so `Jy\'cen`
+normalizes to `Jycen` for plain-ASCII search matching, same as the legacy `Ja''ron` → `Jaron`.
+
+---
+
 ## Full mapping
 
 ### A
@@ -87,15 +117,16 @@ A code is a base letter followed by a punctuation suffix:
 | `E--` | Ę | `e--` | ę |
 
 ### G
-| Code | Character |
-|------|-----------|
-| `g^` | ģ |
+| Code | Character | Code | Character |
+|------|-----------|------|-----------|
+| `G^` | Ğ | `g^` | ğ |
 
 ### I
 | Code | Character | Code | Character |
 |------|-----------|------|-----------|
 | `I'` | Í | `i'` | í |
 | `` I` `` | Ì | `` i` `` | ì |
+| `I:` | Ï | `i:` | ï |
 | `I.` | İ | `i.` | ı |
 | `I_` | Ī | `i_` | ī |
 
@@ -123,9 +154,9 @@ A code is a base letter followed by a punctuation suffix:
 | `O/` | Ø | `o/` | ø |
 
 ### R
-| Code | Character |
-|------|-----------|
-| `r^` | ř |
+| Code | Character | Code | Character |
+|------|-----------|------|-----------|
+| `R^` | Ř | `r^` | ř |
 
 ### S
 | Code | Character | Code | Character |
@@ -133,6 +164,7 @@ A code is a base letter followed by a punctuation suffix:
 | `S^` | Š | `s^` | š |
 | `S'` | Ś | `s'` | ś |
 | `S--` | Ş | `s--` | ş |
+| `S---` | Ș | `s---` | ș |
 | `s*` | ß | | |
 
 ### T
@@ -179,3 +211,4 @@ A code is a base letter followed by a punctuation suffix:
 | `Gu:nter` | Günter | Gunter |
 | `Cze's` | Cześ | Czes |
 | `S^tefan` | Štefan | Stefan |
+| `Jy\'cen` | Jy'cen | Jycen |

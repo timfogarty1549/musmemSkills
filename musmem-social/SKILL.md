@@ -39,7 +39,7 @@ Read paths from `~/workspace/skills/musmemSkills/config/paths.json`:
 
 | Script | Phase | Usage |
 |--------|-------|-------|
-| `open_tabs.sh` | 3 | `open_tabs.sh LETTER GENDER PLATFORM [--dry-run]` |
+| `bin/open_tabs.sh` | 3 | `bin/open_tabs.sh LETTER GENDER PLATFORM [--dry-run]` |
 | `python/merge_prelim.py` | 4 | `python3 merge_prelim.py LETTER GENDER` |
 | `python/find_conflicts.py` | 5 | `python3 find_conflicts.py [--platform PLATFORM]` |
 | `python/sort_approved.py` | utility | `python3 sort_approved.py` — sorts all approved JSON files by name in place |
@@ -205,7 +205,7 @@ After every ~10 searches: update `{working_data}/progress-{platform}-{gender}.js
 The user runs `open_tabs.sh` manually to open prelim handles in the browser for review.
 
 ```
-musmem-social/open_tabs.sh LETTER GENDER PLATFORM [--dry-run]
+musmem-social/bin/open_tabs.sh LETTER GENDER PLATFORM [--dry-run]
 ```
 
 Reads `{social_media}/prelim-{letter}-{gender}.json`, opens each handle for the given platform in Google Chrome (pauses every 50, sleeps 1 s between each).

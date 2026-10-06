@@ -53,7 +53,7 @@ a  Jones, John                      [f1:3, f2:1]   2011–2014  NPC  BB, MP  US
 b  Jones, John Jr.                  [f2:2]         2012       NPC  BB
 c  Jones, Johnny                    [f1:1]         2013       NPC  BB      CA
 ──────────────────────────────────────────────────────────
-Expression (skip / defer / process / quit / expand <label>):
+Expression (skip / defer / process / quit / expand <label> / jump <id> / undo <id>):
 ```
 
 | Input | Action |
@@ -63,7 +63,11 @@ Expression (skip / defer / process / quit / expand <label>):
 | `expand <label>` | Print full records for that variant; re-display group |
 | `process` | Apply all queued corrections, then move to next group |
 | `quit` | Stop; print count of queued-but-not-applied corrections |
+| `undo <group-id>` | Revert that group's decision (skip/defer/rename) back to pending. Stays on the currently displayed group. |
+| `j <group-id>` / `jump <group-id>` | Leave the current group undecided and display that group instead. Only pending (blank or `defer`) groups can be jumped to — `undo` a decided group first. After deciding the jumped-to group, normal next-pending order resumes. |
 | Any expression | Collision-check quoted targets, record, move to next group |
+
+`undo` only works on a group that hasn't been applied yet (`applied` column still blank) — it clears the TSV decision so the group is picked up again as pending. If the group was already applied (its rename was already written to the `.dat` file(s)), `undo` refuses and reports the applied timestamp; the `.dat` file(s) must be fixed manually in that case (a pre-apply backup, `<file>.<epoch>`, is written next to each source file every time `process` runs).
 
 When no more pending groups remain, the script prompts for `process` or `quit`.
 

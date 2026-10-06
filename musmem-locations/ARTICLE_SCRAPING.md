@@ -151,9 +151,9 @@ Common article names → MuscleMemory names:
 
 **Priority 3 — MuscleMemory API lookup:**
 ```
-GET https://musclememory.net/api/org?name={ORG}
+GET http://localhost:3000/api/org?name={ORG}
 ```
-Use browser User-Agent (see SKILL.md). Search the returned list for the closest match.
+Use the local musmem server (see SKILL.md) — the public API requires a signed request. Search the returned list for the closest match.
 
 **When uncertain:** Record the raw contest name from the article and flag for review.
 Do not guess. If you cannot confidently match, skip and note "name unresolved".

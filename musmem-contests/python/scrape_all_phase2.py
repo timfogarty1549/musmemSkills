@@ -14,7 +14,7 @@ Stops immediately and exits non-zero on any unknown slug.
 import sys, os, re, gzip, html as h, unicodedata, urllib.request, urllib.error, glob as glob_module
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from fix_subdivisions import slug_to_code, SKIP_SLUG_RE
+from fix_subdivisions import slug_to_code, overall_slug_to_code, SKIP_SLUG_RE
 
 SRC   = os.path.expanduser('~/workspace/musmem/2-normalize-athletes')
 OUT   = os.path.expanduser('~/workspace/musmem/1-incoming')
@@ -106,8 +106,21 @@ def try_fetch(url):
 
 # Consonants for initial-pair detection (all letters except vowels a e i o u)
 _CONSONANTS = set('bcdfghjklmnpqrstvwxyz')
-# Two-letter tokens to keep as-is rather than splitting into initials
-_INIT_EXCEPTIONS = {'jr', 'sr'}
+# Two-letter tokens to keep as-is rather than splitting into initials.
+# 'st' = "Saint" name particle (e.g. "St Rose", "St Louis", "St Fleur" --
+# common Haitian/French-Caribbean surnames) -- confirmed via 2025 Southern
+# States Championships, where "Dontaevous St Rose" was mangled into
+# "Dontaevous S T Rose".
+# 'ng' = a common Cantonese/Vietnamese surname on its own (e.g. "Xavier Ng")
+# -- confirmed via 2019 West Coast Classic.
+# Two-consonant tokens ENDING IN 'y' (Ly, Ty, Dy, ...) are excluded from the
+# initials-split below via a separate check, not listed individually here --
+# they're short Vietnamese/Filipino/Cambodian given names or surnames
+# ("Peter Ly", "Ty White", "Michael Dy", "Benghap Ty" all confirmed against
+# raw source). Genuine two-letter initials-as-name (JC Harden, Bj Carswell,
+# JT Tunks, TJ Walter, Pj Newcomb -- all confirmed against raw source too)
+# never end in 'y', so this split is safe.
+_INIT_EXCEPTIONS = {'jr', 'sr', 'st', 'ng'}
 # Tokens at the end of a name that are Roman numerals → uppercase
 _ROMAN_TRAIL = {'ii', 'iii', 'iv'}
 
@@ -156,9 +169,11 @@ def _fix_tokens(name):
         # Non-trailing 'ii' → 'Il'
         if tok_low == 'ii':
             tok = 'Il'
-        # Two-consonant token → initials (e.g. 'DJ' → 'D J')
+        # Two-consonant token → initials (e.g. 'DJ' → 'D J'). Tokens ending in
+        # 'y' are excluded -- see _INIT_EXCEPTIONS comment above.
         elif (len(tok_low) == 2
               and tok_low not in _INIT_EXCEPTIONS
+              and not tok_low.endswith('y')
               and all(c in _CONSONANTS for c in tok_low)):
             tok = tok_low[0].upper() + ' ' + tok_low[1].upper()
 
@@ -191,12 +206,35 @@ _NON_LATIN_RE = re.compile(
     r'\u30A0-\u30FF]'   # Katakana
 )
 
+# npcnewsonline's "Hero" tribute program appends a military/first-responder
+# occupation tag to an athlete's displayed name across ALL of their entries
+# for the show, not just the Hero round itself (confirmed via 2024 Golden
+# State Championships: "Gil Devera (Deputy Sheriff)" appears on his real
+# Classic Physique overall/masters/class-A placings, not just the excluded
+# 'heroes' slug). The placing is real; only the tag needs stripping.
+# Keyword-anchored so it can't collide with the DB's numeric "(2)"/"(3)"
+# duplicate-name suffix convention (bare-number parens never match this).
+_OCCUPATION_KEYWORDS = (
+    r'army|navy|marine|air force|coast guard|national guard|space force'
+    r'|sheriff|deputy|police|officer|detective|corrections'
+    r'|infantry|special\s*forces|speical\s*forces|veteran|retired'
+    r'|firefighter|fire fighter|paramedic|\bemt\b'
+)
+_TRAILING_OCC_RE = re.compile(
+    r'\s*\([^)]*(?:' + _OCCUPATION_KEYWORDS + r')[^)]*\)\s*$'
+    r'|\s*--\s*(?:' + _OCCUPATION_KEYWORDS + r')[^-]*$',
+    re.IGNORECASE
+)
+
 
 def clean_name(raw, _warn=True):
     """Strip HTML/entities from an athlete name, then apply Phase 2 name rules.
     Names are NOT reordered (no Last, First conversion).
     """
     name = h.unescape(re.sub(r'<[^>]+>', '', raw)).strip()
+
+    # Strip npcnewsonline "Hero" tribute occupation tags (see _TRAILING_OCC_RE)
+    name = _TRAILING_OCC_RE.sub('', name).strip()
 
     # Mojibake repair: cp1252/Latin-1 bytes misread as UTF-8.
     # Step 1: normalize cp1252 special chars (œ, Œ, ‚, etc.) to their
@@ -262,10 +300,20 @@ def iter_sections(page):
 
 
 def extract_athletes(cls_html):
-    """Extract (placing, name) pairs. Overall winner spans are empty → placing 0."""
+    """Extract (placing, name) pairs. Overall winner spans are empty → placing 0.
+
+    Anchors whose class includes "comparison" are npcnewsonline's placeholder
+    links to an "Overall Comparisons" photo round (e.g. class="comparison
+    28539 open"), not real athletes -- confirmed via 2020 Southern States
+    Championships, where these produced fake "0 Men's Physique Overall
+    Comparisons" entries. Skip them entirely.
+    """
     athletes = []
-    for a_m in re.finditer(r'<a[^>]*data-person="yes"[^>]*>(.*?)</a>', cls_html, re.DOTALL):
-        inner = a_m.group(1)
+    for a_m in re.finditer(r'<a([^>]*data-person="yes"[^>]*)>(.*?)</a>', cls_html, re.DOTALL):
+        tag_attrs = a_m.group(1)
+        if re.search(r'\bclass="[^"]*\bcomparison\b', tag_attrs):
+            continue
+        inner = a_m.group(2)
         span_m = re.search(r'<span>\s*(\d*)\s*</span>', inner)
         placing = int(span_m.group(1)) if (span_m and span_m.group(1).strip()) else 0
         name_raw = re.sub(r'<span>[^<]*</span>', '', inner)
@@ -370,6 +418,37 @@ def _warn_unrecognized_section(div_title, section):
             print(f"    {count} athlete(s) under slug '{slug}'")
 
 
+def _add_section(div_sections, code, athletes, front=False):
+    """Append athletes under `code` to div_sections, merging into an existing
+    block with the same code instead of creating a second 'c CODE' header.
+
+    Confirmed necessary via 2023 Florida State Championships: Women's
+    Bodybuilding had both an 'overall-winner' slug (placing 0) and a separate
+    bare 'open' slug (real placings), both mapping to code 'BB' — previously
+    written as two separate 'c BB' blocks in the same file, violating the
+    "one block per code" rule.
+
+    `front` controls where a brand-new block is inserted into div_sections
+    (True = index 0, matching the old insert(0, ...) used for the primary
+    overall winner; False = end, matching plain .append() used elsewhere).
+    When merging into an already-existing block, placing-0 (overall) athletes
+    are always prepended so they stay first within the block, regardless of
+    `front` — matching file convention (overall line before class placings).
+    """
+    is_overall = bool(athletes) and athletes[0][0] == 0
+    for existing_code, existing_athletes in div_sections:
+        if existing_code == code:
+            if is_overall:
+                existing_athletes[0:0] = athletes
+            else:
+                existing_athletes.extend(athletes)
+            return
+    if front:
+        div_sections.insert(0, (code, list(athletes)))
+    else:
+        div_sections.append((code, list(athletes)))
+
+
 def parse_contest(page, contest_label):
     """
     Parse a contest page. Returns (male_sections, female_sections).
@@ -410,7 +489,7 @@ def parse_contest(page, contest_label):
                 athletes = extract_athletes(cls_html)
                 if athletes:
                     # Insert overall at front, placing=0
-                    div_sections.insert(0, (outer_code, [(0, n) for _, n in athletes]))
+                    _add_section(div_sections, outer_code, [(0, n) for _, n in athletes], front=True)
                 continue
 
             # 'open' slug — maps to outer code; for OP use OP only if Under 212/208 present
@@ -424,11 +503,39 @@ def parse_contest(page, contest_label):
                 athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
                 page_placed += len(athletes)
                 if athletes:
-                    div_sections.append((code, athletes))
+                    _add_section(div_sections, code, athletes)
+                continue
+
+            # Sub-group overall rounds on pro-qualifier pages carry an
+            # '-earned-pro-card' suffix (e.g. 'masters-40-overall-winner-earned-pro-card'),
+            # which SKIP_SLUG_RE's 'earned' would otherwise swallow. Route them
+            # to the sub-group overall handling below before the skip check.
+            # Confirmed via 2026 Canadian Natural Pro Qualifier - CPA.
+            base_slug = re.sub(r'-earned-pro-card$', '', slug.lower())
+            if base_slug != slug.lower() and base_slug.endswith(('-overall', '-overall-winner')):
+                code = overall_slug_to_code(slug, div_code)  # raises ValueError on unknown
+                athletes = extract_athletes(cls_html)
+                if athletes:
+                    _add_section(div_sections, code, [(0, n) for _, n in athletes])
                 continue
 
             # Skip excluded categories (novice, beginner, comparison, regional, etc.)
             if SKIP_SLUG_RE.search(slug):
+                continue
+
+            # Sub-group overall rounds (teen-overall, masters-overall,
+            # masters-over-N-overall, and the '-overall-winner' variant used
+            # on some page templates, e.g. masters-overall-winner) — compare
+            # winners of several sub-classes within one tier against each
+            # other, distinct from the division's main 'overall-winner' slug
+            # handled above. Previously these were silently absorbed by
+            # SKIP_SLUG_RE's unanchored 'overall' match and dropped entirely;
+            # now routed to their own placing-0 entry.
+            if slug.lower().endswith(('-overall', '-overall-winner')):
+                code = overall_slug_to_code(slug, div_code)  # raises ValueError on unknown
+                athletes = extract_athletes(cls_html)
+                if athletes:
+                    _add_section(div_sections, code, [(0, n) for _, n in athletes])
                 continue
 
             # Map slug → code (raises ValueError on unknown)
@@ -439,7 +546,7 @@ def parse_contest(page, contest_label):
             athletes = apply_98([(p, n) for p, n in raw_athletes if p != 0])
             page_placed += len(athletes)
             if athletes:
-                div_sections.append((code, athletes))
+                _add_section(div_sections, code, athletes)
 
         # Sanity check: athletes captured should equal athletes on page
         extracted_placed = sum(
@@ -460,13 +567,49 @@ def parse_contest(page, contest_label):
                 old_code = div_sections[idx][0]
                 outer_existing = [i for i, (code, _) in enumerate(div_sections)
                                   if code == outer_code]
-                if outer_existing:
+                if outer_existing and all(p == 0 for p, _ in div_sections[outer_existing[0]][1]):
+                    # The outer block is only an overall (0) over a single class —
+                    # nothing was compared, so collapse the class to the outer code
+                    # and drop the overall (a code can't hold both 0 and 1).
+                    # Confirmed via 2023/2024 Atlanta Classic - NPC (Figure).
+                    dropped = [n for _, n in div_sections[outer_existing[0]][1]]
+                    print(f"  FLAG: only one primary sub-div ({old_code}) in '{div_title}' "
+                          f"— collapsing to {outer_code}, dropping overall {dropped}")
+                    div_sections[idx] = (outer_code, div_sections[idx][1])
+                    del div_sections[outer_existing[0]]
+                elif outer_existing:
                     print(f"  FLAG: single primary sub-div ({old_code}) in '{div_title}' "
                           f"but outer {outer_code} already present — leaving as-is")
                 else:
                     print(f"  FLAG: only one primary sub-div ({old_code}) in '{div_title}' "
                           f"— collapsing to {outer_code}")
                     div_sections[idx] = (outer_code, div_sections[idx][1])
+
+        # A code can never hold both an overall (0) and real placings (1, 2, ...).
+        # An overall belongs to the parent of the sub-codes it compares (e.g.
+        # M4-0 over 4H/4M/4L; MA-0 over M4/M5); if the same code also has real
+        # placings, there was nothing to compare, so drop the 0 line. Rule
+        # confirmed by user 2026-10-04.
+        for i, (code, athletes) in enumerate(div_sections):
+            if any(p == 0 for p, _ in athletes) and any(p != 0 for p, _ in athletes):
+                dropped = [n for p, n in athletes if p == 0]
+                print(f"  FLAG: '{div_title}' code {code} has both 0 and real placings "
+                      f"— dropping overall {dropped}")
+                div_sections[i] = (code, [(p, n) for p, n in athletes if p != 0])
+
+        # A placing-0 "overall winner" only means something when there are
+        # other sub-divisions being compared against it. If the outer code
+        # ends up as the *only* section for this division, with nothing but
+        # that single placing-0 entry, the entrant isn't really an "overall"
+        # winner in the comparison sense — they're just the sole competitor,
+        # so they get a real placing of 1 instead. Confirmed via 2021 Georgia
+        # State Championships (as "Georgia Bodybuilding Championships"),
+        # where every weight/class sub-division had registrants but no
+        # placings posted, leaving only the bare overall-winner slug.
+        if (len(div_sections) == 1 and div_sections[0][0] == outer_code
+                and len(div_sections[0][1]) == 1 and div_sections[0][1][0][0] == 0):
+            name = div_sections[0][1][0][1]
+            div_sections[0] = (outer_code, [(1, name)])
 
         if gender == 'male':
             male_sections.extend(div_sections)

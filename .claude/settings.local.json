@@ -16,10 +16,8 @@
       "Bash(~/workspace/skills/musmemSkills/musmem-contests/python/review_flags.sh*)",
       "Bash(~/workspace/skills/musmemSkills/musmem-contests/python/verify_and_append.sh*)",
       "Read(~/workspace/musmem/*)",
-      "Write(~/workspace/musmem/*)",
       "Edit(~/workspace/musmem/*)",
       "Read(/tmp/*)",
-      "Write(/tmp/*)",
       "Edit(/tmp/*)",
       "Read(~/workspace/angular/musmem-ui/src/assets/i18n/en.json)",
       "WebFetch(domain:www.npcnewsonline.com)",
@@ -32,7 +30,35 @@
       "Bash(cat > /tmp/check_continuation.py << 'EOF'\nimport pdfplumber, re\n\npdf_path = '/Users/timfogarty/workspace/s3/musmem/magPdfs/im/im1801.pdf'\nCONT_RE = re.compile\\(\n    r'continued?\\\\s+on\\\\s+\\(?:p\\(?:age|\\\\.\\)\\\\s*\\)?\\(\\\\d+\\)'\n    r'|cont\\\\.\\\\s+on\\\\s+p\\\\.?\\\\s*\\(\\\\d+\\)',\n    re.IGNORECASE\n\\)\n\nwith pdfplumber.open\\(pdf_path\\) as pdf:\n    print\\(f\"Total pages: {len\\(pdf.pages\\)}\"\\)\n    for pnum in range\\(1, min\\(40, len\\(pdf.pages\\)+1\\)\\):\n        page = pdf.pages[pnum - 1]\n        text = page.extract_text\\(\\) or ''\n        m = CONT_RE.search\\(text\\)\n        if m:\n            # Show context around match\n            start = max\\(0, m.start\\(\\) - 40\\)\n            print\\(f\"  PDF p.{pnum}: {text[start:m.end\\(\\)+20]!r}\"\\)\n        # Also show last 100 chars of each page to spot continuation patterns\n        tail = text.strip\\(\\)[-120:] if text.strip\\(\\) else ''\n        if tail and any\\(word in tail.lower\\(\\) for word in ['continu', 'page', 'turn to']\\):\n            print\\(f\"  PDF p.{pnum} tail: {tail!r}\"\\)\nEOF\npython3 /tmp/check_continuation.py)",
       "Bash(tee /tmp/phase2_tsv_run2.log)",
       "Read(//Users/timfogarty/workspace/node/musmem/src/utils/**)",
-      "Read(//Users/timfogarty/workspace/**)"
+      "Read(//Users/timfogarty/workspace/**)",
+      "Bash(grep -i \"\\\\.pdf$\")",
+      "Bash(mv 2022_european_amateur_championships-ifbb-male.txt 2022_european_amateur_championships-ifbb-male.txt.old)",
+      "Bash(mv 2022_european_amateur_championships-ifbb-female.txt 2022_european_amateur_championships-ifbb-female.txt.old)",
+      "Bash(grep -oE '\\\\\\([A-Za-z ]+\\\\\\)$' ~/workspace/musmem/1-incoming/2024_asian_amateur_championships-ifbb-male.txt ~/workspace/musmem/1-incoming/2024_asian_amateur_championships-ifbb-female.txt)",
+      "Read(//tmp/**)",
+      "Bash(mv /tmp/emerald_cup_2021.html ~/workspace/musmem/.page_cache/2021_npc_emerald_cup.html)",
+      "Bash(mv /tmp/emerald_cup_2022.html ~/workspace/musmem/.page_cache/2022_npc_emerald_cup.html)",
+      "Bash(mv /tmp/emerald_cup_2023.html ~/workspace/musmem/.page_cache/2023_npc_emerald_cup.html)",
+      "Bash(mv /tmp/emerald_cup_2024.html ~/workspace/musmem/.page_cache/2024_npc_emerald_cup.html)",
+      "Bash(file /tmp/asia_*.pdf)",
+      "Bash(brew list *)",
+      "Bash(curl -s -m 5 -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0.0.0 Safari/537.36\" \"http://localhost:3000/api/contest?name=All%20South%20Championships%20-%20NPC&year=2018\")",
+      "Bash(curl -s -m 5 -A \"Mozilla/5.0 \\(Macintosh; Intel Mac OS X 10_15_7\\) AppleWebKit/537.36 \\(KHTML, like Gecko\\) Chrome/120.0.0.0 Safari/537.36\" \"http://localhost:3000/api/contest?name=All%20South%20Championships%20-%20NPC&year=2019\")"
     ]
+  },
+  "skillOverrides": {
+    "seo": "off",
+    "seo-audit": "off",
+    "seo-competitor-pages": "off",
+    "seo-content": "off",
+    "seo-geo": "off",
+    "seo-hreflang": "off",
+    "seo-images": "off",
+    "seo-page": "off",
+    "seo-plan": "off",
+    "seo-programmatic": "off",
+    "seo-schema": "off",
+    "seo-sitemap": "off",
+    "seo-technical": "off"
   }
 }

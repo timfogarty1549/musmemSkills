@@ -5,16 +5,17 @@ description: Use when searching for contests that were entered twice under diffe
 
 # musmem-duplicate-contests
 
-Scans all six bodybuilding data files as a single source and identifies contest pairs that likely represent the same physical event entered under different names.
+Scans a user-specified set of bodybuilding data files as a single source and identifies contest pairs that likely represent the same physical event entered under different names.
 
 ## Quick Reference
 
 | Step | Action |
 |------|--------|
 | 1 | Run the detection script |
-| 2 | Review candidate pairs reported |
-| 3 | Spot-check each pair in the raw data files |
-| 4 | Report findings to user; stop |
+| 2 | Enter file names one at a time when prompted; blank line ends the list |
+| 3 | Review candidate pairs reported |
+| 4 | Spot-check each pair in the raw data files |
+| 5 | Report findings to user; stop |
 
 **Do not auto-advance.** Run the script, report, and stop.
 
@@ -24,13 +25,10 @@ Scans all six bodybuilding data files as a single source and identifies contest 
 
 | File | Role |
 |------|------|
-| `~/workspace/musmem/data/bb_male.dat` | Primary male results |
-| `~/workspace/musmem/data/bb_female.dat` | Primary female results |
-| `~/workspace/musmem/data/prelim/covid-male.dat` | COVID-era male results |
-| `~/workspace/musmem/data/prelim/covid-female.dat` | COVID-era female results |
-| `~/workspace/musmem/data/prelim/gap-male.dat` | Gap-period male results |
-| `~/workspace/musmem/data/prelim/gap-female.dat` | Gap-period female results |
-| `scripts/find_duplicates.py` | Detection script |
+| `~/workspace/musmem/data/` | Default folder — entered file names are resolved relative to this unless absolute |
+| `scripts/find_duplicates.py` | Detection script — prompts for file names interactively |
+
+File names change over time (e.g. `prelim-male.dat`, `npc-a-male.dat` have replaced older `covid-male.dat`/`gap-male.dat` naming). The script does not hardcode a file list — confirm current file names with the user or by listing the data directory before running.
 
 ---
 
@@ -69,6 +67,14 @@ Male and female records are combined — a contest's divisions span both files.
 python3 ~/workspace/skills/musmemSkills/musmem-duplicate-contests/scripts/find_duplicates.py
 ```
 
+The script prompts for file names one at a time (relative to `~/workspace/musmem/data/`, or an absolute path). A blank line ends the list. It does not run as a single non-interactive shell call — pipe the file names in via stdin, e.g.:
+
+```bash
+printf 'bb_male.dat\nprelim/prelim-male.dat\nprelim/npc-a-male.dat\n\n' | python3 ~/workspace/skills/musmemSkills/musmem-duplicate-contests/scripts/find_duplicates.py
+```
+
+Confirm the current file names with the user before running — do not guess, since names change over time.
+
 Output format:
 ```
 2019: 'Arnold Classic - IFBB'
@@ -97,4 +103,4 @@ For each candidate pair: grep both names in the data files and compare the full 
 | Comparing across different years | Script already restricts to same year — don't override this |
 | Treating placement-98 records as real results | Script already excludes 98 and 0 |
 | Concluding duplicate from the script output alone | Always spot-check in the raw files before reporting |
-| Running script on only one gender file | Always run against all six files via the script — never partial |
+| Assuming fixed file names (e.g. `covid-male.dat`) | Names change over time — ask the user or list the data directory to confirm current names before entering them |

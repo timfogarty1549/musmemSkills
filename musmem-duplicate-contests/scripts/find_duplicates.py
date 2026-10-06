@@ -1,19 +1,27 @@
 """
 Find contests entered twice under different names by comparing athlete results.
 """
+import os
 import sys
 from collections import defaultdict
 
-DATA_FILES = [
-    '/Users/timfogarty/workspace/musmem/data/bb_male.dat',
-    '/Users/timfogarty/workspace/musmem/data/bb_female.dat',
-    '/Users/timfogarty/workspace/musmem/data/prelim/covid-male.dat',
-    '/Users/timfogarty/workspace/musmem/data/prelim/covid-female.dat',
-    '/Users/timfogarty/workspace/musmem/data/prelim/gap-male.dat',
-    '/Users/timfogarty/workspace/musmem/data/prelim/gap-female.dat',
-]
+DEFAULT_DIR = '/Users/timfogarty/workspace/musmem/data/'
 
 SKIP_PLACEMENTS = {98, 0}
+
+
+def prompt_for_files():
+    print(f"Default folder: {DEFAULT_DIR}", file=sys.stderr)
+    print("Enter data file names one at a time (relative to the default folder,", file=sys.stderr)
+    print("or an absolute path). Blank line ends the list.", file=sys.stderr)
+    paths = []
+    while True:
+        entry = input("File: ").strip()
+        if not entry:
+            break
+        path = entry if os.path.isabs(entry) else os.path.join(DEFAULT_DIR, entry)
+        paths.append(path)
+    return paths
 
 
 def parse_record(line):
@@ -44,11 +52,11 @@ def parse_record(line):
     return name, year, contest, division, placement
 
 
-def load_contests():
+def load_contests(data_files):
     # contests[(year, contest)][division][placement] = [name, ...]
     contests = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
     total = 0
-    for path in DATA_FILES:
+    for path in data_files:
         with open(path, 'r', encoding='utf-8', errors='replace') as f:
             for line in f:
                 rec = parse_record(line)
@@ -125,7 +133,11 @@ def check_pair(a_divs, b_divs):
 
 
 def main():
-    contests = load_contests()
+    data_files = prompt_for_files()
+    if not data_files:
+        print("No files entered. Exiting.", file=sys.stderr)
+        return
+    contests = load_contests(data_files)
 
     # Group contest names by year
     by_year = defaultdict(list)

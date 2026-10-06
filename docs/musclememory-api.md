@@ -1,22 +1,26 @@
 # MuscleMemory API Reference
 
+**Base URL: `http://localhost:3000`** (local musmem server). The public musclememory.org/.net API requires a signed request (anti-scraping) and rejects unsigned calls with `Invalid or missing request signature` — never call it directly.
+
+Before any API call, check that the local server is up (`curl -s -o /dev/null -w '%{http_code}' http://localhost:3000/api/contests/2025` → `200`). If nothing is running on port 3000, stop and ask the user to start the local musmem server — do not start it yourself, and never fall back to musclememory.org/.net.
+
 ## Endpoints
 
 ### Get contest names by org
 ```
-GET https://musclememory.org/api/org?name={org}
+GET http://localhost:3000/api/org?name={org}
 ```
 Returns a list of all contest names for the given org (e.g., `IFBB`, `NPC`, `NAC`).
 
 ### Get years a contest has been held
 ```
-GET https://musclememory.org/api/contest/years?name={contest_name}
+GET http://localhost:3000/api/contest/years?name={contest_name}
 ```
 Returns a list of years for which results exist for the given contest name.
 
 ### Get contest results
 ```
-GET https://musclememory.org/api/contest?name={contest-name}&year={year}
+GET http://localhost:3000/api/contest?name={contest-name}&year={year}
 ```
 Returns results for a specific contest and year.
 

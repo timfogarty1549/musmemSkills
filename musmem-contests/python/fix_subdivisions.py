@@ -35,11 +35,17 @@ MASTERS_AGE_CODES = {
     'BB':   {35: 'M3',  40: 'M4',  45: '45',  50: 'M5',  55: '55',  60: 'M6',
              70: 'M7'},
     'CL':   {35: 'c3',  40: 'c4',  45: 'c45', 50: 'c5',  55: 'c55', 60: 'c6',
-             70: 'c7'},
+             65: 'c65', 70: 'c7'},
     'PH':   {30: 'P3',  35: 'P35', 40: 'P4',  45: 'P45', 50: 'P5',  55: 'P55',
              60: 'P6',  70: 'P7'},
-    'FI':   {35: 'f3',  40: 'F4',  45: 'f4',  50: 'F5',  55: 'f5',  60: 'F6',
-             65: 'F65', 70: 'F65'},
+    'FI':   {30: 'F3',  35: 'f3',  40: 'F4',  45: 'f4',  50: 'F5',  55: 'f5',
+             60: 'F6',  65: 'F65', 70: 'F65'},
+    # Masters Under 212 — confirmed via 2026 Masters World Championships
+    # (masters-40/50/60 present as separate real rosters under the '212'
+    # section, previously mis-collapsed to bare U212, which would have
+    # produced duplicate 'c U212' blocks). Per docs/divisions-reference.md.
+    'U212': {35: 'M3212', 40: 'M4212', 45: 'm4212', 50: 'M5212', 55: 'm5212',
+             60: 'M6212', 70: 'M7212'},
 }
 
 BB_HEIGHT_CODES = {
@@ -67,6 +73,23 @@ TEEN_CODES = {
     'PH': 'PT',
     'FI': 'FT',
 }
+
+# Bare 'collegiate' slug maps to different codes depending on parent division.
+# EC (Collegiate Classic Physique) added to en.json by user 2026-10-04 —
+# confirmed via 2025/2026 Atlanta Classic - NPC.
+COLLEGIATE_CODES = {
+    'OP': 'ED', 'BB': 'ED',
+    'PH': 'EP',
+    'CL': 'EC',
+    'FI': 'EF',
+}
+
+# Bare 'masters' slug (no age, no class) maps to the Masters Open code per division
+BARE_MASTERS_CODES = {'OP': 'MA', 'BB': 'MA', 'PH': 'MP', 'CL': 'mc', 'FI': 'FM'}
+
+# 'grandmasters' slug (distinct, higher bracket from bare 'masters') maps to
+# the division's 50+ age code, per user decision — see slug_to_code().
+GRANDMASTERS_CODES = {'OP': 'M5', 'BB': 'M5', 'FI': 'F5', 'PH': 'P5', 'CL': 'c5'}
 
 # Open-class letter prefix per division (for class-X slugs)
 # e.g. CL+class-a → Ca, PH+class-a → Pa, FI+class-a → Fa
@@ -128,6 +151,17 @@ JUNIOR_WEIGHT_CODES = {
     'short':             'Js',
 }
 
+# Teen with weight class slug → code (OP/BB context), per divisions-reference.md
+TEEN_WEIGHT_CODES = {
+    'heavyweight':       'TH',
+    'light-heavyweight': 'Tl',
+    'middleweight':      'TM',
+    'lightweight':       'TL',
+    'tall':              'Tt',
+    'medium':            'Tm',
+    'short':             'Ts',
+}
+
 # Junior with class letter: prefix per division (e.g. junior-a in PH → PJa)
 JUNIOR_CLASS_PREFIX = {
     'CL': 'CJ',
@@ -182,6 +216,13 @@ def slug_to_code(slug, div_code):
     # 'clas-X' → 'class-X'
     if slug_l.startswith('clas-') and not slug_l.startswith('class-'):
         slug_l = 'class-' + slug_l[5:]
+    # 'masters-over-42' → 'masters-over-40' (confirmed one-off typo, not a
+    # recurring age threshold — 2015 Rocky Mountain Championships Men's
+    # Physique. Doesn't recur in any other cached year of this contest, and
+    # no other masters-over-40/45 class exists in that same division that
+    # year, so there's no merge collision.)
+    if slug_l == 'masters-over-42':
+        slug_l = 'masters-over-40'
 
     # Strip 'pro-qualifier-' or 'ifbb-pro-' prefix — treat like the bare sub-class slug
     if slug_l.startswith('pro-qualifier-'):
@@ -204,8 +245,10 @@ def slug_to_code(slug, div_code):
         # e.g. '212-masters-40' → treat as masters-40 in U212 context
         slug_l = 'masters-' + slug_l[len('212-masters-'):]
 
-    # U212/U208 masters slugs — no sub-codes exist, collapse to parent
-    if div_code in ('U212', 'U208', 'U202') and re.match(r'^masters-', slug_l):
+    # U208/U202 masters slugs — no tiered sub-codes documented, collapse to parent.
+    # U212 has real tiered codes (M4212 etc, added to MASTERS_AGE_CODES above) and
+    # falls through to the age-map logic below instead of collapsing.
+    if div_code in ('U208', 'U202') and re.match(r'^masters-', slug_l):
         return div_code
 
     age_map = MASTERS_AGE_CODES.get(div_code, {})
@@ -280,14 +323,22 @@ def slug_to_code(slug, div_code):
             return MASTERS_HEIGHT_CODES[letter]   # MAa–MAd
         if div_code == 'PH':
             return f'MP{letter}'                  # MPa–MPd
+        if div_code == 'FI':
+            return f'f{letter}'                   # fa–ff (Figure Masters A–F)
+        if div_code == 'CL':
+            # No documented bare Classic Masters + letter code exists; user
+            # confirmed defaulting the unspecified age to 35+ (c3), matching
+            # the standard Masters default age. Confirmed via 2019 Arkansas
+            # State Championships ('masters-class-a'/'masters-class-b',
+            # no age number given).
+            return f'c3{letter}'                  # c3a–c3d (Classic Masters 35+ A–D)
         raise ValueError(
             f"'masters-class-{letter}' in unhandled division context '{div_code}'"
         )
 
     # Bare 'masters' slug (no age, no class) — context-dependent
     if slug_l == 'masters':
-        bare_masters = {'OP': 'MA', 'BB': 'MA', 'PH': 'MP', 'CL': 'mc', 'FI': 'FM'}
-        code = bare_masters.get(div_code)
+        code = BARE_MASTERS_CODES.get(div_code)
         if code:
             return code
         raise ValueError(
@@ -323,6 +374,17 @@ def slug_to_code(slug, div_code):
 
     if slug_l == 'senior':
         return 'MA'
+
+    # 'grandmasters' — a distinct, higher age bracket from the bare 'masters'
+    # slug (both appear separately on the same page, e.g. 2018 Michigan State
+    # Championships Men's Bodybuilding and Figure: 'masters' AND 'grandmasters'
+    # as separate sub-divisions). No age number given on the page; user
+    # directed mapping to the division's 50+ code (M5 for OP/BB, F5 for FI).
+    if slug_l == 'grandmasters':
+        code = GRANDMASTERS_CODES.get(div_code)
+        if code:
+            return code
+        raise ValueError(f"'grandmasters' slug in unhandled division context '{div_code}'")
 
     # ── kg-based weight classes ──────────────────────────────────────────────
     if slug_l in KG_SLUG_CODES:
@@ -371,6 +433,38 @@ def slug_to_code(slug, div_code):
             return code
         raise ValueError(f"'{slug_l}' slug in unhandled division context '{div_code}'")
 
+    if slug_l == 'collegiate':
+        code = COLLEGIATE_CODES.get(div_code)
+        if code:
+            return code
+        raise ValueError(f"'collegiate' slug in unhandled division context '{div_code}'")
+
+    # Teen with class letter (teen-a/teen-b, or the teen-class-a/teen-class-b
+    # variant used on some page templates) — Bodybuilding/Women's Bodybuilding
+    # only, mirrors Ta/Tb in divisions-reference.md. Confirmed via 2013 and
+    # 2014 Atlantic States Championships, where Men's Bodybuilding Teen was
+    # split into two letter classes instead of the usual single bare 'teen'
+    # slug.
+    tm = re.match(r'^teen-(?:class-)?([ab])$', slug_l)
+    if tm:
+        letter = tm.group(1)
+        if div_code in ('OP', 'BB'):
+            return {'a': 'Ta', 'b': 'Tb'}[letter]
+        raise ValueError(f"'teen-{letter}' slug in unhandled division context '{div_code}'")
+
+    # ── Teen with weight class (teen-heavyweight, teenage-heavyweight, etc.) ─
+    # Must come after the teen-a/teen-b/teen-class-a check above, since this
+    # broader pattern would otherwise swallow those first. Confirmed via
+    # 2021/2022 Illinois State Championships ('teen-heavyweight', 'teen-lightweight',
+    # 'teenage-heavyweight').
+    tw = re.match(r'^teen(?:age|ager)?-(.+)$', slug_l)
+    if tw:
+        weight = tw.group(1)
+        code = TEEN_WEIGHT_CODES.get(weight)
+        if code:
+            return code
+        raise ValueError(f"Unknown teen weight slug '{slug}' — add to TEEN_WEIGHT_CODES")
+
     # ── Bare open weight class slugs (IFBB amateur style) ───────────────────
     # e.g. 'super-heavyweight', 'heavyweight', 'light-heavyweight', etc.
     if slug_l in OPEN_WEIGHT_SLUG_CODES:
@@ -390,6 +484,68 @@ def slug_to_code(slug, div_code):
     raise ValueError(
         f"Unknown slug '{slug}' in division '{div_code}' — "
         f"add to en.json/divs.php or to SKIP_SLUG_RE"
+    )
+
+
+def overall_slug_to_code(slug, div_code):
+    """Map a sub-group overall slug (one that CONTAINS 'overall' but doesn't
+    start with it, e.g. 'teen-overall', 'masters-overall', 'masters-over-35-overall',
+    or the '-overall-winner' variant used on some page templates, e.g.
+    'masters-overall-winner') to the code its placing-0 entry should roll up to.
+
+    These compare the winners of several sub-classes within one age/category
+    tier against each other (e.g. Masters 35+ Heavyweight winner vs Masters 35+
+    Lightweight winner), separate from the division's main 'overall-winner'
+    slug (which starts with 'overall' and is handled elsewhere). Confirmed via
+    2013 Atlantic States Championships ('teen-overall', 'masters-overall'),
+    2014 Atlantic States Championships ('masters-overall-winner', 'teen-overall-winner'),
+    2012/2013/2017 IFBB North American Championships ('masters-over-N-overall'),
+    and 2013 Alabama State Championships ('junior-overall').
+    Raises ValueError for any other '-overall'/'-overall-winner' pattern rather
+    than guessing.
+    """
+    slug_l = slug.lower()
+    # Pro-qualifier pages tag the slot with '-earned-pro-card' (e.g.
+    # 'masters-40-overall-winner-earned-pro-card', confirmed via 2026 Canadian
+    # Natural Pro Qualifier - CPA) — strip it, then match as usual.
+    if slug_l.endswith('-earned-pro-card'):
+        slug_l = slug_l[:-len('-earned-pro-card')]
+    # Normalize the '-winner' variant to the base pattern before matching.
+    if slug_l.endswith('-overall-winner'):
+        slug_l = slug_l[:-len('-winner')]
+
+    if slug_l == 'teen-overall':
+        code = TEEN_CODES.get(div_code)
+        if code:
+            return code
+        raise ValueError(f"'teen-overall' slug in unhandled division context '{div_code}'")
+
+    if slug_l == 'junior-overall':
+        code = JUNIOR_CODES.get(div_code)
+        if code:
+            return code
+        raise ValueError(f"'junior-overall' slug in unhandled division context '{div_code}'")
+
+    if slug_l == 'masters-overall':
+        code = BARE_MASTERS_CODES.get(div_code)
+        if code:
+            return code
+        raise ValueError(f"'masters-overall' slug in unhandled division context '{div_code}'")
+
+    m = re.match(r'^masters-(?:over-)?(\d+)-overall$', slug_l)
+    if m:
+        age = int(m.group(1))
+        code = MASTERS_AGE_CODES.get(div_code, {}).get(age)
+        if code:
+            return code
+        raise ValueError(
+            f"Unknown masters age {age} for division '{div_code}' in '{slug}' — "
+            f"add to MASTERS_AGE_CODES"
+        )
+
+    raise ValueError(
+        f"Unknown sub-group overall slug '{slug}' in division '{div_code}' — "
+        f"add explicit handling in overall_slug_to_code()"
     )
 
 # Division title → sub-class parent code
@@ -415,16 +571,41 @@ OUTER_CODE_MAP = [
 
 # Slugs to skip in sub-class reset matching
 # (excluded categories + markers that don't represent division boundaries)
+# '^o$' — bare single-letter 'o' slug, a page-rendering glitch duplicating an
+# athlete's real placing under another slug (confirmed via 2017 Atlantic States
+# Championships: Christian Salcedo appears once correctly under 'heavyweight'
+# and again, same placing, under 'o'). Same class of issue as digit-only slugs.
+# '^colorado-' — a real "Colorado residents only" bodybuilding sub-competition
+# (its own weight classes and overall, running alongside the main open weight
+# classes with a distinct, overlapping-but-not-identical roster) confirmed via
+# 2015/2018/2019/2020/2021 Colorado State - NPC. Not a duplicate or glitch —
+# explicitly excluded as an untracked category, same treatment as Bikini/
+# Wellness/Fitness, per user decision.
+# 'etowah-county' (and 'mr-'/'ms-' prefixed variants) — the same pattern as
+# Colorado's residents-only sub-competition, but for Etowah County, Alabama:
+# a real, multi-entrant local-residents division reused across Men's and
+# Women's Bodybuilding, confirmed via 2014/2017/2018/2019 Alabama State
+# Championships. Same "exclude as untracked" treatment per user decision.
+# 'award' — a link to an awards-ceremony photo gallery, mislabeled
+# data-person="yes" with a blank placing and the anchor text "Men's Awards"/
+# "Figure Awards"/etc instead of a real name. Not a competitor entry — same
+# category of page-template artifact as the 'comparison' filter. Confirmed
+# via 2026 Masters World Championships (one per division).
 SKIP_SLUG_RE = re.compile(
-    r'^open$|overall|earned|comparison'
+    r'^open$|^overall|earned|comparison'
     r'|^novice$|^novice-|true-novice|-novice'
     r'|^beginner$|^beginner|^begginer'
     r'|^first-timer'
     r'|^regional$|^regional-|-regional'
     r'|^natural$|^natural-'
     r'|^local$|^local-'
-    r'|^star-category$|^armed-forces$|^first-responder$|^mr-'
-    r'|^\d+$',
+    r'|^colorado-|^georgia-state'
+    r'|etowah-county|northeast-alabama'
+    r'|^hometown$'
+    r'|^star-category$|^armed-forces$|^military$|^first-responder$|^mr-'
+    r'|^hero$|^heroes$|^guest-poser$|^uniform$|^battle-for-the-belt$'
+    r'|^award$'
+    r'|^\d+$|^o$',
     re.IGNORECASE
 )
 
@@ -542,6 +723,7 @@ def parse_page_subclasses(page_html, gender=None):
             for m in re.finditer(
                 r'<div class="competitor-class[^"]*" data-slug="([^"]+)">', section)
             if not SKIP_SLUG_RE.search(m.group(1))
+            and not m.group(1).lower().endswith(('-overall', '-overall-winner'))
         ]
         if slugs:
             result.setdefault(code, []).extend(slugs)

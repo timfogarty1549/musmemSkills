@@ -4,13 +4,16 @@
 |---|---|---|
 | 1 Bro Men's Physique Pro Show - IFBB | United Kingdom 1 Bro Pro - IFBB  | pro |
 | 1 Bro Pro - IFBB | United Kingdom 1 Bro Pro - IFBB | pro |
+| 1 Bro Pro Show - IFBB | United Kingdom 1 Bro Pro - IFBB | pro |
 | Ace of Stage Pro - IFBB | Las Vegas Ace of Stage Pro - IFBB | pro |
 | Adela Garcia Classic Pro - IFBB | - | ignore |
 | Adela Garcia Pro - IFBB |  - | ignore |
 | AGP Bikini Pro - IFBB |  - | ignore |
 | AGP Classic Physique Pro - IFBB | Asian Grand Prix Pro - IFBB | pro |
 | AGP Korea Natural Pro - IFBB | Asian Grand Prix Korea Natural Pro - IFBB  | pro |
+| AGP Korea Natural Pro Show - IFBB | Asian Grand Prix Korea Natural Pro - IFBB | pro |
 | AGP Korea Pro - IFBB | South Korea AGP Pro - IFBB | pro |
+| AGP Korea Pro Show - IFBB | South Korea AGP Pro - IFBB | pro |
 | AGP Natural Pro - IFBB | Asian Grand Prix Korea Natural Pro - IFBB | pro |
 | AGP Pro - IFBB | South Korea AGP Pro - IFBB | pro |
 | AGP Pro All Stars - IFBB | Asian Grand Prix Pro All Stars - IFBB | pro |
@@ -25,6 +28,7 @@
 | Arizona Pro - IFBB | Arizona Pro - IFBB | pro |
 | Arkansas Pro - IFBB | Arkansas Pro - IFBB | pro |
 | Arkansas Pro Bikini - IFBB |  - | ignore |
+| Arkansas State Pro - IFBB | Arkansas Pro - IFBB | pro |
 | Arnold Classic - IFBB | Arnold Classic - IFBB | pro |
 | Arnold Classic Australia - IFBB | Arnold Classic Australia - IFBB | pro |
 | Arnold Classic Brasil - IFBB | Arnold Classic Brasil - IFBB | pro |
@@ -40,12 +44,14 @@
 | Asia Grand Prix Men's Physique Pro - IFBB | Asian Grand Prix Pro - IFBB | pro |
 | Asia Grand Prix Pro - IFBB | Asian Grand Prix - IFBB | pro |
 | Asian Championships Pro - IFBB | Asian Championships Pro - IFBB | pro |
+| Asian Pro Championships - IFBB | Asian Championships Pro - IFBB | pro |
 | Atlanta All States Pro - IFBB | Atlanta All States Pro - IFBB | pro |
 | Atlanta Pro - IFBB | Atlanta Pro - IFBB | pro |
 | Atlantic Coast Masters Pro - IFBB | Atlantic Coast Pro - IFBB | pro |
 | Atlantic Coast Pro - IFBB | Atlantic Coast Pro - IFBB | pro |
 | Australia Pro - IFBB | Grand Prix Australia - IFBB | pro |
 | Australia Pro Grand Prix - IFBB | Grand Prix Australia - IFBB | pro |
+| Austrian Oak Pro - IFBB | Austrian Oak Pro - IFBB | pro |
 | Balkan Grand Prix Pro - IFBB | Balkan Grand Prix Pro - IFBB | pro |
 | Baltimore Classic - IFBB | Baltimore Pro - IFBB | pro |
 | Baltimore Classic Masters Pro - IFBB | Baltimore Pro - IFBB | pro |
@@ -58,7 +64,7 @@
 | Battle of Texas - IFBB | Battle of Texas Pro Championships - IFBB | pro |
 | Battle of Texas Pro - IFBB | Battle of Texas Pro - IFBB | pro |
 | Battle of the Bay Pro - IFBB | Mexico Grand Battle Pro - IFBB | pro |
-| Battle of the Bodies Pro - IFBB | Battle of the Bodies Pro Florida - IFBB | pro |
+| Battle of the Bodies Pro - IFBB | Oklahoma Battle of the Bodies Pro - IFBB | pro |
 | Battle of the Titans Natural Pro - IFBB | Battle of West Georgia Natural Pro - IFBB | pro |
 | Battle of West Georgia Natural Pro - IFBB | Battle of West Georgia Natural Pro - IFBB | pro |
 | Battle on the Beach - IFBB |  - | ignore |
@@ -133,6 +139,7 @@
 | Emerald Pro - IFBB | Emerald Cup Pro - IFBB | pro |
 | Empro Classic Pro - IFBB | Spain Empro Pro - IFBB | pro |
 | Empro Pro - IFBB | Spain Empro Pro - IFBB | pro |
+| Empro Classic Spain Pro - IFBB | Spain Empro Pro - IFBB | pro |
 | ESN The British Grand Prix Pro - IFBB | British Grand Prix - IFBB | pro |
 | Etenon Spain Pro - IFBB | Spain Etenon Pro - IFBB | pro |
 | EU Nutrition Portugal Natural Pro - IFBB | Portugal Natural Pro - IFBB | pro |
@@ -153,6 +160,7 @@
 | Europa SuperShow - IFBB | Europa Supershow - IFBB | pro |
 | Everest Muscle Fest Poland Pro - IFBB | Poland Pro - IFBB | pro |
 | Everest Muscle Stars Poland Pro - IFBB | Poland Pro - IFBB | pro |
+| Everest Poland Pro Muscle Games - IFBB | Poland Pro - IFBB | pro |
 | EVL Prague Pro - IFBB | Prague Pro Championships - IFBB | pro |
 | EVLS Prague Pro - IFBB | Prague Pro Championships - IFBB | pro |
 | Fashion Street FitParade Hungary Natural Pro - IFBB | - | ignore |
@@ -184,6 +192,7 @@
 | Golden State Championships - IFBB | Golden State Pro Championships - IFBB | pro |
 | Golden State Grand Prix - IFBB | Golden State Pro Championships - IFBB | pro |
 | Golden State Pro - IFBB | Golden State Pro Championships - IFBB | pro |
+| Gold's Gym Classic Pro - IFBB | North Carolina Gold's Gym Classic Pro - IFBB | pro |
 | Gomeisa Ultimate Battle Pro - IFBB | Colombia Pro - IFBB | pro |
 | Gov. Cup - IFBB | California Governor's Cup Pro - IFBB | pro |
 | Governors Cup - IFBB | California Governor's Cup Pro - IFBB | pro |
@@ -195,16 +204,22 @@
 | Hawaii Pro - IFBB | Hawaii Pro - IFBB | pro |
 | Heart of Texas - IFBB | Heart of Texas Pro - IFBB | pro |
 | Heart of Texas Pro - IFBB | Heart of Texas Pro - IFBB | pro |
+| Hong Kong Pro - IFBB | Hong Kong Pro - IFBB | pro |
 | Hong Kong SAR Pro - IFBB | Hong Kong Pro - IFBB | pro |
 | Houston Pro - IFBB | Houston Pro Championships - IFBB | pro |
 | Houston Tournament of Champions - IFBB | Houston Tournament of Champions - IFBB | pro |
 | Houston Tournament of Champions Pro - IFBB | Houston Tournament of Champions - IFBB | pro |
 | Houston Tournement of Champions - IFBB | Houston Tournament of Champions - IFBB | pro |
+| Huanji Beijing China Natural Pro - IFBB | Huanji Beijing China Natural Pro - IFBB | pro |
+| Huanji Beijing China Pro - IFBB | Huanji Beijing China Pro - IFBB | pro |
+| Huanji Chengdu China Pro - IFBB | Huanji Chengdu China Pro - IFBB | pro |
 | Huanji China Pro - IFBB | Huanji China Pro - IFBB | pro |
 | Huanji China Pro 2 - IFBB | Huanji China Pro 2 - IFBB | pro |
 | Huanji China Pro 3 - IFBB | Huanji China Pro 3 - IFBB | pro |
 | Huanji China Pro 4 - IFBB | Huanji China Pro 4 - IFBB | pro |
+| Huanji Harbin China Pro - IFBB | Huanji Harbin China Pro - IFBB | pro |
 | Huanji Shanghai China Pro - IFBB | Shanghai China Pro - IFBB | pro |
+| Huanji Xi'an China Pro - IFBB | Huanji Xi'An China Pro - IFBB | pro |
 | Hungary Kokeny Pro - IFBB | Hungary Kokeny Pro - IFBB | pro |
 | Hungary Pro - IFBB | Hungary Pro - IFBB | pro |
 | Hurricane Pro - IFBB | Tampa Hurricane Pro - IFBB | pro |
@@ -222,7 +237,7 @@
 | Irongames Pro - IFBB | - | ignore |
 | Italian Olympus Pro - IFBB | Italian Olympus Pro - IFBB | pro |
 | Italy Koloseum Pro - IFBB | Koloseum Italy Pro - IFBB | pro |
-| Janet Layug's Battle of the Bodies Pro - IFBB |  | pro |
+| Janet Layug's Battle of the Bodies Pro - IFBB | Florida Battle of the Bodies Pro - IFBB | pro |
 | Japan Pro - IFBB | Japan Pro - IFBB | pro |
 | Jay Cutler Desert Classic - IFBB | - | ignore |
 | Kai Greene Classic - IFBB | Kai Greene Classic Pro - IFBB | pro |
@@ -233,8 +248,9 @@
 | Kentucky Natural Pro - IFBB | - | ignore |
 | Kentucky Pro - IFBB | Kentucky Pro - IFBB | pro |
 | Kentucky Pro Muscle - IFBB | Kentucky Pro - IFBB | pro |
-| Kim Junho Classic Pro - IFBB | Junho Kim Korea Pro - IFBB | pro |
-| Kim Junho Korea Pro - IFBB | Junho Kim Korea Pro - IFBB | pro |
+| Kim Jun Ho Classic - IFBB | Kim Junho Korea Pro - IFBB | pro |
+| Kim Junho Classic Pro - IFBB | Kim Junho Korea Pro - IFBB | pro |
+| Kim Junho Korea Pro - IFBB | Kim Junho Korea Pro - IFBB | pro |
 | Klash Series All South Pro - IFBB | All South Pro - IFBB | pro |
 | Klash Series Championships Pro - IFBB | - | ignore |
 | Klash Series GRL PWR Pro - IFBB |  - | ignore |
@@ -304,17 +320,19 @@
 | Musclecontest Austria Pro - IFBB | MuscleContest Austria Pro - IFBB | pro |
 | Musclecontest Brazil Pro - IFBB | MuscleContest Brazil Pro - IFBB | pro |
 | MuscleContest Brazil Pro - IFBB | MuscleContest Brazil Pro - IFBB | pro |
+| Musclecontest Bullman Pro - IFBB | Ireland Bullman Pro - IFBB | pro |
 | Musclecontest Campinas Pro - IFBB | MuscleContest Campinas Pro - IFBB | pro |
 | MuscleContest FItPira Pro - IFBB | MuscleContest FitPira Pro - IFBB | pro |
 | Musclecontest FitPira Pro - IFBB | MuscleContest FitPira Pro - IFBB | pro |
 | Musclecontest Goiania Pro - IFBB | MuscleContest Goiania Pro - IFBB | pro |
 | Musclecontest Ireland Pro - IFBB | Ireland Pro - IFBB | pro |
 | MuscleContest Ironberg ABC Pro - IFBB | MuscleContest Ironberg ABC Pro - IFBB | pro |
-| MuscleContest Japan Pro - IFBB | Japan Pro - IFBB | pro |
-| Musclecontest Japan Pro - IFBB | Japan Pro - IFBB | pro |
+| MuscleContest Japan Pro - IFBB | Japan Musclecontest Pro - IFBB | pro |
+| Musclecontest Japan Pro - IFBB | Japan Musclecontest Pro - IFBB | pro |
 | Musclecontest Mercosul Pro - IFBB | MuscleContest Mercosul Pro - IFBB | pro |
 | MUSCLECONTEST NACIONAL PRO - IFBB | - | ignore |
 | Musclecontest Nacional Pro - IFBB | - | ignore |
+| Musclecontest Nordeste Fit Expo Pro - IFBB | Musclecontest Nordeste Fit Expo Pro - IFBB | pro |
 | Musclecontest Philippines Pro - IFBB | MuscleContest Philippines Pro - IFBB | pro |
 | MuscleContest Pro - IFBB | Muscle Contest Pro - IFBB | pro |
 | MuscleContest Pro Bikini - IFBB |  - | ignore |
@@ -327,6 +345,8 @@
 | Naples Pro - IFBB | - | ignore |
 | Nashville Fit Show Pro - IFBB | - | ignore |
 | Nashville Night of Champions Pro - IFBB | Nashville Night of Champions Pro - IFBB | pro |
+| Natural Canada Pro - IFBB | Natural Canada Pro - IFBB | pro |
+| Natural Strength Showdown Pro - IFBB | Natural Strength Showdown Pro - IFBB | pro |
 | Natural Clash of the Titanz Pro - IFBB | Clash of the Titanz Pro - IFBB | pro |
 | Nebraska Pro - IFBB | Nebraska Pro - IFBB | pro |
 | Nevada State Pro - IFBB | - | ignore |
@@ -357,10 +377,14 @@
 | Pacific USA Pro - IFBB | Pacific USA Pro - IFBB | pro |
 | Pacific USA Pro Bikini - IFBB |  - | ignore |
 | Pacific USA XXXI Pro - IFBB | Pacific USA Pro - IFBB | pro |
+| Pacific USA XXXII Pro - IFBB | Pacific USA Pro - IFBB | pro |
 | Palmetto Classic Pro - IFBB | Palmetto Classic Pro - IFBB | pro |
 | Patriots Challenge Pro - IFBB | - | ignore |
 | Patriots Pro - IFBB | - | ignore |
+| Pennsylvania Muscle Pro - IFBB | Pennsylvania Muscle Pro - IFBB | pro |
 | Phil Heath Classic - IFBB | Phil Heath Classic - IFBB | pro |
+| Philippines Natural Pro - IFBB | Philippines Natural Pro - IFBB | pro |
+| Philippines Pro - IFBB | MuscleContest Philippines Pro - IFBB | pro |
 | Phoenix Pro - IFBB | Phoenix Pro - IFBB | pro |
 | Pittsburgh Pro - IFBB | Pittsburgh Pro - IFBB | pro |
 | Pittsburgh Pro Masters Championships - IFBB | Pittsburgh Pro - IFBB  | pro |
@@ -372,6 +396,7 @@
 | Prestige Crystal Cup - IFBB | Prestige Crystal Cup Pro - IFBB | pro |
 | Prestige Crystal Cup Pro - IFBB | Prestige Crystal Cup Pro - IFBB | pro |
 | Pro Bodybuilding Weekly Championships - IFBB | Tampa Pro Championships - IFBB | pro |
+| Pro Muscle Italy Pro - IFBB | Italy ProMuscle Pro - IFBB | pro |
 | Pro Clash of the Titanz - IFBB | Clash of the Titanz Pro - IFBB | pro |
 | Pro Grand Prix - IFBB | Pro Grand Prix (Los Angeles) - IFBB | pro |
 | Pro Miami Muscle Beach - IFBB | Miami Muscle Beach Pro - IFBB | pro |
@@ -430,6 +455,7 @@
 | Southern Muscle Showdown - IFBB | Southern Muscle Showdown Pro - IFBB | pro |
 | Southern Muscle Showdown Pro - IFBB | Southern Muscle Showdown Pro - IFBB | pro |
 | Southern Natural Pro - IFBB | Southern Natural Pro - IFBB | pro |
+| Southern USA Pro - IFBB | Southern USA Pro - IFBB | pro |
 | Southwest Muscle Classic Pro - IFBB | Southwest Muscle Pro - IFBB | pro |
 | Spanish Grand Prix Pro - IFBB | Spanish Grand Prix Pro - IFBB | pro |
 | Spanish Masters Pro - IFBB | Spanish Masters Pro - IFBB | pro |
@@ -442,11 +468,13 @@
 | Steve Karr Las Vegas Pro - IFBB | Las Vegas Pro - IFBB | pro |
 | Sur Cup Chile Pro - IFBB | Chile Sur Cup Pro - IFBB | pro |
 | Sur Cup Pro - IFBB | Argentina Sur Cup Pro - IFBB | pro |
+| Sur Pro Cup Argentina Pro - IFBB | Argentina Sur Cup Pro - IFBB | pro |
 | Tahoe Pro - IFBB | Tahoe Pro - IFBB | pro |
 | Tahoe Show - IFBB | - | ignore |
 | Taiwan Kaohsiung Pro - IFBB | Taiwan Kaohsiung Pro - IFBB | pro |
 | Taiwan Natural Pro - IFBB | Taiwan Natural Pro - IFBB | pro |
 | Taiwan Pro - IFBB | Taiwan Pro - IFBB | pro |
+| Taiwan Pro 2 - IFBB | Taiwan Pro 2 - IFBB | pro |
 | Tampa Pro - IFBB | Tampa Pro Championships - IFBB | pro |
 | Tanji Johnson Pro - IFBB | - | ignore |
 | Texas Pro - IFBB | Texas Pro Championships - IFBB | pro |

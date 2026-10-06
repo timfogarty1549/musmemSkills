@@ -17,6 +17,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fetch_group as fg
 import check_collision as col_check
 import apply_corrections as ac
+import undo_group as ug
 
 ROOT     = os.path.expanduser('~/workspace/musmem/data')
 TSV_ROOT = os.path.expanduser('~/workspace/musmem/distinct')
@@ -195,7 +196,15 @@ FILE_COLORS = [
     '\033[33m',   # f2: yellow
     '\033[35m',   # f3: magenta
     '\033[36m',   # f4: cyan
-    '\033[34m',   # f5+: blue
+    '\033[38;5;180m',  # f5: tan
+    '\033[38;5;208m',  # f6: orange
+    '\033[37m',   # f7: white
+    '\033[38;5;154m',  # f8: lime
+    '\033[38;5;141m',  # f9: purple
+    '\033[38;5;117m',  # f10: light blue
+    '\033[34m',   # f11: blue
+    '\033[31m',   # f12: red
+    '\033[38;5;213m',  # f13: pink
 ]
 RESET = '\033[0m'
 
@@ -216,7 +225,7 @@ def expand_group(data):
     print()
     for file_tag, line in all_records:
         fi = int(file_tag[1:]) - 1  # 'f1' -> 0, 'f2' -> 1, etc.
-        color = FILE_COLORS[min(fi, len(FILE_COLORS) - 1)]
+        color = FILE_COLORS[fi % len(FILE_COLORS)]
         print(f'{color}[{file_tag}] {line}{RESET}')
     print()
 
@@ -262,9 +271,9 @@ def display_group(data):
 
 # ── data loading ───────────────────────────────────────────────────────────────
 
-def load_group(tsv, files):
+def load_group(tsv, files, target_id=None):
     rows = fg.load_tsv(tsv)
-    gid, group_rows = fg.find_next_group(rows)
+    gid, group_rows = fg.find_next_group(rows, target_id)
     if gid is None:
         return None
 
@@ -396,14 +405,42 @@ def run_apply(tsv, files):
 
 # ── main loop ──────────────────────────────────────────────────────────────────
 
-PROMPT = 'Expression (s)kip / defer / process / (q)uit / (e)xpand: '
+PROMPT = 'Expression (s)kip / defer / process / (q)uit / (e)xpand / (j)ump <id> / undo <id>: '
+
+
+def check_jump(tsv, group_id):
+    """Return None if group_id can be jumped to, else a reason string."""
+    group_rows = [r for r in fg.load_tsv(tsv) if r['group_id'] == group_id]
+    if not group_rows:
+        return f'Group {group_id} not found.'
+    if not fg.group_is_pending(group_rows):
+        return (f'Group {group_id} already has a decision recorded — '
+                f'use "undo {group_id}" first to revisit it.')
+    return None
+
+
+def run_undo(tsv, group_id):
+    status, detail = ug.undo_group(tsv, group_id)
+    if status == 'not_found':
+        print(f'  Group {group_id} not found.')
+    elif status == 'already_pending':
+        print(f'  Group {group_id} has no decision recorded; already pending.')
+    elif status == 'applied':
+        print(
+            f'  Group {group_id} was already applied at {detail} — '
+            'cannot undo automatically. Fix the .dat file(s) manually if needed.'
+        )
+    elif status == 'reverted':
+        print(f"  Group {group_id} reverted to pending (was: {', '.join(detail or [])}).")
 
 
 def main():
     files, tsv = prompt_paths()
+    jump_to = None
 
     while True:
-        data = load_group(tsv, files)
+        data = load_group(tsv, files, jump_to)
+        jump_to = None
 
         if data is None:
             queued = count_queued(tsv)
@@ -451,6 +488,26 @@ def main():
             elif lo in ('expand', 'e'):
                 expand_group(data)
                 display_group(data)
+
+            elif lo.startswith('undo'):
+                parts = raw.split(maxsplit=1)
+                if len(parts) != 2 or not parts[1].strip().isdigit():
+                    print('  Usage: undo <group-id>')
+                    continue
+                run_undo(tsv, int(parts[1].strip()))
+
+            elif re.match(r'^j(ump)?(\s|$)', lo):
+                m = re.match(r'^j(ump)?\s+(\d+)$', lo)
+                if not m:
+                    print('  Usage: j <group-id>')
+                    continue
+                target = int(m.group(2))
+                reason = check_jump(tsv, target)
+                if reason:
+                    print(f'  {reason}')
+                    continue
+                jump_to = target
+                break
 
             else:
                 expr = resolve_expression(raw, files)

@@ -349,22 +349,61 @@ def build_pairs(names: list[str]) -> dict[tuple[str, str], set[str]]:
     return pairs
 
 
+def resolve_gender_shorthand(value: str) -> str | None:
+    normalized = re.sub(r"\s+", " ", value.strip().lower())
+    if normalized in ("all male", "all-male", "allmale"):
+        return "male"
+    if normalized in ("all female", "all-female", "allfemale"):
+        return "female"
+    return None
+
+
+def expand_gender_paths(gender: str) -> list[Path]:
+    paths: list[Path] = []
+    bb_path = DATA_ROOT / f"bb_{gender}.dat"
+    if bb_path.is_file():
+        paths.append(bb_path)
+    paths.extend(sorted((DATA_ROOT / "prelim").glob(f"*-{gender}.dat")))
+    return paths
+
+
 def collect_sources() -> list[Source]:
     sources: list[Source] = []
+    seen_paths: set[Path] = set()
     while True:
         print(f"\nSource {len(sources) + 1}")
-        raw = prompt("Input data file path (blank to finish)").strip()
+        raw = prompt("Input data file path (blank to finish, or 'all male' / 'all female')").strip()
         if not raw:
             if not sources:
                 print("Please enter at least one source file.")
                 continue
             break
+
+        gender = resolve_gender_shorthand(raw)
+        if gender:
+            paths = [p for p in expand_gender_paths(gender) if p not in seen_paths]
+            if not paths:
+                print(f"No new files found for 'all {gender}'.")
+                continue
+            print(f"Expanding 'all {gender}' to {len(paths)} file(s):")
+            for path in paths:
+                print(f"  {path}")
+            min_year = prompt_int(f"Minimum year from column 2 for all {gender} files, blank for none")
+            for path in paths:
+                seen_paths.add(path)
+                sources.append(Source(label=safe_label(path.stem), path=path, min_year=min_year))
+            continue
+
         path = resolve_data_path(raw)
         if not path.is_file():
             print(f"File not found: {path}")
             continue
+        if path in seen_paths:
+            print(f"Already added: {path}")
+            continue
         label = safe_label(path.stem)
         min_year = prompt_int("Minimum year from column 2, blank for none")
+        seen_paths.add(path)
         sources.append(Source(label=label, path=path, min_year=min_year))
     return sources
 
@@ -373,7 +412,32 @@ def default_groups_out(sources: list[Source]) -> Path:
     return DISTINCT_ROOT / f"{'-'.join(s.label for s in sources)}-variant-groups.tsv"
 
 
-def write_outputs(sources: list[Source], counts_by_label: dict[str, dict[str, int]], groups_out: Path) -> None:
+def prompt_focus_labels(sources: list[Source]) -> set[str]:
+    if len(sources) < 2:
+        return set()
+    labels = [s.label for s in sources]
+    print(f"\nSource labels: {', '.join(labels)}")
+    while True:
+        raw = prompt(
+            "Restrict output to groups containing a name from source(s) "
+            "(comma-separated labels, blank for no restriction)"
+        ).strip()
+        if not raw:
+            return set()
+        focus = {part.strip() for part in raw.split(",") if part.strip()}
+        unknown = focus - set(labels)
+        if unknown:
+            print(f"Unknown label(s): {', '.join(sorted(unknown))}")
+            continue
+        return focus
+
+
+def write_outputs(
+    sources: list[Source],
+    counts_by_label: dict[str, dict[str, int]],
+    groups_out: Path,
+    focus_labels: set[str] | None = None,
+) -> None:
     all_names = sorted({name for counts in counts_by_label.values() for name in counts}, key=str.casefold)
     pairs = build_pairs(all_names)
     groups = connected_groups(pairs)
@@ -383,6 +447,13 @@ def write_outputs(sources: list[Source], counts_by_label: dict[str, dict[str, in
             group
             for group in groups
             if sum(any(counts_by_label[source.label].get(name, 0) for name in group) for source in sources) >= 2
+        ]
+
+    if focus_labels:
+        groups = [
+            group
+            for group in groups
+            if any(counts_by_label[label].get(name, 0) for label in focus_labels for name in group)
         ]
 
     groups_out.parent.mkdir(parents=True, exist_ok=True)
@@ -409,6 +480,8 @@ def main() -> int:
         print(f"Read {sum(counts.values())} rows{year_text} from {source.path}")
         print(f"Found {len(counts)} distinct names")
 
+    focus_labels = prompt_focus_labels(sources)
+
     while True:
         raw = prompt("Candidate group TSV output path", str(default_groups_out(sources)))
         p = Path(raw).expanduser()
@@ -419,7 +492,7 @@ def main() -> int:
             continue
         groups_out = p if p.is_absolute() else DISTINCT_ROOT / p
         break
-    write_outputs(sources, counts_by_label, groups_out)
+    write_outputs(sources, counts_by_label, groups_out, focus_labels)
     return 0
 
 
